@@ -391,7 +391,37 @@ spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
   
   <h4 id="examples-leastpriv">Least-privileged content</h4>
 
-  ISSUE: describe how to drop privileges.
+  An author wishes to use a libraryy that is tightly coupled with
+  the page (e.g. jQuery), but avoid the need to trust the library to
+  protect the user's confidentiality and integrity. With COWL, the
+  author can do this by <a>dropping privileges</a> (from the context's
+  <a>default privilege</a>) and then loading the untrusted library.
+
+  <div class="example">
+    Author of <code>https://example.com</code> can, drop privileges in
+    JavaScript:
+
+    <pre><code>
+    // Drop privileges:
+    COWL.privilege = new <a>Privilege()</a>;
+
+    // ... code to load untrusted library ...
+    </code></pre>
+
+    Or, by setting the <code>COWL</code> response header:
+
+    <pre><code>
+     <a href="#response-header">COWL</a>: privilege: [ [] ]
+    </code></pre>
+
+    <div class="note">
+      While this ensures that the context code cannot, for instance,
+      access the origin's cookies, the author must still associate a
+      confidentiality label with resources (e.g., responses sent to the
+      client) to ensure that the data is properly protect.
+    </div>
+
+  </div>
 
 
   </section>
@@ -602,7 +632,6 @@ spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
       described in [[#context-labels]]. Authors can set the <a>current
       privilege</a> of a context to ensure that it runs with <em>least
       privilege</em>.
-
     </li>
     <li>
       The <dfn>current privilege</dfn> is the privilege associated
@@ -628,7 +657,6 @@ spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
       by <a>combining</a> the <a>current privilege</a> and
       <var>priv</var>.
     </li>
-  </ol>
 </section>
 
 <!-- Big Text: framework -->
@@ -838,7 +866,9 @@ spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
     A privilege is said to be an <dfn>empty privilege</dfn> if its
     <a>internal privilege label</a> is the <a>empty label</a>. A
     context is said to be <dfn>unprivileged</dfn> if its context
-    privilege is the <a>empty privilege</a>.
+    privilege is the <a>empty privilege</a>.  By setting the
+    <a>context privilege</a> to the <a>empty privilege</a>, a context
+    is said to be <dfn>dropping privileges</dfn>.
 
     A privilege <var>P1</var> is said to be a <dfn>delegated
       privilege</dfn> of <var>P2</var> if <var>P2</var>'s <a>internal

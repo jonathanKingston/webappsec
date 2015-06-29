@@ -630,7 +630,46 @@ onmessage = function(event) {
      
 
 
-     <p class="issue" id="issue-1281a278"><a class="self-link" href="#issue-1281a278"></a> describe how to drop privileges.</p>
+     <p>An author wishes to use a libraryy that is tightly coupled with
+  the page (e.g. jQuery), but avoid the need to trust the library to
+  protect the user’s confidentiality and integrity. With COWL, the
+  author can do this by <a data-link-type="dfn" href="#dropping-privileges">dropping privileges</a> (from the context’s
+  <a data-link-type="dfn" href="#default-privilege">default privilege</a>) and then loading the untrusted library.</p>
+     
+
+  
+     <div class="example" id="example-9607d5d2"><a class="self-link" href="#example-9607d5d2"></a>
+    Author of <code>https://example.com</code> can, drop privileges in
+    JavaScript:
+
+    
+      <pre><code>// Drop privileges:
+COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privilege">Privilege()</a>;
+
+// ... code to load untrusted library ...
+</code></pre>
+      
+
+
+      <p>Or, by setting the <code>COWL</code> response header:</p>
+      
+
+    
+      <pre><code><a href="#response-header">COWL</a>: privilege: [ [] ]
+</code></pre>
+      
+
+    
+      <div class="note" role="note">
+      While this ensures that the context code cannot, for instance,
+      access the origin’s cookies, the author must still associate a
+      confidentiality label with resources (e.g., responses sent to the
+      client) to ensure that the data is properly protect.
+    </div>
+      
+
+  
+     </div>
      
 
 
@@ -911,7 +950,6 @@ object was not tampered by <code>https://b.com</code>.</p>
       privilege</a> of a context to ensure that it runs with <em>least
       privilege</em>.</p>
       
-
     
      
     
@@ -946,9 +984,8 @@ object was not tampered by <code>https://b.com</code>.</p>
       <var>priv</var>.
     
      
-  
-    </ol>
-</section>
+
+    </ol></section>
 
 
 
@@ -1270,7 +1307,9 @@ b.subsumes(aOrb) === true;
      <p>A privilege is said to be an <dfn data-dfn-type="dfn" data-noexport="" id="empty-privilege">empty privilege<a class="self-link" href="#empty-privilege"></a></dfn> if its
     <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> is the <a data-link-type="dfn" href="#empty-label">empty label</a>. A
     context is said to be <dfn data-dfn-type="dfn" data-noexport="" id="unprivileged">unprivileged<a class="self-link" href="#unprivileged"></a></dfn> if its context
-    privilege is the <a data-link-type="dfn" href="#empty-privilege">empty privilege</a>.</p>
+    privilege is the <a data-link-type="dfn" href="#empty-privilege">empty privilege</a>.  By setting the
+    <a data-link-type="dfn" href="#context-privilege">context privilege</a> to the <a data-link-type="dfn" href="#empty-privilege">empty privilege</a>, a context
+    is said to be <dfn data-dfn-type="dfn" data-noexport="" id="dropping-privileges">dropping privileges<a class="self-link" href="#dropping-privileges"></a></dfn>.</p>
      
 
 
@@ -2378,6 +2417,7 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lwo
       privilege, <a href="#delegated-privilege">3.2</a>
    <li>delegate(label), <a href="#dom-privilege-delegatelabel">3.2.2</a>
    <li>disjunction set, <a href="#disjunction-set">3.1</a>
+   <li>dropping privileges, <a href="#dropping-privileges">3.2</a>
    <li>effective confidentiality label, <a href="#effective-confidentiality-label">2.2</a>
    <li>effective integrity label, <a href="#effective-integrity-label">2.2</a>
    <li>empty label, <a href="#empty-label">3.1</a>
@@ -2580,7 +2620,6 @@ interface <a href="#lworkerglobalscope">LWorkerGlobalScope</a> : <a data-link-ty
 </pre>
   <h2 class="no-num heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue"> describe how to drop privileges.<a href="#issue-1281a278"> ↵ </a></div>
    <div class="issue"> Current WebIDL implementation requires an underscore for
     certain identifiers. Can we rename <code>_or</code> to
     <code>or</code>?<a href="#issue-afa876b4"> ↵ </a></div>

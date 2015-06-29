@@ -29,8 +29,9 @@ spec: WEBMESSAGING; urlPrefix: http://www.w3.org/TR/webmessaging/
   type: method
     text: postMessage(); url: dom-window-postmessage
 spec: WORKERS; urlPrefix: http://www.w3.org/TR/workers/
-  type: interface
+  type: dfn
     text: Worker
+    text: Web Worker
 spec: CSP2; urlPrefix: https://www.w3.org/TR/CSP2/
   type: dfn
     text: content-security-policy
@@ -66,6 +67,16 @@ spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
   type: dfn
     text: JSON object; url: section-2
     text: JSON stringification; url: section-2
+
+spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
+  type: dfn
+    text: XMLHttpRequest
+  type: interface
+    text: XMLHttpRequest; url: interface-xmlhttprequest
+  type: enum
+    text: XMLHttpRequestResponseType; url: xmlhttprequestresponsetype
+  type: method
+    text: send(); url: the-send()-method
 </pre>
 
 <!-- BIBLIOGRAPHY -->
@@ -1215,6 +1226,19 @@ spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
 
   <section>
     <h3 id="object-labels">Labeled Objects Interface</h3>
+
+    A <a interface>LabeledObject</a> interface represents an immutable
+    object that has associated with it confidentiality and integrity
+    labels.
+
+    This API is designed to be used in conjunction with other APIs and
+    elements on the web platform. In particular: <a>postMessage()</a>,
+    <a>Web Workers</a>, and <a>XMLHttpRequest</a> (e.g., with an
+    overloaded <code>send()</code> method for <a interface>LabeledObject</a>
+    arguments).
+
+    ISSUE: receive too..
+
     A <a interface>LabeledObject</a> MUST have an internal <dfn>protected
       object</dfn>, a confidentiality <a>label</a>, and an
     integrity <a>label</a>.
@@ -1337,6 +1361,53 @@ spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
     <h4>Methods</h4>
 
     ISSUE: describe <code>clone</code>
+
+    <h4>Extensions to <a>XMLHttpRequest</a></h4>
+
+    <h5>Request</h5>
+      This specification extends the
+      <a interface>XMLHttpRequest</a> interface with and overloaded
+      <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+      method:
+
+      <pre class="idl">
+        partial interface XMLHttpRequest {
+          void send(LabeledObject lobj);
+        };
+      </pre>
+      The <dfn method title="XMLHttpRequest/send(lobj)"
+        for="XMLHttpRequest">send(lobj)</dfn>  method must run these steps:
+
+      1. Let <var>obj</var> be the serialized object produced by
+      invoking the <a>LabeledObject serialization</a> algorithm with
+      the <a argument for="XMLHttpRequest/send(lobj)">lobj</a>
+      argument.
+
+      2. Call the
+      <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+      method on the object this method was called on with 
+      <var>obj</var> as an argument.
+
+      ISSUE: send() is not well-defined. Should we only allow JSON
+      objects for LabeldObject? Or should we have a header associated
+      with object and use normal serialization?
+
+
+    <h5>Response</h5>
+      This specification extends the
+      <code><a enum>XMLHttpRequestResponseType</a></code></h5> with a new
+      response type:
+      <pre class="idl">
+        enum <a href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a> {
+          ... existing response types ...,
+          "labeled-text"
+        };
+      </pre>
+      
+      ISSUE: Should we have labeld-json, labeled-blob, etc.?
+
+      ISSUE: completed definition for XHR response.
+
   </section>
 
   <section>
@@ -1484,6 +1555,14 @@ spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
     ISSUE: describe write check
 
   </section>
+
+  <section>
+    <h3 id="labeldobject-serialization">Serializing Labeld Objects</h3>
+    The <dfn>LabeledObject serialization</dfn> algorithm takes a <a
+        interface>LabeldObject</a> and returns a serialized version of
+      it.
+
+      ISSUE: describe LabeldObject serializatino
 </section>
 
     ISSUE: most of the spec talks about contexts not at all about

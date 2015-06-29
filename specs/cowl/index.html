@@ -212,6 +212,11 @@ privilege-separated, compartmentalized applications.</p>
         <li><a href="#constructors1"><span class="secno">3.4.1</span> <span class="content">Constructors</span></a>
         <li><a href="#attributes0"><span class="secno">3.4.2</span> <span class="content">Attributes</span></a>
         <li><a href="#methods2"><span class="secno">3.4.3</span> <span class="content">Methods</span></a>
+        <li><a href="#extensions-to-xmlhttprequest"><span class="secno">3.4.4</span> <span class="content">Extensions to <span>XMLHttpRequest</span></span></a>
+         <ul class="toc">
+          <li><a href="#request"><span class="secno">3.4.4.1</span> <span class="content">Request</span></a>
+          <li><a href="#response"><span class="secno">3.4.4.2</span> <span class="content">Response</span></a>
+         </ul>
        </ul>
       <li><a href="#response-header"><span class="secno">3.5</span> <span class="content">The <code>COWL</code> HTTP Response Header Field</span></a>
       <li><a href="#request-header"><span class="secno">3.6</span> <span class="content">The <code>COWL</code> HTTP Request Header Field</span></a>
@@ -227,6 +232,7 @@ privilege-separated, compartmentalized applications.</p>
       <li><a href="#label-reduce"><span class="secno">5.3</span> <span class="content">Label Downgrade</span></a>
       <li><a href="#taint-context"><span class="secno">5.4</span> <span class="content">Context Tainting</span></a>
       <li><a href="#write-check"><span class="secno">5.5</span> <span class="content">Write Check</span></a>
+      <li><a href="#labeldobject-serialization"><span class="secno">5.6</span> <span class="content">Serializing Labeld Objects</span></a>
      </ul>
     <li><a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ul class="toc">
@@ -1589,7 +1595,7 @@ COWL.privilege = COWL.privilege.delegate(user1);
      
 
 
-     <p>COWL extends <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing contexts</a> and <a data-link-type="dfn">Workers</a> with a
+     <p>COWL extends <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing contexts</a> and <a data-link-type="dfn" href="http://www.w3.org/TR/workers/#worker">Workers</a> with a
     corresponding <dfn data-dfn-type="dfn" data-noexport="" id="cowl-state">COWL state<a class="self-link" href="#cowl-state"></a></dfn>, which consists of:</p>
      
 
@@ -1623,7 +1629,7 @@ ability to bypass restrictions of certain labels.</p>
 </ul>
      
 
-     <p>Each <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing context</a>’s and <a data-link-type="dfn">Worker</a>’s <dfn data-dfn-type="dfn" data-noexport="" id="cowl-state0">COWL
+     <p>Each <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing context</a>’s and <a data-link-type="dfn" href="http://www.w3.org/TR/workers/#worker">Worker</a>’s <dfn data-dfn-type="dfn" data-noexport="" id="cowl-state0">COWL
     state<a class="self-link" href="#cowl-state0"></a></dfn> MUST be initially set to the <dfn data-dfn-type="dfn" data-noexport="" id="default-cowl-state">default COWL
     state<a class="self-link" href="#default-cowl-state"></a></dfn>, where:</p>
      
@@ -1890,9 +1896,30 @@ and set the <a data-link-type="dfn" href="#current-privilege">current privilege<
     
      <h3 class="heading settled" data-level="3.4" id="object-labels"><span class="secno">3.4. </span><span class="content">Labeled Objects Interface</span><a class="self-link" href="#object-labels"></a></h3>
      
-    A <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> MUST have an internal <dfn data-dfn-type="dfn" data-noexport="" id="protected-object">protected
+
+
+     <p>A <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> interface represents an immutable
+    object that has associated with it confidentiality and integrity
+    labels.</p>
+     
+
+
+     <p>This API is designed to be used in conjunction with other APIs and
+    elements on the web platform. In particular: <a data-link-type="functionish" href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a>,
+    <a data-link-type="dfn" href="http://www.w3.org/TR/workers/#web-worker">Web Workers</a>, and <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> (e.g., with an
+    overloaded <code>send()</code> method for <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>
+    arguments).</p>
+     
+
+
+     <p class="issue" id="issue-05c32959"><a class="self-link" href="#issue-05c32959"></a> receive too..</p>
+     
+
+
+     <p>A <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> MUST have an internal <dfn data-dfn-type="dfn" data-noexport="" id="protected-object">protected
       object<a class="self-link" href="#protected-object"></a></dfn>, a confidentiality <a data-link-type="dfn" href="#label">label</a>, and an
-    integrity <a data-link-type="dfn" href="#label">label</a>.
+    integrity <a data-link-type="dfn" href="#label">label</a>.</p>
+     
 
     
      <pre class="idl">dictionary <dfn class="idl-code" data-dfn-type="dictionary" data-export="" id="dictdef-cilabel">CILabel<a class="self-link" href="#dictdef-cilabel"></a></dfn> {
@@ -2080,6 +2107,76 @@ influenced the computation.</p>
 
      <p class="issue" id="issue-8d80fc2e"><a class="self-link" href="#issue-8d80fc2e"></a> describe <code>clone</code></p>
      
+
+    
+     <h4 class="heading settled" data-level="3.4.4" id="extensions-to-xmlhttprequest"><span class="secno">3.4.4. </span><span class="content">Extensions to <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a></span><a class="self-link" href="#extensions-to-xmlhttprequest"></a></h4>
+     
+
+    
+     <h5 class="heading settled" data-level="3.4.4.1" id="request"><span class="secno">3.4.4.1. </span><span class="content">Request</span><a class="self-link" href="#request"></a></h5>
+     
+      This specification extends the
+      <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#interface-xmlhttprequest">XMLHttpRequest</a> interface with and overloaded
+      <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+      method:
+
+      
+     <pre class="idl">partial interface <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#interface-xmlhttprequest">XMLHttpRequest</a> {
+  void <a class="idl-code" data-link-type="method" href="#dom-xmlhttprequest-sendlobj">send</a>(<a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <dfn class="idl-code" data-dfn-for="XMLHttpRequest/send(lobj)" data-dfn-type="argument" data-export="" id="dom-xmlhttprequest-sendlobj-lobj">lobj<a class="self-link" href="#dom-xmlhttprequest-sendlobj-lobj"></a></dfn>);
+};
+</pre>
+     
+
+     <p>The <dfn class="idl-code" data-dfn-for="XMLHttpRequest" data-dfn-type="method" data-export="" id="dom-xmlhttprequest-sendlobj" title="XMLHttpRequest/send(lobj)">send(lobj)<a class="self-link" href="#dom-xmlhttprequest-sendlobj"></a></dfn>  method must run these steps:</p>
+     
+
+
+     <ol>
+      <li data-md="">
+       <p>Let <var>obj</var> be the serialized object produced by
+invoking the <a data-link-type="dfn" href="#labeledobject-serialization">LabeledObject serialization</a> algorithm with
+the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a>
+argument.</p>
+       
+
+
+      <li data-md="">
+       <p>Call the
+<a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+method on the object this method was called on with 
+<var>obj</var> as an argument.</p>
+       
+</ol>
+     
+
+     <p class="issue" id="issue-8e9dcf2b"><a class="self-link" href="#issue-8e9dcf2b"></a> send() is not well-defined. Should we only allow JSON
+      objects for LabeldObject? Or should we have a header associated
+      with object and use normal serialization?</p>
+     
+
+
+    
+     <h5 class="heading settled" data-level="3.4.4.2" id="response"><span class="secno">3.4.4.2. </span><span class="content">Response</span><a class="self-link" href="#response"></a></h5>
+     
+      This specification extends the
+      <code><a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a></code> with a new
+      response type:
+      
+     <pre class="idl">enum XMLHttpRequestResponseType {
+  ... existing response types ...,
+  "labeled-text"
+};
+</pre>
+     
+
+
+     <p class="issue" id="issue-3f45d629"><a class="self-link" href="#issue-3f45d629"></a> Should we have labeld-json, labeled-blob, etc.?</p>
+     
+
+
+     <p class="issue" id="issue-656b48b1"><a class="self-link" href="#issue-656b48b1"></a> completed definition for XHR response.</p>
+     
+
   
     </section>
 
@@ -2296,14 +2393,27 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lwo
 
   
     </section>
-</section>
+
+  
+    <section>
+    
+     <h3 class="heading settled" data-level="5.6" id="labeldobject-serialization"><span class="secno">5.6. </span><span class="content">Serializing Labeld Objects</span><a class="self-link" href="#labeldobject-serialization"></a></h3>
+     
+    The <dfn data-dfn-type="dfn" data-noexport="" id="labeledobject-serialization">LabeledObject serialization<a class="self-link" href="#labeledobject-serialization"></a></dfn> algorithm takes a <a class="idl-code" data-link-type="interface">LabeldObject</a> and returns a serialized version of
+      it.
 
 
-   <p class="issue" id="issue-19556c70"><a class="self-link" href="#issue-19556c70"></a> most of the spec talks about contexts not at all about
+     <p class="issue" id="issue-71fd1cd6"><a class="self-link" href="#issue-71fd1cd6"></a> describe LabeldObject serializatino</p>
+     
+
+    </section>
+
+
+    <p class="issue" id="issue-19556c70"><a class="self-link" href="#issue-19556c70"></a> most of the spec talks about contexts not at all about
     workers; should revise to be more general. (Should mostly be
     straightforward.)</p>
 
-</main>
+</section></main>
 
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
 
@@ -2448,11 +2558,13 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lwo
    <li>LabeledObject, <a href="#labeledobject">3.4</a>
    <li>LabeledObject(obj, labels), <a href="#dom-labeledobject-labeledobjectobj-labels">3.4.1</a>
    <li>labeled objects, <a href="#labeled-objects">2.1</a>
+   <li>LabeledObject serialization, <a href="#labeledobject-serialization">5.6</a>
    <li>label normal form reduction, <a href="#label-normal-form-reduction">5.1</a>
    <li>Label(origin), <a href="#dom-label-labelorigin">3.1.1</a>
    <li>labels, <a href="#dom-labeledobject-labeledobjectobj-labels-labels">3.4</a>
    <li>label set, <a href="#label-set">3.1</a>
    <li>label subsumption, <a href="#label-subsumption">5.2</a>
+   <li>lobj, <a href="#dom-xmlhttprequest-sendlobj-lobj">3.4.4.1</a>
    <li>LWorker, <a href="#lworker">4</a>
    <li>LWorkerGlobalScope, <a href="#lworkerglobalscope">4.1</a>
    <li>LWorker(scriptURL, initState), <a href="#dom-lworker-lworkerscripturl-initstate">4</a>
@@ -2490,6 +2602,7 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lwo
    <li>protected
       object, <a href="#protected-object">3.4</a>
    <li>scriptURL, <a href="#dom-lworker-lworkerscripturl-initstate-scripturl">4</a>
+   <li>send(lobj), <a href="#dom-xmlhttprequest-sendlobj">3.4.4.1</a>
    <li>subsumes, <a href="#subsumes">2.1</a>
    <li>subsumes(other), <a href="#dom-label-subsumesother">3.1.2</a>
    <li>tainted, <a href="#tainted">2.1</a>
@@ -2525,6 +2638,17 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lwo
     <ul>
      <li><a href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a>
     </ul>
+   <li><a data-link-type="biblio" href="#biblio-workers">[workers]</a> defines the following terms:
+    <ul>
+     <li><a href="http://www.w3.org/TR/workers/#web-worker">web worker</a>
+     <li><a href="http://www.w3.org/TR/workers/#worker">worker</a>
+    </ul>
+   <li><a data-link-type="biblio" href="#biblio-xhr">[XHR]</a> defines the following terms:
+    <ul>
+     <li><a href="https://xhr.spec.whatwg.org/#interface-xmlhttprequest">XMLHttpRequest</a>
+     <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a>
+     <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequest">xmlhttprequest</a>
+    </ul>
    <li><a data-link-type="biblio" href="#biblio-dom-ls">[dom-ls]</a> defines the following terms:
     <ul>
      <li><a href="http://dom.spec.whatwg.org/#eventtarget">EventTarget</a>
@@ -2546,6 +2670,8 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lwo
    <dd>Adam Barth. <a href="http://www.ietf.org/rfc/rfc6454.txt">The Web Origin Concept</a>. RFC. URL: <a href="http://www.ietf.org/rfc/rfc6454.txt">http://www.ietf.org/rfc/rfc6454.txt</a>
    <dt id="biblio-url"><a class="self-link" href="#biblio-url"></a>[URL]
    <dd>Anne van Kesteren; Sam Ruby. <a href="http://www.w3.org/TR/url">URL</a>. WD. URL: <a href="http://www.w3.org/TR/url">http://www.w3.org/TR/url</a>
+   <dt id="biblio-xhr"><a class="self-link" href="#biblio-xhr"></a>[XHR]
+   <dd>Anne van Kesteren. <a href="https://xhr.spec.whatwg.org/">XMLHttpRequest Standard</a>. Living Standard. URL: <a href="https://xhr.spec.whatwg.org/">https://xhr.spec.whatwg.org/</a>
    <dt id="biblio-cors"><a class="self-link" href="#biblio-cors"></a>[CORS]
    <dd>Anne van Kesteren. <a href="http://www.w3.org/TR/cors/">Cross-Origin Resource Sharing</a>. 16 January 2014. REC. URL: <a href="http://www.w3.org/TR/cors/">http://www.w3.org/TR/cors/</a>
    <dt id="biblio-dom-ls"><a class="self-link" href="#biblio-dom-ls"></a>[DOM-LS]
@@ -2555,7 +2681,9 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lwo
    <dt id="biblio-rfc2119"><a class="self-link" href="#biblio-rfc2119"></a>[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
    <dt id="biblio-webmessaging"><a class="self-link" href="#biblio-webmessaging"></a>[WEBMESSAGING]
-   <dd>Ian Hickson. <a href="http://www.w3.org/TR/webmessaging/">HTML5 Web Messaging</a>. 19 May 2015. REC. URL: <a href="http://www.w3.org/TR/webmessaging/">http://www.w3.org/TR/webmessaging/</a></dl>
+   <dd>Ian Hickson. <a href="http://www.w3.org/TR/webmessaging/">HTML5 Web Messaging</a>. 19 May 2015. REC. URL: <a href="http://www.w3.org/TR/webmessaging/">http://www.w3.org/TR/webmessaging/</a>
+   <dt id="biblio-workers"><a class="self-link" href="#biblio-workers"></a>[WORKERS]
+   <dd>Ian Hickson. <a href="http://www.w3.org/TR/workers/">Web Workers</a>. 1 May 2012. CR. URL: <a href="http://www.w3.org/TR/workers/">http://www.w3.org/TR/workers/</a></dl>
   <h3 class="no-num heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
    <dt id="biblio-cowl-osdi"><a class="self-link" href="#biblio-cowl-osdi"></a>[COWL-OSDI]
@@ -2608,6 +2736,15 @@ interface <a href="#labeledobject">LabeledObject</a> {
   [Throws] <a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a href="#dom-labeledobject-clonenewlabels">clone</a>(<a data-link-type="idl-name" href="#dictdef-cilabel">CILabel</a> <a href="#dom-labeledobject-clonenewlabels-newlabels">newLabels</a>);
 };
 
+partial interface <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#interface-xmlhttprequest">XMLHttpRequest</a> {
+  void <a class="idl-code" data-link-type="method" href="#dom-xmlhttprequest-sendlobj">send</a>(<a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a>);
+};
+
+enum XMLHttpRequestResponseType {
+  ... existing response types ...,
+  "labeled-text"
+};
+
 [<a href="#dom-lworker-lworkerscripturl-initstate">Constructor</a>(DOMString <a href="#dom-lworker-lworkerscripturl-initstate-scripturl">scriptURL</a>, <a data-link-type="idl-name">InitCOWLstate</a>? <a href="#dom-lworker-lworkerscripturl-initstate-initstate">initState</a>)]
 interface <a href="#lworker">LWorker</a> : <a data-link-type="idl-name" href="http://dom.spec.whatwg.org/#eventtarget">EventTarget</a> {
   void <a href="#dom-lworker-postmessagemessage">postMessage</a>(any <a href="#dom-lworker-postmessagemessage-message">message</a>);
@@ -2626,7 +2763,13 @@ interface <a href="#lworkerglobalscope">LWorkerGlobalScope</a> : <a data-link-ty
    <div class="issue"> describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a><a href="#issue-620ca5f0"> ↵ </a></div>
    <div class="issue"> for discussion: should privileges be used explicitly
       instead?<a href="#issue-e1bb8a0a"> ↵ </a></div>
+   <div class="issue"> receive too..<a href="#issue-05c32959"> ↵ </a></div>
    <div class="issue"> describe <code>clone</code><a href="#issue-8d80fc2e"> ↵ </a></div>
+   <div class="issue"> send() is not well-defined. Should we only allow JSON
+      objects for LabeldObject? Or should we have a header associated
+      with object and use normal serialization?<a href="#issue-8e9dcf2b"> ↵ </a></div>
+   <div class="issue"> Should we have labeld-json, labeled-blob, etc.?<a href="#issue-3f45d629"> ↵ </a></div>
+   <div class="issue"> completed definition for XHR response.<a href="#issue-656b48b1"> ↵ </a></div>
    <div class="issue"> describe response header grammar<a href="#issue-e30b85a5"> ↵ </a></div>
    <div class="issue"> describe how response header is processes<a href="#issue-f4bc3b24"> ↵ </a></div>
    <div class="issue"> describe how labeled headers and XHR work<a href="#issue-8027d210"> ↵ </a></div>
@@ -2638,6 +2781,7 @@ interface <a href="#lworkerglobalscope">LWorkerGlobalScope</a> : <a data-link-ty
    <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div>
    <div class="issue"> describe taint<a href="#issue-9c43f37a"> ↵ </a></div>
    <div class="issue"> describe write check<a href="#issue-821539a6"> ↵ </a></div>
+   <div class="issue"> describe LabeldObject serializatino<a href="#issue-71fd1cd6"> ↵ </a></div>
    <div class="issue"> most of the spec talks about contexts not at all about
     workers; should revise to be more general. (Should mostly be
     straightforward.)<a href="#issue-19556c70"> ↵ </a></div></div></body>

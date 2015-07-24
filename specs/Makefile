@@ -14,6 +14,7 @@ CSP2: CSP2/index.html
 CSP2-CR: CSP2/published/2015-02-CR.html
 CSP3: content-security-policy/index.html
 COWL: cowl/index.html
+WORKER-ATTESTATION: worker-attestation/index.html
 EPR: epr/index.html
 MIX: mixedcontent/index.html
 MIX-PR: mixedcontent/published/2015-07-PR.html
@@ -40,6 +41,9 @@ content-security-policy/index.html: content-security-policy/index.src.html bibli
 
 cowl/index.html: cowl/index.src.html biblio.json
 	bikeshed -f spec ./cowl/index.src.html
+
+worker-attestation/index.html: worker-attestation/index.src.html biblio.json
+	bikeshed -f spec ./worker-attestation/index.src.html
 
 credentialmanagement/index.html: credentialmanagement/index.src.html biblio.json
 	bikeshed -f spec ./credentialmanagement/index.src.html

@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-06-28">28 June 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-07-24">24 July 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -107,14 +107,6 @@ allows Web application authors and server operators to shared data
 with untrusted—buggy but not malicious—code (e.g., in a mashup
 scenario) yet impose restrictions on how the code can share the data
 further.</p>
-
-
-
-
-   <p>In addition, this specification defines a light-weight, in-thread
-
-Worker.  Combined with confinement, this allows developers to build
-privilege-separated, compartmentalized applications.</p>
 
 </div>
 
@@ -177,11 +169,10 @@ privilege-separated, compartmentalized applications.</p>
       <li><a href="#goals"><span class="secno">1.1</span> <span class="content">Goals</span></a>
       <li><a href="#examples"><span class="secno">1.2</span> <span class="content">Use Cases/Examples</span></a>
        <ul class="toc">
-        <li><a href="#untrusted-services"><span class="secno">1.2.1</span> <span class="content">Untrusted services</span></a>
-        <li><a href="#untrusted-libraries"><span class="secno">1.2.2</span> <span class="content">Untrusted libraries</span></a>
-        <li><a href="#examples-mashup"><span class="secno">1.2.3</span> <span class="content">Third-party untrusted mashups</span></a>
-        <li><a href="#examples-isolation"><span class="secno">1.2.4</span> <span class="content">Content isolation/privilege separation</span></a>
-        <li><a href="#examples-leastpriv"><span class="secno">1.2.5</span> <span class="content">Least-privileged content</span></a>
+        <li><a href="#confining-untrusted-services"><span class="secno">1.2.1</span> <span class="content">Confining untrusted services</span></a>
+        <li><a href="#examples-mashup"><span class="secno">1.2.2</span> <span class="content">Third-party untrusted mashups</span></a>
+        <li><a href="#examples-isolation"><span class="secno">1.2.3</span> <span class="content">Content isolation via privilege separation</span></a>
+        <li><a href="#examples-leastpriv"><span class="secno">1.2.4</span> <span class="content">Running content with least-privileges</span></a>
        </ul>
       <li><a href="#trust-model"><span class="secno">1.3</span> <span class="content">Trust Model</span></a>
      </ul>
@@ -308,16 +299,14 @@ privilege-separated, compartmentalized applications.</p>
   <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">context</a>-level, according to the sensitivity of the data the
   code has observed. To reap the greatest benefits of COWL, authors
   will need to compartmentalize applications into multiple contexts
-  (e.g., <a data-link-type="dfn" href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element">iframe</a> or <a data-link-type="dfn">light-weight Workers</a>). For example,
-  untrusted libraries should be loaded in <a data-link-type="dfn">light-weight Workers</a>
-  instead of directly into a page.</p>
+  (e.g., <a data-link-type="dfn" href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element">iframes</a>).</p>
 
 
     <p>COWL is intended to be used as a defense-in-depth mechanism that can
   restrict how untrusted code handles sensitive data. To prevent
   untrusted code from accessing data in the first place, authors should
-  still use discretionary access control mechanisms, such as CSP and
-  CORS.</p>
+  still use discretionary access control mechanisms, such as CSP
+  and CORS.</p>
 
 
   
@@ -331,7 +320,7 @@ privilege-separated, compartmentalized applications.</p>
   the confidentiality and integrity of data that is shared with
   untrusted, whether third-party or their own, code.  Existing
   mechanisms (e.g., CORS and the <a data-link-type="functionish" href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a> <a class="idl-code" data-link-type="argument">targetOrigin</a> argument) provide a way for
-  restricting which origins may access (shared) data.  But, once
+  restricting which origins may access the (shared) data.  But, once
   content has access to data it can usually disseminate it without
   restrictions.  While CSP can be used to confine code, and thus
   restrict how confidential data is disseminated, setting a correct
@@ -365,9 +354,8 @@ by restricting how the code can disseminate sensitive data.</p>
 
       <li data-md="">
        <p>Authors should be able to <em>privilege separate</em>
-applications by loading untrusted scripts in separate
-<a data-link-type="dfn">light-weight Workers</a> instead of inline <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/scripting.html#script">script</a></code> elements,
-which have the same privileges as content.</p>
+applications by loading untrusted code in separate
+contexts that run with <a data-link-type="dfn" href="#delegated-privilege">delegated privileges</a>.</p>
        
 </ol>
      
@@ -380,32 +368,32 @@ which have the same privileges as content.</p>
      <h3 class="heading settled" data-level="1.2" id="examples"><span class="secno">1.2. </span><span class="content">Use Cases/Examples</span><a class="self-link" href="#examples"></a></h3>
      
   
-     <h4 class="heading settled" data-level="1.2.1" id="untrusted-services"><span class="secno">1.2.1. </span><span class="content">Untrusted services</span><a class="self-link" href="#untrusted-services"></a></h4>
+     <h4 class="heading settled" data-level="1.2.1" id="confining-untrusted-services"><span class="secno">1.2.1. </span><span class="content">Confining untrusted services</span><a class="self-link" href="#confining-untrusted-services"></a></h4>
      
 
 
-     <p>An author wishes to use a service (e.g., in the form of an iframe)
+     <p>An author wishes to use a service, loaded in the form of an iframe,
   without trusting it (or its dependencies) to not leak their
   sensitive data. To protect the data, the author associates a
-  <a data-link-type="dfn" href="#label">label</a> with the data, which encodes a security policy
-  specifying the origins allowed to read the data, and shares the
-  newly created <a data-link-type="dfn" href="#labeled-objects">labeled object</a> with the untrusted code. In
-  turn, COWL confines the untrusted code, once it inspects the
-  sensitive data, such that it can only communicate according to the
-  author-specified policy.</p>
+  <a data-link-type="dfn" href="#label">label</a> with the data, specifying the origins allowed to read
+  the data.  The author then shares the newly created <a data-link-type="dfn" href="#labeled-objects">labeled
+    object</a> with the untrusted code.  COWL confines the untrusted
+  code once it inspects the sensitive data, as to ensure that it can
+  only communicate according to the author-specified policy—the
+  label.</p>
      
 
   
      <div class="example" id="example-checker"><a class="self-link" href="#example-checker"></a>
     Consider using a third-party password strength checker provided by
-    <code>https://untrusted.com</code>, loaded in the form of an
-    iframe. To protect the confidentiality of the password, the
+    <code>https://untrusted.com</code>.  To protect the
+    confidentiality of the password, the
     <code>https://example.com</code> application can use COWL to
     associate a confidentiality policy, in the form of a <a data-link-type="dfn" href="#label">label</a>,
     with the password before sending it to the untrusted service:
 
     
-      <pre><code>// Create new policy as a <a class="idl-code" data-link-type="interface" href="#label1">Label</a> specifying that the password is sensitive
+      <pre><code>// Create new policy using <a class="idl-code" data-link-type="interface" href="#label1">Label</a>s that specifies that the password is sensitive
 // to https://example.com and should only be disclosed to this origin:
 var policy = new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>(window.location.origin);
 
@@ -422,18 +410,20 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
 
       <p>Once the checker inspects the password, COWL limits the iframe to
     communicating with origins that preserve the password’s
-    confidentiality, i.e., <code>https://example.com</code>. Indeed,
-    this policy is enforced mandatory, even if the
+    confidentiality (in this case, <code>https://example.com</code>).
+    Indeed, this policy is enforced mandatory, even if the
     <code>https://untrusted.com</code> service sends the password to
-    yet another party.</p>
+    yet another iframe.</p>
       
 
 
       <p class="note" role="note">Note, until the checker actually inspects the protected password,
-    it can communicate freely, e.g., with <code>https://untrusted.com</code>.
-    This is important since the checker may need to fetch resources
-    (e.g., regular expressions) to check the password strength; it is
-    also safe, since it has not inspected the sensitive password.</p>
+    it can freely communicate with any origins, e.g., with
+    <code>https://untrusted.com</code>.  Such flexibility is very
+    important since the checker may need to fetch resources (e.g.,
+    regular expressions) to check the password strength.  Importantly,
+    this is also safe: the checker has not inspected the
+    sensitive password, and thus need not be confined.</p>
       
   
      </div>
@@ -441,93 +431,22 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
 
 
      <p>This design pattern can be used to build safe password managers, for
-  example, where the crypto layer and storage layer are provided by
-  distrusting, but not malicious, services. Similarly, it can be used
-  to implement safe encrypted document editors. The original COWL
-  academic paper describes several such use cases <a data-link-type="biblio" href="#biblio-cowl-osdi">[COWL-OSDI]</a></p>
+  example, where an encryption/decription layer and storage layer are
+  provided by distrusting, but not malicious, services. Similarly, it
+  can be used to implement safe encrypted document editors. The
+  academic paper on COWL describes several such use cases <a data-link-type="biblio" href="#biblio-cowl-osdi">[COWL-OSDI]</a>.</p>
      
 
   
-     <h4 class="heading settled" data-level="1.2.2" id="untrusted-libraries"><span class="secno">1.2.2. </span><span class="content">Untrusted libraries</span><a class="self-link" href="#untrusted-libraries"></a></h4>
-     
-
-
-     <p>Rather than include a library inline using a <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/scripting.html#script">script</a></code> element, an
-  author wishes to use a library without completely trusting it. The
-  author can load the library in a separate iframe and use COWL to
-  confine the code as shown in the previous example.  Unfortunately,
-  creating many iframes is costly. (It also requires the author to
-  address subtle issues, such as ensuring the iframe is of a different
-  <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a>.) Hence, COWL provides <a data-link-type="dfn">light-weight Workers</a> as
-  a both lighter-weight and safer (since it does not have the wide
-  attack surface of iframes—e.g., the DOM) constructs for
-  loading scripts.</p>
-     
-
-  
-     <div class="example" id="example-2ead2792"><a class="self-link" href="#example-2ead2792"></a>
-
-
-      <p>Consider a modification to the above <a href="#example-checker">
-      password-checker example</a> that uses <a data-link-type="dfn">light-weight
-      Workers</a> to isolate and confine the checker script. The
-    author of <code>https://example.com</code> can load the script in
-    an <a data-link-type="dfn" href="#unprivileged">unprivileged</a> Worker (ensuring it does not have the
-    <a data-link-type="dfn" href="#privilege">privilege</a> to arbitrarily leak
-    <code>https://example.com</code> data) and communicate with it via
-    message-passing, much as in the previous example:</p>
-      
-
-    
-      <pre><code>// Load the checker script in an unprivileged light-weight Worker:
-var checker = new <a class="idl-code" data-link-type="interface" href="#lworker">LWorker</a>("https://untrusted.com/checker.js", { privilege: new <a data-link-type="functionish" href="#dom-privilege-privilege">Privilege()</a> });
-
-// Register a handler, waiting for the result from the checker:
-checker.onmessage = function (event) {
-  alert("Your password is: " + event.data);
-};
-
-// Send the checker the password, first associating a label with it:
-checker.postMessage(new <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>(password, 
-                                      {confidentiality: new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>(window.location.origin)});
-</code></pre>
-      
-
-      <p>Because all communication with Workers is done via message
-    passing, the author of <code>checker.js</code> would,
-    unfortunately, have to (re)write their library to the asynchronous
-    model. An example is given below:</p>
-      
-    
-      <pre><code>// Fetch any data necessary to perform the computation
-onmessage = function(event) {
-  // ... can still fetch data from the network
-
-  // Get password from the <a data-link-type="functionish" href="#dom-labeledobject-labeledobjectobj-labels">LabeledObject()</a>:
-  var password = event.data.protectedObject;
-
-  // ... can only communicate according to label, i.e., to https://example.com
-
-  // Reply to parent:
-  postMessage(checkStrength(password));
-};
-</code></pre>
-      
-
-  
-     </div>
-     
-
-  
-     <h4 class="heading settled" data-level="1.2.3" id="examples-mashup"><span class="secno">1.2.3. </span><span class="content">Third-party untrusted mashups</span><a class="self-link" href="#examples-mashup"></a></h4>
+     <h4 class="heading settled" data-level="1.2.2" id="examples-mashup"><span class="secno">1.2.2. </span><span class="content">Third-party untrusted mashups</span><a class="self-link" href="#examples-mashup"></a></h4>
      
 
 
      <p>A server operator wishes to provide third-party mashups access to
-  user data. In addition to using CORS response to restrict the
+  user data. In addition to using CORS response headers to restrict the
   <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origins</a> that can access the data <a data-link-type="biblio" href="#biblio-cors">[CORS]</a>, the operator
   wishes to restrict how the data is further disseminated by these
-  third-parties. To do so, the operator may send a response header
+  third-parties. To do so, the operator sends a response header
   field named <code>COWL</code> (as described in <a href="#response-header">§3.5 The COWL HTTP Response Header Field</a>)
   whose value contains the sensitivity of the data in the form of a
   (serialized) <a data-link-type="dfn" href="#label">label</a>.  In turn, COWL enforces the label
@@ -535,9 +454,9 @@ onmessage = function(event) {
      
 
   
-     <div class="example" id="example-2fc947b7"><a class="self-link" href="#example-2fc947b7"></a>
+     <div class="example" id="example-391999d9"><a class="self-link" href="#example-391999d9"></a>
   The server operator of <code>https://a.com</code> uses a CORS
-  response header to "grant" <code>https://b.com</code> access to a
+  response header to grant <code>https://b.com</code> access to a
   resource. The operator also sets a <code>COWL</code> header to
   specify that the resource is confidential to <code>https://a.com</code>:
 
@@ -551,7 +470,7 @@ onmessage = function(event) {
       <p>Once a <code>https://b.com</code> context read the response, COWL
   imposes the label restrictions
   (<code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code>) and limits
-  the code’s ability to disseminate the data to
+  the code’s ability to only disseminate the data to
   <code>https://a.com</code>.</p>
       
   
@@ -559,30 +478,31 @@ onmessage = function(event) {
      
 
   
-     <h4 class="heading settled" data-level="1.2.4" id="examples-isolation"><span class="secno">1.2.4. </span><span class="content">Content isolation/privilege separation</span><a class="self-link" href="#examples-isolation"></a></h4>
+     <h4 class="heading settled" data-level="1.2.3" id="examples-isolation"><span class="secno">1.2.3. </span><span class="content">Content isolation via privilege separation</span><a class="self-link" href="#examples-isolation"></a></h4>
      
 
 
      <p>A server operator wishes to isolate content (e.g., of different
-  users) while serving it from a single physical <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a>. COWL’s
-  <a data-link-type="dfn" href="#privilege">privileges</a> can be understood as a generalization of the
-  <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a> concept, over which authors have explicit control.
-  In particular, when serving content, an author can specify that the
-  content’s <a data-link-type="dfn" href="#context-privilege">context privilege</a> should be a weaker, <a data-link-type="dfn" href="#delegated-privilege">delegated
-  privilege</a>, different from the <a data-link-type="dfn" href="#privilege">privilege</a> corresponding
-  to the physical <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a>.</p>
+  users) while serving it from a single physical <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a>. COWL
+  generalizes the <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a> concept by giving authors explicit
+  control over the <a data-link-type="dfn" href="#privilege">privileges</a> a page runs with.  Authors can
+  weaken (delegate) and drop a page’s privileges. For example,
+  when serving content, an author can specify that the content’s
+  <a data-link-type="dfn" href="#context-privilege">context privilege</a> should be a <em>weaker</em>, <a data-link-type="dfn" href="#delegated-privilege">delegated
+  privilege</a>, different from the <a data-link-type="dfn" href="#privilege">privilege</a> corresponding to
+  the physical <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a>.</p>
      
 
   
-     <div class="example" id="example-5814e4b6"><a class="self-link" href="#example-5814e4b6"></a>
+     <div class="example" id="example-5b4fabd7"><a class="self-link" href="#example-5b4fabd7"></a>
     Suppose <code>https://university.edu</code> wished to isolate
-    different parts of their site, for example, according to the
-    users. The server operator can drop the privilege of a page when
-    serving content by providing a response header field named
-    <code>COWL</code> (see <a href="#response-header">§3.5 The COWL HTTP Response Header Field</a>), whose value contains
-    the weaker serialized <a data-link-type="dfn" href="#privilege">privilege</a>. For example, for any
-    resources under <code>https://university.edu/~user1</code>, the
-    following header should be set:
+    different parts of their site according to users. The server
+    operator can weaken the privilege of a page when serving content
+    by providing a response header field named <code>COWL</code> (see
+    <a href="#response-header">§3.5 The COWL HTTP Response Header Field</a>) whose value contains the weaker serialized
+    <a data-link-type="dfn" href="#privilege">privilege</a>. For example, for any resources under
+    <code>https://university.edu/~user1</code>, the following header
+    should be set:
 
     
       <pre><code><a href="#response-header">COWL</a>: privilege: [ ['self', 'cowl://user1'] ]
@@ -590,53 +510,56 @@ onmessage = function(event) {
       
 
 
-      <p>This ensures that content cannot interfere with
-    <code>https://university.edu</code> or another user’s content,
+      <p>This ensures that the content of one user cannot interfere with
+    <code>https://university.edu</code>’s or another user’s content,
     e.g.  <code>https://university.edu/~user2</code>.  For example,
     the content cannot modify <code>https://university.edu</code>
-    cookies or DOM. Similarly, it cannot leak data sensitive to
-    another user (e.g., <code>user2</code>).</p>
+    cookies or the DOM of another <code>http://university.edu</code> page.</p>
       
 
 
-      <p>Of course, this requires the server operator to properly label
-    other data (e.g., when sending it to the client).
-    The <code>COWL</code> request header (see <a href="#request-header">§3.6 The COWL HTTP Request Header Field</a>),
-    helps authors appropriately label responses by providing author’s
-    with the context’s <a data-link-type="dfn" href="#cowl-state">COWL state</a>.</p>
+      <p>Similarly, it cannot leak data sensitive to another user (e.g.,
+    <code>user2</code>)—it can only disseminate
+    <code>user1</code>’s data on <code>http://university.edu</code>.
+    Of course, this requires the server operator to label data
+    (e.g., when sending it to the client) accordingly (e.g.,
+    <code>user2</code>’s data is labeled
+    <code><a data-link-type="dfn" href="#label">Label</a>("https://university.edu").or("user2")</code>).  The
+    <code>COWL</code> request header (see <a href="#request-header">§3.6 The COWL HTTP Request Header Field</a>), helps
+    authors appropriately label responses by providing authors with
+    the contexts' <a data-link-type="dfn" href="#cowl-state">COWL state</a>.</p>
       
 
     
       <div class="note" role="note">
-      Sub-domains should be used where possible to ensure
-      isolation. Nevertheless, COWL’s labels can serve as another
-      layer of defense.
+      To ensure isolation, sub-domains should be used when possible.
+      In this case, COWL’s labels can serve as another layer of defense.
     </div>
       
 
 
-      <p>An alternative to using headers is to use the COWL JavaScript API
-    (see <a href="#context-labels">§3.3 Labeled Contexts and Workers Interface</a>), as shown by the <a href="#university-example-js">content isolation in JavaScript</a>
-    example.</p>
+      <p class="note" role="note">Note, an alternative to using headers is to use the COWL JavaScript API
+    (see <a href="#context-labels">§3.3 Labeled Contexts and Workers Interface</a>), as shown by the <a href="#university-example-js">content isolation in JavaScript
+    example</a>.</p>
       
   
      </div>
      
 
 
-     <p>This use case is an instance of privilege separation; COWL’s
-  <a data-link-type="dfn" href="#privilege">privileges</a> and <a data-link-type="dfn" href="#label">labels</a> can more-generally be used to
-  run different iframes, Workers, etc. with <a data-link-type="dfn" href="#delegated-privilege">delegated
-  privileges</a>.</p>
+     <p>This example is an instance of privilege separation—the
+  content of each user is isolated from the other. COWL’s
+  <a data-link-type="dfn" href="#privilege">privileges</a> and <a data-link-type="dfn" href="#label">labels</a> can, more generally, be used to
+  run contexts with different <a data-link-type="dfn" href="#delegated-privilege">delegated privileges</a>.</p>
      
 
 
   
-     <h4 class="heading settled" data-level="1.2.5" id="examples-leastpriv"><span class="secno">1.2.5. </span><span class="content">Least-privileged content</span><a class="self-link" href="#examples-leastpriv"></a></h4>
+     <h4 class="heading settled" data-level="1.2.4" id="examples-leastpriv"><span class="secno">1.2.4. </span><span class="content">Running content with least-privileges</span><a class="self-link" href="#examples-leastpriv"></a></h4>
      
 
 
-     <p>An author wishes to use a libraryy that is tightly coupled with
+     <p>An author wishes to use a library that is tightly coupled with
   the page (e.g. jQuery), but avoid the need to trust the library to
   protect the user’s confidentiality and integrity. With COWL, the
   author can do this by <a data-link-type="dfn" href="#dropping-privileges">dropping privileges</a> (from the context’s
@@ -644,8 +567,8 @@ onmessage = function(event) {
      
 
   
-     <div class="example" id="example-9607d5d2"><a class="self-link" href="#example-9607d5d2"></a>
-    Author of <code>https://example.com</code> can, drop privileges in
+     <div class="example" id="example-6b4e725f"><a class="self-link" href="#example-6b4e725f"></a>
+    Author of <code>https://example.com</code> can drop privileges in
     JavaScript:
 
     
@@ -657,7 +580,8 @@ COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privil
       
 
 
-      <p>Or, by setting the <code>COWL</code> response header:</p>
+      <p>Or, by setting the content’s initial privilege to the <a data-link-type="dfn" href="#empty-privilege">empty
+      privilege</a> using <code>COWL</code> response header:</p>
       
 
     
@@ -670,12 +594,18 @@ COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privil
       While this ensures that the context code cannot, for instance,
       access the origin’s cookies, the author must still associate a
       confidentiality label with resources (e.g., responses sent to the
-      client) to ensure that the data is properly protect.
+      client) to ensure that data is properly protected.
     </div>
       
-
   
      </div>
+     
+
+
+     <p>In certain cases it is useful for a particular context to have the
+  privilege to disseminate certain data. To this end, the author need
+  solely run the context with a <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a> instead of
+  a <a data-link-type="dfn" href="#empty-privilege">empty privilege</a>.</p>
      
 
 
@@ -697,6 +627,14 @@ COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privil
 
      <p class="note" role="note">Note, COWL should be used as an additional defense layer to other
     security mechanisms such as CSP, SRI, CORS, and iframe <code><a data-link-type="element-attr" href="http://www.w3.org/TR/html5/embedded-content-0.html#attr-iframe-sandbox">sandbox</a></code>.</p>
+     
+
+
+     <p>Similarly, COWL provides no guarantees agains attacks wherein users
+    are manipulated into leaking data via out-of-band channels.
+    For example, an attacker may be able to convince the user to navigate their
+    user agent to an attacker-owned origin by entering URL that contains
+    sensitive information into the user agent’s address bar.</p>
      
   
     </section>
@@ -1578,7 +1516,7 @@ COWL.privilege = COWL.privilege.delegate(user1);
       
 
 
-      <p><a href="#examples-isolation">§1.2.4 Content isolation/privilege separation</a> shows how to implement this example
+      <p><a href="#examples-isolation">§1.2.3 Content isolation via privilege separation</a> shows how to implement this example
       using the <code>COWL</code> response header.</p>
       
     
@@ -2657,7 +2595,6 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lwo
    <li><a data-link-type="biblio" href="#biblio-html">[HTML]</a> defines the following terms:
     <ul>
      <li><a href="https://html.spec.whatwg.org/multipage/workers.html#dedicatedworkerglobalscope">DedicatedWorkerGlobalScope</a>
-     <li><a href="https://html.spec.whatwg.org/multipage/scripting.html#script">script</a>
     </ul></ul>
   <h2 class="no-num heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>

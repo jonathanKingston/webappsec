@@ -422,8 +422,9 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     <li>
       An <dfn>origin label</dfn>, or more succinctly a
       <dfn>label</dfn>, encodes either a confidentiality or integrity
-      security policy. Labels can be associated with <a>contexts</a>
-      or with <a>structurally clonable</a> objects.
+      security policy as conjuctive normal form (AND's and OR's)
+      formulae over <a>origin</a>s.  Labels can be associated with
+      <a>contexts</a> or with <a>structurally clonable</a> objects.
 
       When associated with a <a>context</a>, the label restricts the
       origins that the context can communicate with, as detailed in
@@ -457,46 +458,42 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       labels are associated with objects.
 
       <div class="example">
-        Consider an <code>https://example.com</code> application that
+        Consider an <code>https://example.com</code> page that
         receives a labeled object (e.g., via <a>postMessage()</a>)
         with the following labels:
 
-        * Confidentiality label: 
+        * Confidentiality:
         <code><a interface>Label</a>("https://example.com")</code>.
-        This label indicates that the object is confidential to
+        This label indicates that the object is sensitive to
         <code>https://example.com</code>.
 
-        * Integrity label: 
-        <code><a interface>Label</a>("https://a.com")</code>.
-        This label indicates that the object has been endorsed by
+        * Integrity: 
+        <code><a interface>Label</a>("https://a.com")</code>.  This
+        label indicates that the object has been endorsed by
         <code>https://a.com</code>. If
-        <code>https://example.com</code> received the message from
-        <code>https://b.com</code>, the label reflects the fact that the
-        object was not tampered by <code>https://b.com</code>.
+        <code>https://example.com</code> received the message from an
+        intermediary <code>https://b.com</code> context, this label
+        reflects the fact that the object (produced by
+        <code>https://a.com</code>) was not tampered.
       </div>
     </li>
     <li>
+      Mathematically, a label is a <em>conjunctive normal form</em>
+      formula over origins [[DCLabels]].
+
       A label is in <dfn>normal form</dfn> if reducing it according to
       the <a>label normal form reduction</a> algorithm produces the
-      same value. Mathematically, a label in <a>normal form</a>
-      corresponds to a set of origins in <a>conjunction normal
-        form</a> [[DCLabels]].
-    </li>
-    <li>
+      same value.
+
       Two labels are <dfn>equivalent</dfn> if their <a>normal form</a>
-      values are equal.
-    </li>
-    <li>
-      A label <var>A</var> <dfn>subsumes</dfn> another label
+      values are mathematically equal.
+
+      A label <var>A</var> <dfn>subsumes</dfn> (or is more
+      <dfn>restricting</dfn> than) another label
       <var>B</var> if the result of running the <a>label subsumption</a>
       algorithm on the <a>normal form</a>s of <var>A</var> and
-      <var>B</var> returns <code>true</code>.
-    </li>
-    <li>
-      When reading a <a>labeled object</a> a context gets
-      <dfn>tainted</dfn> (through invocations of the <a>context
-      tainting</a> algorithm) to reflect that it has read sensitive
-      data and should be confined accordingly.
+      <var>B</var> returns <code>true</code>. Labels are partially
+      ordered according to this subsumes relation.
     </li>
     <li>
       The <dfn>current confidentiality label</dfn> is the
@@ -510,57 +507,69 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       [[#context-labels]] specifies how labels are associated with
       contexts.
     </li>
+    <li>
+      When reading a <a>labeled object</a> a context gets
+      <dfn>tainted</dfn>, i.e., its context labels are updated by
+      invoking <a>context tainting</a> algorithm, to reflect that it
+      has read sensitive data and should be confined accordingly.
+    </li>
   </ol>
   <h3>Privileges</h3>
   <ol>
     <li>
       A <dfn>privilege</dfn> is an unforgeable object that corresponds
-      to a <a>label</a>. Privileges are associated with contexts.
+      to a <a>label</a>. Privileges are associated with contexts and
+      reflect the authority of the context.
 
       Privileges can be used to bypass confinement restrictions
       imposed by confidentiality labels.  In particular, a privilege
-      can be used to bypass the restrictions imposed by any label that
-      its corresponding label&mdash;the <a>internal privilege
-      label</a>&mdash;subsumes.
+      can be used to bypass the restrictions imposed by any label
+      its corresponding label&mdash;the
+      <a>internal privilege label</a>&mdash;subsumes.
 
       <div class="example">
-        Consider an <code>https://a.com</code> contexts whose
+        Consider a context whose
         <a>current confidentiality label</a> is <code><a
             interface>Label</a>("https://a.com").and("https://b.com")</code>.
         This label confines the context to only communicating with
         entities whose labels are at least as restricting as this
         label. For example, it restricts the context from
         communicating with a context labeled <code><a
-           interface>Label</a>("https://b.com")</code> context, since doing
-        so would potentially leak <code>https://a.com</code> data to 
-        <code>https://b.com</code>. It similarly cannot communicate with
-        <code>https://a.com</code>.
+           interface>Label</a>("https://b.com")</code>, since doing
+        so could leak <code>https://a.com</code> data to 
+        <code>https://b.com</code>. It similarly prevents the context
+        from communicating with <code>https://a.com</code>.
         
-        However, if the context's <a>current privilege</a> corresponds
-        to <code><a interface>Label</a>("https://a.com")</code>, then it
-        would be able to bypass the restriction imposed by this label.
-        In particular, the context would be able to communicate with
-        <code>https://b.com</code>&mdash;the privilege confers the right
-        to declassify <code>https://a.com</code> data to
-        <code>https://b.com</code>&mdash;since the <a>effective
-        confidentiality label</a> is
-        <code><a interface>Label</a>("https://b.com")</code>.
+        Howerver, supose that the context's <a>current privilege</a> corresponds
+        to <code><a interface>Label</a>("https://a.com")</code>, as
+        would be the case for an
+        <code>https://a.com</code> context. Then, the context would be able to
+        bypass some of the restriction imposed by the context label.  In particular,
+        the context would be able to communicate with
+        <code>https://b.com</code>&mdash;the privilege confers the
+        right to declassify <code>https://a.com</code> data to
+        <code>https://b.com</code>; when taking privileges into
+        consideration, the <a>effective confidentiality label</a> of
+        the context is <code><a interface>Label</a>("https://b.com")</code>.
         
-        Note, the context is responsible for ensuring that
-        <code>http://a.com</code> data is not accidentally leaked.
-        Authors should use <a interface>LabeledObject</a>s to void
-        accidental leaks.
+        Note, the privilege does not allow the context to bypass any
+        label restrictions. For example, it does not allow the context
+        to communicate with <code>https://a.com</code> since doing so
+        could leak <code>https://b.com</code> data.
+
+        <div class="note">
+          To be flexilibe, COWL uses the context privilege remove (the
+          safe) restrictions imposed by the <a>context label</a>.  To
+          avoid accidentally leaking sensitive context data, authors
+          should use <a interface>LabeledObject</a>s.
+        </div>
         
-        Note, the privilege cannot bypass any label restrictions. For
-        example, it does not allow the context to communicate with
-        <code>https://a.com</code> since doing so would potentially leak
-        <code>https://b.com</code> data.
       </div>
 
       Privileges can also be used to bypass integrity restrictions
       imposed by integrity labels. In particular, a privilege can be
       used to endorse an otherwise untrustworthy <a>labeled
-      context</a> (or <a>labeled object</a>) thereby allowing it to
+      context</a> (or <a>labeled object</a>) as to allow it to
       communicate with more trustworthy end-points (another context or
       server).
 
@@ -575,35 +584,30 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         label</a> is
         <code><a interface>Label</a>("https://a.com")</code>, since doing
         so would potentially corrupt
-        <code>https://a.com</code> data&mdash;the computation was
-        potentially influence by <code>https://b.com</code>.
+        <code>https://a.com</code> data (e.g., the computation may
+        be influenced by <code>https://b.com</code>).
 
         However, if the context's <a>current privilege</a> corresponds
-        to <code><a interface>Label</a>("https://a.com")</code>, then it
-        would be able to bypass the restriction imposed by this label.
-        In particular, the context would be able to communicate with
-        the other context since the privilege confers it the right
-        to speak on behalf of <code>https://a.com</code>. Indeed, its
-        <a>effective integrity label</a> is <code><a
-        interface>Label</a>("https://b.com")</code>. 
-  
-        Note, the receiving context is responsible for ensuring
-        that <code>http://b.com</code> data did not influence the
-        sender's behaviour in an inadvertent way.  Hence, when using
-        cross-document messaging authors should always demand the use
-        <a interface>LabeledObject</a>s.
+        to <code><a interface>Label</a>("https://a.com")</code>, then
+        it would be able to bypass the integrity restrictions.  In
+        particular, the context would be able to communicate with the
+        more trustworthy context since the privilege confers it the
+        right to endorse the context on behalf of
+        <code>https://a.com</code>. Indeed, when taking privileges
+        into account, the <a>effective integrity label</a> of the
+        context is <code><a interface>Label</a>("https://a.com")</code>. 
         
-        Note, the privilege cannot bypass any label restrictions. For
-        example, it does not allow the context to communicate with
-        a context whose integrity label is
-        <code><a interface>Label</a>(https://b.com</code>.
+        Note, the privilege cannot be used to bypass any restrictions.
+        For example, it does not allow the context to communicate with
+        a context whose integrity label is <code><a
+        interface>Label</a>(https://b.com)</code>.
       </div>
 
       Note, <a>browsing contexts</a> have a <a>current privilege</a>
       that, by default, corresponds to the origin of the context, as
-      described in [[#context-labels]]. Authors can set the <a>current
-      privilege</a> of a context to ensure that it runs with <em>least
-      privilege</em>.
+      described in [[#context-labels]]. But, authors can set the <a>current
+      privilege</a> to a <a>delegated privilege</a> when following the
+      principle of least privilege.
     </li>
     <li>
       The <dfn>current privilege</dfn> is the privilege associated

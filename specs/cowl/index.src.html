@@ -434,7 +434,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     <li>
       An <dfn>origin label</dfn>, or more succinctly a
       <dfn>label</dfn>, encodes either a confidentiality or integrity
-      security policy as conjuctive normal form (AND's and OR's)
+      security policy as conjunctive normal form (AND's and OR's)
       formulae over <a>origin</a>s.  Labels can be associated with
       <a>contexts</a> or with <a>structurally clonable</a> objects.
 
@@ -443,23 +443,33 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       [[#context-labels]].
 
       <div class="example">
-       When associate with a context, the confidentiality label
-       <code>
-          <a interface>Label</a>("https://a.com").<a>or</a>("https://b.com")
-       </code>
+       The confidentiality label
+       <code><a interface>Label</a>("https://a.com").<a>or</a>("https://b.com")</code>,
+       when associated with a context,
        restricts the context to sending data to
        <code>https://a.com</code> or <code>https://b.com</code>, but
        no other origins.
-       The context label reflects the fact the context may contain data
+       This context label reflects the fact the context may contain data
        that is sensitive to either <code>https://a.com</code> or
        <code>https://b.com</code>; it is thus only safe for it to
        communicate <em>to</em> these origins.
 
        Note, because the context can communicate data to either origin,
        another context associated with the more restricting
-       <code><a interface>Label</a>("https://a.com")</code> label cannot
+       label <code><a interface>Label</a>("https://a.com")</code> cannot
        send it data. Doing so would allow for data confidential
        to <code>https://a.com</code> to be leaked to <code>https://b.com</code>.
+      </div>
+
+      <div class="example">
+       The integrity label
+       <code><a interface>Label</a>("https://a.com").<a>or</a>("https://b.com")</code>,
+       when associated with a context, restricts the context to
+       receiving data from (a context or server) that is at least as
+       trustworthy as <code>https://a.com</code> or
+       <code>https://b.com</code>.  This context label ensures that
+       the code running in the context can only be influenced by
+       <code>https://a.com</code> and <code>https://b.com</code>.
       </div>
 
       When associated with an object, a confidentiality label
@@ -521,9 +531,11 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     </li>
     <li>
       When reading a <a>labeled object</a> a context gets
-      <dfn>tainted</dfn>, i.e., its context labels are updated by
+      <dfn>tainted</dfn>, i.e., its <a>context labels</a> are updated by
       invoking <a>context tainting</a> algorithm, to reflect that it
-      has read sensitive data and should be confined accordingly.
+      has read sensitive (of different trustworthiness) data and
+      should be confined accordingly.
+      <!-- TODO: context labels should be linked -->
     </li>
   </ol>
   <h3>Privileges</h3>
@@ -552,15 +564,15 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         <code>https://b.com</code>. It similarly prevents the context
         from communicating with <code>https://a.com</code>.
         
-        Howerver, supose that the context's <a>current privilege</a> corresponds
+        But, suppose that the context's <a>current privilege</a> corresponds
         to <code><a interface>Label</a>("https://a.com")</code>, as
         would be the case for an
         <code>https://a.com</code> context. Then, the context would be able to
-        bypass some of the restriction imposed by the context label.  In particular,
-        the context would be able to communicate with
-        <code>https://b.com</code>&mdash;the privilege confers the
+        bypass some of the restrictions imposed by the context label.
+        Specifically, the context would be able to communicate with
+        <code>https://b.com</code>; the privilege confers it the
         right to declassify <code>https://a.com</code> data to
-        <code>https://b.com</code>; when taking privileges into
+        <code>https://b.com</code>. Indeed, when taking this privilege into
         consideration, the <a>effective confidentiality label</a> of
         the context is <code><a interface>Label</a>("https://b.com")</code>.
         
@@ -570,10 +582,10 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         could leak <code>https://b.com</code> data.
 
         <div class="note">
-          To be flexilibe, COWL uses the context privilege remove (the
-          safe) restrictions imposed by the <a>context label</a>.  To
-          avoid accidentally leaking sensitive context data, authors
-          should use <a interface>LabeledObject</a>s.
+          To be flexible, COWL uses the context privilege to remove
+          (the safe) restrictions imposed by the <a>context label</a>.
+          To avoid accidentally leaking sensitive context data,
+          authors should use <a interface>LabeledObject</a>s.
         </div>
         
       </div>
@@ -595,31 +607,33 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         communicating with a context whose <a>current integrity
         label</a> is
         <code><a interface>Label</a>("https://a.com")</code>, since doing
-        so would potentially corrupt
-        <code>https://a.com</code> data (e.g., the computation may
-        be influenced by <code>https://b.com</code>).
+        so would potentially corrupt <code>https://a.com</code> data
+        (e.g., by allowing <code>https://b.com</code> to influence the
+        computation).
 
-        However, if the context's <a>current privilege</a> corresponds
-        to <code><a interface>Label</a>("https://a.com")</code>, then
-        it would be able to bypass the integrity restrictions.  In
-        particular, the context would be able to communicate with the
-        more trustworthy context since the privilege confers it the
-        right to endorse the context on behalf of
-        <code>https://a.com</code>. Indeed, when taking privileges
-        into account, the <a>effective integrity label</a> of the
-        context is <code><a interface>Label</a>("https://a.com")</code>. 
+        But, if the context's <a>current privilege</a> corresponds
+        to <code><a interface>Label</a>("https://a.com")</code>, the
+        context it would be able to bypass some of these integrity restrictions.
+        Specifically, the context would be able to communicate with the
+        more-trustworthy context (labeled
+        <code><a interface>Label</a>("https://a.com")</code>) since the
+        privilege confers it the right to endorse its context on
+        behalf of <code>https://a.com</code>. Indeed, when taking
+        privileges into account, the <a>effective integrity label</a>
+        of the context is <code><a
+        interface>Label</a>("https://a.com")</code>. 
         
-        Note, the privilege cannot be used to bypass any restrictions.
-        For example, it does not allow the context to communicate with
-        a context whose integrity label is <code><a
+        Note, the privilege cannot be used to bypass any integrity
+        restrictions.  For example, it does not allow the context to
+        communicate with a context whose integrity label is <code><a
         interface>Label</a>(https://b.com)</code>.
       </div>
 
       Note, <a>browsing contexts</a> have a <a>current privilege</a>
       that, by default, corresponds to the origin of the context, as
-      described in [[#context-labels]]. But, authors can set the <a>current
-      privilege</a> to a <a>delegated privilege</a> when following the
-      principle of least privilege.
+      described in [[#context-labels]]. But, authors should set the <a>current
+      privilege</a> to a <a>delegated privilege</a> to follow
+      the principle of least privilege.
     </li>
     <li>
       The <dfn>current privilege</dfn> is the privilege associated
@@ -640,12 +654,10 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     </li>
     <li>
       Code can take <dfn>ownership</dfn> of a <a>privilege</a>
-      <var>priv</var> by
-      setting the <a>current privilege</a> to the privilege produced
-      by <a>combining</a> the <a>current privilege</a> and
-      <var>priv</var>.
-
-      ISSUE: define combining
+      <var>priv</var> by setting the <a>current privilege</a> to the
+      privilege produced via the <a>combination</a> of the <a>current
+        privilege</a> and <var>priv</var>. In doing so, it is said
+      that the context <dfn>owns</dfn> the privilege.
     </li>
 </section>
 

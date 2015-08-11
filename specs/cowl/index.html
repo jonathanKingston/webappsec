@@ -676,7 +676,7 @@ COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privil
      <li>
       An <dfn data-dfn-type="dfn" data-noexport="" id="origin-label">origin label<a class="self-link" href="#origin-label"></a></dfn>, or more succinctly a
       <dfn data-dfn-type="dfn" data-noexport="" id="label">label<a class="self-link" href="#label"></a></dfn>, encodes either a confidentiality or integrity
-      security policy as conjuctive normal form (AND’s and OR’s)
+      security policy as conjunctive normal form (AND’s and OR’s)
       formulae over <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a>s.  Labels can be associated with
       <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">contexts</a> or with <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structurally clonable</a> objects.
 
@@ -687,15 +687,14 @@ COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privil
       
 
       
-      <div class="example" id="example-8bcc417c"><a class="self-link" href="#example-8bcc417c"></a>
-       When associate with a context, the confidentiality label
-       <code>
-          <a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").<a data-link-type="dfn">or</a>("https://b.com")
-       </code>
+      <div class="example" id="example-d7d10c9d"><a class="self-link" href="#example-d7d10c9d"></a>
+       The confidentiality label
+       <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").<a data-link-type="dfn">or</a>("https://b.com")</code>,
+       when associated with a context,
        restricts the context to sending data to
        <code>https://a.com</code> or <code>https://b.com</code>, but
        no other origins.
-       The context label reflects the fact the context may contain data
+       This context label reflects the fact the context may contain data
        that is sensitive to either <code>https://a.com</code> or
        <code>https://b.com</code>; it is thus only safe for it to
        communicate <em>to</em> these origins.
@@ -703,11 +702,24 @@ COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privil
 
        <p class="note" role="note">Note, because the context can communicate data to either origin,
        another context associated with the more restricting
-       <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code> label cannot
+       label <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code> cannot
        send it data. Doing so would allow for data confidential
        to <code>https://a.com</code> to be leaked to <code>https://b.com</code>.</p>
        
       
+      </div>
+      
+
+      
+      <div class="example" id="example-d86e017c"><a class="self-link" href="#example-d86e017c"></a>
+       The integrity label
+       <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").<a data-link-type="dfn">or</a>("https://b.com")</code>,
+       when associated with a context, restricts the context to
+       receiving data from (a context or server) that is at least as
+       trustworthy as <code>https://a.com</code> or
+       <code>https://b.com</code>.  This context label ensures that
+       the code running in the context can only be influenced by
+       <code>https://a.com</code> and <code>https://b.com</code>.
       </div>
       
 
@@ -797,9 +809,11 @@ reflects the fact that the object (produced by
     
      <li>
       When reading a <a data-link-type="dfn" href="#labeled-objects">labeled object</a> a context gets
-      <dfn data-dfn-type="dfn" data-noexport="" id="tainted">tainted<a class="self-link" href="#tainted"></a></dfn>, i.e., its context labels are updated by
+      <dfn data-dfn-type="dfn" data-noexport="" id="tainted">tainted<a class="self-link" href="#tainted"></a></dfn>, i.e., its <a data-link-type="dfn">context labels</a> are updated by
       invoking <a data-link-type="dfn" href="#context-tainting">context tainting</a> algorithm, to reflect that it
-      has read sensitive data and should be confined accordingly.
+      has read sensitive (of different trustworthiness) data and
+      should be confined accordingly.
+      
     
      
   
@@ -823,7 +837,7 @@ reflects the fact that the object (produced by
       
 
       
-      <div class="example" id="example-1741c6c9"><a class="self-link" href="#example-1741c6c9"></a>
+      <div class="example" id="example-46e8a161"><a class="self-link" href="#example-46e8a161"></a>
         Consider a context whose
         <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a> is <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").and("https://b.com")</code>.
         This label confines the context to only communicating with
@@ -835,15 +849,15 @@ reflects the fact that the object (produced by
         from communicating with <code>https://a.com</code>.
 
 
-       <p>Howerver, supose that the context’s <a data-link-type="dfn" href="#current-privilege">current privilege</a> corresponds
+       <p>But, suppose that the context’s <a data-link-type="dfn" href="#current-privilege">current privilege</a> corresponds
         to <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code>, as
         would be the case for an
         <code>https://a.com</code> context. Then, the context would be able to
-        bypass some of the restriction imposed by the context label.  In particular,
-        the context would be able to communicate with
-        <code>https://b.com</code>—the privilege confers the
+        bypass some of the restrictions imposed by the context label.
+        Specifically, the context would be able to communicate with
+        <code>https://b.com</code>; the privilege confers it the
         right to declassify <code>https://a.com</code> data to
-        <code>https://b.com</code>; when taking privileges into
+        <code>https://b.com</code>. Indeed, when taking this privilege into
         consideration, the <a data-link-type="dfn" href="#effective-confidentiality-label">effective confidentiality label</a> of
         the context is <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://b.com")</code>.</p>
        
@@ -857,10 +871,10 @@ reflects the fact that the object (produced by
 
         
        <div class="note" role="note">
-          To be flexilibe, COWL uses the context privilege remove (the
-          safe) restrictions imposed by the <a data-link-type="dfn">context label</a>.  To
-          avoid accidentally leaking sensitive context data, authors
-          should use <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s.
+          To be flexible, COWL uses the context privilege to remove
+          (the safe) restrictions imposed by the <a data-link-type="dfn">context label</a>.
+          To avoid accidentally leaking sensitive context data,
+          authors should use <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s.
         </div>
        
 
@@ -878,7 +892,7 @@ reflects the fact that the object (produced by
       
 
       
-      <div class="example" id="example-6da8a883"><a class="self-link" href="#example-6da8a883"></a>
+      <div class="example" id="example-fcb9c6da"><a class="self-link" href="#example-fcb9c6da"></a>
         Consider an <code>https://a.com</code> context whose
         <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a> is
         <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").or("https://b.com")</code>.
@@ -888,26 +902,27 @@ reflects the fact that the object (produced by
         communicating with a context whose <a data-link-type="dfn" href="#current-integrity-label">current integrity
         label</a> is
         <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code>, since doing
-        so would potentially corrupt
-        <code>https://a.com</code> data (e.g., the computation may
-        be influenced by <code>https://b.com</code>).
+        so would potentially corrupt <code>https://a.com</code> data
+        (e.g., by allowing <code>https://b.com</code> to influence the
+        computation).
 
 
-       <p>However, if the context’s <a data-link-type="dfn" href="#current-privilege">current privilege</a> corresponds
-        to <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code>, then
-        it would be able to bypass the integrity restrictions.  In
-        particular, the context would be able to communicate with the
-        more trustworthy context since the privilege confers it the
-        right to endorse the context on behalf of
-        <code>https://a.com</code>. Indeed, when taking privileges
-        into account, the <a data-link-type="dfn" href="#effective-integrity-label">effective integrity label</a> of the
-        context is <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code>.</p>
+       <p>But, if the context’s <a data-link-type="dfn" href="#current-privilege">current privilege</a> corresponds
+        to <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code>, the
+        context it would be able to bypass some of these integrity restrictions.
+        Specifically, the context would be able to communicate with the
+        more-trustworthy context (labeled
+        <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code>) since the
+        privilege confers it the right to endorse its context on
+        behalf of <code>https://a.com</code>. Indeed, when taking
+        privileges into account, the <a data-link-type="dfn" href="#effective-integrity-label">effective integrity label</a>
+        of the context is <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code>.</p>
        
 
 
-       <p class="note" role="note">Note, the privilege cannot be used to bypass any restrictions.
-        For example, it does not allow the context to communicate with
-        a context whose integrity label is <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>(https://b.com)</code>.</p>
+       <p class="note" role="note">Note, the privilege cannot be used to bypass any integrity
+        restrictions.  For example, it does not allow the context to
+        communicate with a context whose integrity label is <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>(https://b.com)</code>.</p>
        
       
       </div>
@@ -916,9 +931,9 @@ reflects the fact that the object (produced by
 
       <p class="note" role="note">Note, <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing contexts</a> have a <a data-link-type="dfn" href="#current-privilege">current privilege</a>
       that, by default, corresponds to the origin of the context, as
-      described in <a href="#context-labels">§3.3 Labeled Contexts and Workers Interface</a>. But, authors can set the <a data-link-type="dfn" href="#current-privilege">current
-      privilege</a> to a <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a> when following the
-      principle of least privilege.</p>
+      described in <a href="#context-labels">§3.3 Labeled Contexts and Workers Interface</a>. But, authors should set the <a data-link-type="dfn" href="#current-privilege">current
+      privilege</a> to a <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a> to follow
+      the principle of least privilege.</p>
       
     
      
@@ -948,14 +963,10 @@ reflects the fact that the object (produced by
     
      <li>
       Code can take <dfn data-dfn-type="dfn" data-noexport="" id="ownership">ownership<a class="self-link" href="#ownership"></a></dfn> of a <a data-link-type="dfn" href="#privilege">privilege</a>
-      <var>priv</var> by
-      setting the <a data-link-type="dfn" href="#current-privilege">current privilege</a> to the privilege produced
-      by <a data-link-type="dfn">combining</a> the <a data-link-type="dfn" href="#current-privilege">current privilege</a> and
-      <var>priv</var>.
-
-
-      <p class="issue" id="issue-cc6f8db9"><a class="self-link" href="#issue-cc6f8db9"></a> define combining</p>
-      
+      <var>priv</var> by setting the <a data-link-type="dfn" href="#current-privilege">current privilege</a> to the
+      privilege produced via the <a data-link-type="dfn" href="#combination">combination</a> of the <a data-link-type="dfn" href="#current-privilege">current
+        privilege</a> and <var>priv</var>. In doing so, it is said
+      that the context <dfn data-dfn-type="dfn" data-noexport="" id="owns">owns<a class="self-link" href="#owns"></a></dfn> the privilege.
     
      
 
@@ -2516,12 +2527,12 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lwo
     label, <a href="#internal-privilege-label">3.2</a>
    <li>isEnabled(), <a href="#dom-cowl-isenabled">3.3.2</a>
    <li>Label(), <a href="#dom-label-label">3.1.1</a>
-   <li>Label, <a href="#label1">3.1</a>
    <li>label
     <ul>
      <li>definition of, <a href="#label">2.1</a>
      <li>argument for Privilege/delegate(label), <a href="#dom-privilege-delegatelabel-label">3.2</a>
     </ul>
+   <li>Label, <a href="#label1">3.1</a>
    <li>label downgrade, <a href="#label-downgrade">5.3</a>
    <li>LabeledObject, <a href="#labeledobject">3.4</a>
    <li>LabeledObject(obj, labels), <a href="#dom-labeledobject-labeledobjectobj-labels">3.4.1</a>
@@ -2558,14 +2569,15 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lwo
      <li>argument for Privilege/combine(other), <a href="#dom-privilege-combineother-other">3.2</a>
     </ul>
    <li>ownership, <a href="#ownership">2.2</a>
+   <li>owns, <a href="#owns">2.2</a>
    <li>postMessage(message), <a href="#dom-lworker-postmessagemessage">4</a>
    <li>Privilege, <a href="#privilege0">3.2</a>
+   <li>Privilege(), <a href="#dom-privilege-privilege">3.2.1</a>
    <li>privilege
     <ul>
      <li>definition of, <a href="#privilege">2.2</a>
      <li>attribute for COWL, <a href="#dom-cowl-privilege">3.3.1</a>
     </ul>
-   <li>Privilege(), <a href="#dom-privilege-privilege">3.2.1</a>
    <li>protectedObject, <a href="#dom-labeledobject-protectedobject">3.4.2</a>
    <li>protected
       object, <a href="#protected-object">3.4</a>
@@ -2725,7 +2737,6 @@ interface <a href="#lworkerglobalscope">LWorkerGlobalScope</a> : <a data-link-ty
 </pre>
   <h2 class="no-num heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue"> define combining<a href="#issue-cc6f8db9"> ↵ </a></div>
    <div class="issue"> Current WebIDL implementation requires an underscore for
     certain identifiers. Can we rename <code>_or</code> to
     <code>or</code>?<a href="#issue-afa876b4"> ↵ </a></div>

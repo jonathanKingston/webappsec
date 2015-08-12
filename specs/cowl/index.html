@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-11">11 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-12">12 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -169,7 +169,7 @@ further.</p>
       <li><a href="#goals"><span class="secno">1.1</span> <span class="content">Goals</span></a>
       <li><a href="#examples"><span class="secno">1.2</span> <span class="content">Use Cases/Examples</span></a>
        <ul class="toc">
-        <li><a href="#confining-untrusted-third_party-services"><span class="secno">1.2.1</span> <span class="content">Confining untrusted third-party services</span></a>
+        <li><a href="#examples-checker"><span class="secno">1.2.1</span> <span class="content">Confining untrusted third-party services</span></a>
         <li><a href="#examples-mashup"><span class="secno">1.2.2</span> <span class="content">Sharing data with third-party mashups</span></a>
         <li><a href="#examples-isolation"><span class="secno">1.2.3</span> <span class="content">Content isolation via privilege separation</span></a>
         <li><a href="#examples-leastpriv"><span class="secno">1.2.4</span> <span class="content">Running content with least-privileges</span></a>
@@ -187,11 +187,13 @@ further.</p>
        <ul class="toc">
         <li><a href="#constructors"><span class="secno">3.1.1</span> <span class="content">Constructors</span></a>
         <li><a href="#methods"><span class="secno">3.1.2</span> <span class="content">Methods</span></a>
+        <li><a href="#examples0"><span class="secno">3.1.3</span> <span class="content">Examples</span></a>
        </ul>
       <li><a href="#privileges0"><span class="secno">3.2</span> <span class="content">Privilege Interface</span></a>
        <ul class="toc">
         <li><a href="#constructors0"><span class="secno">3.2.1</span> <span class="content">Constructors</span></a>
         <li><a href="#methods0"><span class="secno">3.2.2</span> <span class="content">Methods</span></a>
+        <li><a href="#examples1"><span class="secno">3.2.3</span> <span class="content">Examples</span></a>
        </ul>
       <li><a href="#context-labels"><span class="secno">3.3</span> <span class="content">Labeled Contexts and Workers Interface</span></a>
        <ul class="toc">
@@ -381,7 +383,7 @@ have <a data-link-type="dfn" href="#delegated-privilege">delegated privileges</a
      <h3 class="heading settled" data-level="1.2" id="examples"><span class="secno">1.2. </span><span class="content">Use Cases/Examples</span><a class="self-link" href="#examples"></a></h3>
      
   
-     <h4 class="heading settled" data-level="1.2.1" id="confining-untrusted-third_party-services"><span class="secno">1.2.1. </span><span class="content">Confining untrusted third-party services</span><a class="self-link" href="#confining-untrusted-third_party-services"></a></h4>
+     <h4 class="heading settled" data-level="1.2.1" id="examples-checker"><span class="secno">1.2.1. </span><span class="content">Confining untrusted third-party services</span><a class="self-link" href="#examples-checker"></a></h4>
      
 
 
@@ -397,7 +399,7 @@ have <a data-link-type="dfn" href="#delegated-privilege">delegated privileges</a
      
 
   
-     <div class="example" id="example-checker"><a class="self-link" href="#example-checker"></a>
+     <div class="example" id="example-29b381c4"><a class="self-link" href="#example-29b381c4"></a>
     Consider using a third-party password strength checker provided by
     <code>https://untrusted.com</code>.  To protect the
     confidentiality of the password, the
@@ -499,8 +501,6 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
   
      </div>
      
-
-
 
   
      <h4 class="heading settled" data-level="1.2.3" id="examples-isolation"><span class="secno">1.2.3. </span><span class="content">Content isolation via privilege separation</span><a class="self-link" href="#examples-isolation"></a></h4>
@@ -986,20 +986,22 @@ reflects the fact that the object (produced by
      
       
      <dd>
-      COWL provides a JavaScript <a class="idl-code" data-link-type="interface" href="#label1">Label</a> interface and
-      a <code>COWL</code> HTTP response header for specifying
-      confidentiality and integrity policies on data and content in
-      terms of <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origins</a>.
+      COWL provides a <a class="idl-code" data-link-type="interface" href="#label1">Label</a> interface for specifying
+      confidentiality and integrity policies in terms of
+        <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origins</a>. <a data-link-type="dfn" href="#label">Labels</a> can be associated with data and
+        content using the JavaScript <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>
+      and <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> interfaces or the <code>COWL</code>
+      HTTP response header.
       
      
       
-     <dt><a data-link-type="dfn" href="#privilege">Privileges</a><a data-link-type="dfn" href="#current-confidentiality-label"></a><a data-link-type="dfn">
+     <dt>Explicit authority via <a data-link-type="dfn" href="#privilege">privileges</a><a data-link-type="dfn" href="#current-confidentiality-label"></a><a data-link-type="dfn">
       </a>
      <dd><a data-link-type="dfn">
-      COWL provides a JavaScript interface and a <code>COWL</code>
-      HTTP response header for explicitly setting the authority of a
-      context. COWL also provides a JavaScript </a><a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> interface for operating on and minting
-      <a data-link-type="dfn" href="#privilege">privileges</a>.
+      The COWL framework provides a JavaScript </a><a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> interface for operating on and minting
+      new <a data-link-type="dfn" href="#privilege">privileges</a>.  The <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> JavaScript
+      interface and <code>COWL</code> HTTP response header can be used
+      used to explicitly set the authority of a context.
       
      
       
@@ -1008,10 +1010,11 @@ reflects the fact that the object (produced by
       
      <dd>
       COWL extends <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing contexts</a> and <a data-link-type="dfn" href="http://www.w3.org/TR/workers/#worker">Workers</a> with
-      labels and privileges, which are used when enforcing confinement,
-      i.e., when restricting a context’s network and cross-document
-      messaging communications. This document also defines the
-      enforcement mechanism.
+      labels and privileges, which are used when enforcing
+      confinement, i.e., when restricting a context’s network and
+      cross-document messaging communication.  This document defines
+      the necessary changes to existing browser constructs and
+      algorithms to enforce confinement.
       
      
     
@@ -1160,7 +1163,7 @@ itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org
          <ol>
           <li data-md="">
            <p>Set <var>O</var> to the result of invoking the
-<a data-link-type="functionish" href="#dom-label-label">Label()</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-andother-other">other</a> as an argument, if the
+<a data-link-type="functionish" href="#dom-label-label">Label(other)</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-andother-other">other</a> as an argument, if the
 constructor did not raise an exception.</p>
            
 
@@ -1204,7 +1207,7 @@ the method was invoked.</p>
          <ol>
           <li data-md="">
            <p>Set <var>O</var> to the result of invoking the
-<a data-link-type="functionish" href="#dom-label-label">Label()</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-_orother-other">other</a> as an argument, if the
+<a data-link-type="functionish" href="#dom-label-label">Label(other)</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-_orother-other">other</a> as an argument, if the
 constructor did not raise an exception.</p>
            
 
@@ -1234,14 +1237,17 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
      
 
     
-     <div class="example" id="example-edfd5c8c"><a class="self-link" href="#example-edfd5c8c"></a>
+     <h4 class="heading settled" data-level="3.1.3" id="examples0"><span class="secno">3.1.3. </span><span class="content">Examples</span><a class="self-link" href="#examples0"></a></h4>
+     
+
+    
+     <div class="example" id="example-7f7928d8"><a class="self-link" href="#example-7f7928d8"></a>
       Example labels. Intuition for each label’s semantics is given in
       the context of it being used as a confidentiality label (C) and
       integrity label (I).
       
-      <pre><code>// Create an empty label.
-// C: This corresponds to public data.
-// I: This corresponds to non-endorsed/untrustworthy data.
+      <pre><code>// C: Public data.
+// I: Non-endorsed/untrustworthy data.
 var empty = new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>();
 
 // C: Data confidential to a.com.
@@ -1265,36 +1271,69 @@ var aORb = new <a class="idl-code" data-link-type="interface" href="#label1">Lab
       <p>Examples of label comparisons with intuition for the semantics.</p>
       
       
-      <pre><code>// C: a.com data is more sensitive than public data.
-// I: data endorsed by a.com is more trustworthy than non-endorsed/untrustworthy data.
+      <pre><code>// C: Data confidential to a.com (b.com) data is more sensitive than public data.
+// I: Data endorsed by a.com (b.com) is more trustworthy than non-endorsed/untrustworthy data.
 a.subsumes(empty) === true;
 b.subsumes(empty) === true;
 
 // C: Data that is confidential to a.com and b.com is more
-// confidential than data that is only sensitive to a.com.
-//
+//    confidential than data that is only sensitive to a.com (b.com).
 // I: Data that is endorsed/trusted by both a.com and b.com is
-// more trustworthy than data endorsed only by a.com
+//    more trustworthy than data endorsed only by a.com (b.com).
 aANDb.subsumes(a) === true;
 aANDb.subsumes(b) === true;
 
-// C: Data that that is confidential to a.com is not comparable to
-// data that is confidential to b.com
-//
-// I: Data that that is endorsed by a.com is not comparable to
-// data that is endorsed to b.com
+// C: Data that that is confidential to a.com (b.com) is not comparable to
+//    data that is confidential to b.com (a.com).
+// I: Data that that is endorsed by a.com (b.com) is not comparable to
+//    data that is endorsed to b.com (a.com).
 a.subsumes(b) === false;
 b.subsumes(a) === false;
 
-// C: Data that is confidential to a.com is more confidential than data that is confidential
-// to either a.com or b.com. Alternative intuition: data that can be read by a.com or b.com
-// can necessarily be read by an entity that can read a.com data alone.
-//
-// I: Data that is endorsed by a.com is more trustworthy than data that is endorsed/trusted
-// by either a.com or b.com. Alternative intuition: an entity that trusts data that is
-// endorsed by either a.com or b.com necessarily trusts data endorsed by a.com alone.
+// C: Data that is confidential to a.com (b.com) is more confidential than data that is
+//    confidential to either a.com or b.com. Alternative intuition: data that can be read by
+//    a.com or b.com can be read by an entity that can read a.com (b.com) data alone.
+// I: Data that is endorsed by a.com (b.com) is more trustworthy than data that is endorsed
+//    by either a.com or b.com. Alternative intuition: an entity that trusts data that is
+//    endorsed by either a.com or b.com necessarily trusts data endorsed by a.com (b.com) alone.
 a.subsumes(aOrb) === true;
 b.subsumes(aOrb) === true;
+</code></pre>
+      
+    
+     </div>
+     
+
+    
+     <div class="example" id="example-f4449548"><a class="self-link" href="#example-f4449548"></a>
+      Using the labels defined in the above example, this example
+      shows how labels are serialized/deserialized. We only define an
+      additional label:
+      
+      <pre><code>var aORbANDc = aORb.and(new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://c.com");
+</code></pre>
+      
+
+
+      <p>Converting to JSON:</p>
+      
+      
+      <pre><code>JSON.stringify(empty)    === '[[]]';
+JSON.stringify(a)        === '[["https://a.com"]]';
+JSON.stringify(aANDb)    === '[["https://a.com"], ["https://b.com"]]';
+JSON.stringify(aORb)     === '[["https://a.com", "https://b.com"]]';
+JSON.stringify(aORbANDc) === '[["https://a.com", "https://b.com"], ["https://c.com"]]';
+</code></pre>
+      
+
+      <p>Converting from JSON:</p>
+      
+      
+      <pre><code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([[]]).equals(empty);
+<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com"]]).equals(a);
+<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com"], ["https://b.com"]]).equals(aANDb);
+<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com", "https://b.com"]]).equals(aORb);
+<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com", "https://b.com"], ["https://c.com"]]).equals(aORbANDc);
 </code></pre>
       
     
@@ -1339,7 +1378,7 @@ b.subsumes(aOrb) === true;
 
      <p>A privilege <var>P1</var> is said to be a <dfn data-dfn-type="dfn" data-noexport="" id="delegated-privilege">delegated
       privilege<a class="self-link" href="#delegated-privilege"></a></dfn> of <var>P2</var> if <var>P2</var>’s <a data-link-type="dfn" href="#internal-privilege-label">internal
-      privilege label</a> subsumes <var>P1</var>’s <a data-link-type="dfn" href="#internal-privilege-label">internal
+      privilege label</a> <a data-link-type="dfn" href="#subsumes">subsumes</a> <var>P1</var>’s <a data-link-type="dfn" href="#internal-privilege-label">internal
     privilege label</a>.</p>
      
 
@@ -1406,7 +1445,7 @@ identifier</a>.</p>
       
       
       <dd>
-      MUST return the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> of the
+      The user agent MUST return the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> of the
       <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> on which the method has been called.
       
       
@@ -1415,28 +1454,29 @@ identifier</a>.</p>
       
       
       <dd>
-      MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> whose <a data-link-type="dfn" href="#internal-privilege-label">internal
+      The user agent MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> whose <a data-link-type="dfn" href="#internal-privilege-label">internal
       privilege label</a> is <a data-link-type="dfn" href="#equivalent">equivalent</a> to a <a data-link-type="dfn" href="#label">label</a>
       created according to an algorithm equivalent to the following:
 
 
        <ol>
         <li data-md="">
-         <p>Let <var>lintrnal</var> be the
+         <p>Let <var>internalLabel</var> be the
 <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> of the 
 <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> on which the method has been called.</p>
          
 
 
         <li data-md="">
-         <p>Let <var>lother</var> be the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> of
+         <p>Let <var>otherLabel</var> be the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> of
 the <a class="idl-code" data-link-type="argument" href="#dom-privilege-combineother-other">other</a> argument.</p>
          
 
 
         <li data-md="">
-         <p>Return <code><var>linternal</var>.<a class="idl-code" data-link-type="method">and</a>(<var>lother</var>)</code>.</p>
+         <p>Return <code><var>internalLabel</var>.<a class="idl-code" data-link-type="method">and</a>(<var>otherLabel</var>)</code>.</p>
          
+
 </ol>
       
 
@@ -1444,27 +1484,31 @@ the <a class="idl-code" data-link-type="argument" href="#dom-privilege-combineot
       
 
       <dd>
-MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> whose <a data-link-type="dfn" href="#internal-privilege-label">internal
+The user agent MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> whose <a data-link-type="dfn" href="#internal-privilege-label">internal
 privilege label</a> is <a data-link-type="dfn" href="#equivalent">equivalent</a> to a <a data-link-type="dfn" href="#label">label</a>
 created according to an algorithm equivalent to the following:
 
 
        <ol>
         <li data-md="">
-         <p>Let <var>linternal</var> be the
+         <p>Let <var>internalLabel</var> be the
 <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> of the 
 <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> on which the method has been called.</p>
          
 
 
         <li data-md="">
-         <p>Let <var>lother</var> be the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> of
-the <a class="idl-code" data-link-type="argument" href="#dom-privilege-combineother-other">other</a> argument.</p>
+         <p>If the <var>internalLabel</var> does not <a data-link-type="dfn" href="#subsumes">subsume</a> the
+<a class="idl-code" data-link-type="argument" href="#dom-privilege-delegatelabel-label">label</a>
+argument, the user agent MUST throw a <a data-link-type="dfn">SecurityError</a>
+exception and terminate this algorithm.</p>
          
 
 
         <li data-md="">
-         <p>Return <code><var>linternal</var>.<a class="idl-code" data-link-type="method">and</a>(<var>lother</var>)</code>.</p>
+         <p>Else, the user agent MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> that has an
+<a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> set to
+<a class="idl-code" data-link-type="argument" href="#dom-privilege-delegatelabel-label">label</a>.</p>
          
 </ol>
       
@@ -1474,18 +1518,23 @@ the <a class="idl-code" data-link-type="argument" href="#dom-privilege-combineot
 
     
      <div class="note" role="note">
-      Note, the <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> constructors and
-      <a data-link-type="functionish" href="#dom-privilege-delegatelabel">delegate()</a> provide a way creating privileges.  Context
-      code must still take <a data-link-type="dfn" href="#ownership">ownership</a> of a privilege or set the
-      <a data-link-type="dfn" href="#current-privilege">current privilege</a> to it, for the privilege to be used (to
-      bypass label restrictions).
+      Note, the <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> constructors and the
+      <a data-link-type="functionish" href="#dom-privilege-combineother">combine()</a> and <a data-link-type="functionish" href="#dom-privilege-delegatelabel">delegate()</a> methods provide a way
+      creating privileges.  Context code must still take
+      <a data-link-type="dfn" href="#ownership">ownership</a> of a privilege or set the <a data-link-type="dfn" href="#current-privilege">current
+      privilege</a> to it for the privilege to be used
+      (to bypass label restrictions).
     </div>
      
 
     
-     <div class="example" id="example-d36d5a3c"><a class="self-link" href="#example-d36d5a3c"></a>
+     <h4 class="heading settled" data-level="3.2.3" id="examples1"><span class="secno">3.2.3. </span><span class="content">Examples</span><a class="self-link" href="#examples1"></a></h4>
+     
+
+    
+     <div class="example" id="example-79da3999"><a class="self-link" href="#example-79da3999"></a>
       To be backwards-compatible with the Same-Origin Policy, COWL
-      grants each <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing context</a> a <a data-link-type="dfn">default initial privilege</a>
+      grants each <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing context</a> a <a data-link-type="dfn" href="#default-privilege">default privilege</a>
       that corresponds to their origin. For example, a page on
       <code>https://example.com</code> has a privilege whose <a data-link-type="dfn" href="#internal-privilege-label">internal
       privilege label</a> is
@@ -1499,7 +1548,7 @@ the <a class="idl-code" data-link-type="argument" href="#dom-privilege-combineot
       <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://example.com")</code> does
       not restrict the context from communicating—and thus
       accidentally leak that object’s contents—to another origin.
-      To prevent such bugs, the author can drop the privilege by
+      To prevent accidental leaks, the author can drop the privilege by
       setting the <a data-link-type="dfn" href="#current-privilege">current privilege</a> to an <a data-link-type="dfn" href="#empty-privilege">empty
       privilege</a>:</p>
       
@@ -1507,7 +1556,7 @@ the <a class="idl-code" data-link-type="argument" href="#dom-privilege-combineot
       <pre><code>// Save privilege in case we need it later:
 var __savedPriv = COWL.privilege;
 
-// Drop privilege:
+// Drop privilege (set the <a data-link-type="dfn" href="#context-privilege">context privilege</a> to the <a data-link-type="dfn" href="#empty-privilege">empty privilege</a>):
 COWL.privilege = new <a data-link-type="dfn" href="#privilege">Privilege</a>();
 </code></pre>
       
@@ -1515,18 +1564,18 @@ COWL.privilege = new <a data-link-type="dfn" href="#privilege">Privilege</a>();
 
       <p>After this point, if the context reads data with a
       <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://example.com")</code>
-      confidentiality label, COWL will limit it ability to communicate
-      with <code>https://example.com")</code>.</p>
+      confidentiality label, COWL will restrict it to communicating
+      to <code>https://example.com</code>.</p>
       
     
      </div>
      
 
     
-     <div class="example" id="example-94abe9a0"><a class="self-link" href="#example-94abe9a0"></a>
-      Consider a modification to <a href="#example-checker">
-        password-checker example</a> that uses <a data-link-type="functionish" href="#dom-privilege-freshprivilege">FreshPrivilege()</a>s
-      to ensure that the untrusted checker cannot communicate with any
+     <div class="example" id="example-462b40e1"><a class="self-link" href="#example-462b40e1"></a>
+      Consider an extension to password-checker example of
+      <a href="#examples-checker">§1.2.1 Confining untrusted third-party services</a> that uses <a data-link-type="functionish" href="#dom-privilege-freshprivilege">FreshPrivilege()</a>s to
+      ensure that the untrusted checker cannot communicate with any
       entity other than the parent context.
       
       <pre><code>// Create new fresh privilege: 
@@ -1557,18 +1606,23 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
 
     
      <div class="example" id="university-example-js"><a class="self-link" href="#university-example-js"></a>
-      Suppose <code>https://university.edu</code> wished to isolate
-      different parts of their site, for example, according to the
-      users. The author can drop the privilege of a page
-      <code>https://university.edu/~user1</code>:
+
+
+      <p>Consider an implementation of the content isolation example of
+      <a href="#examples-isolation">§1.2.3 Content isolation via privilege separation</a> using the COWL JavaScript API.
+      In this example, the author <code>https://university.edu</code> isolates
+      different parts of their site according to
+      users, in this case <code>user1</code>:</p>
+      
 
       
-      <pre><code lang-js="">var uni = new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu");
+      <pre><code lang-js="">// The label corresponding to the university origin:
+var uni = new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>(window.location.origin);
 // Create a new label that corresponds to user1’s data on university.edu:
 var user1 = uni.or("cowl://user1"); // Here the cowl:// is an arbitrary <a data-link-type="dfn" href="http://www.w3.org/TR/url/#concept-url-scheme">scheme</a>
 
-// Assume: COWL.privilege.asLabel().equals(uni);
-// Drop the current context privilege to a delegated privilege:
+// Originally, COWL.privilege.asLabel().equals(uni).
+// Drop the current <a data-link-type="dfn" href="#context-privilege">context privilege</a> to a delegated privilege:
 COWL.privilege = COWL.privilege.delegate(user1);
 </code></pre>
       
@@ -1578,26 +1632,11 @@ COWL.privilege = COWL.privilege.delegate(user1);
       that is labeled
       <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu").or("cowl://user1")</code>;
       it cannot disseminate data that is
-      sensitive to the university and is thus labeled
-      <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu")</code>;
-      or another user’s data (e.g.,
+      sensitive to the university (e.g., which is labeled
+      <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu")</code>)
+      or another user’s data (e.g., <code>user2</code>’s data is
+      labeled
       <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu").or("cowl://user2")</code>).</p>
-      
-
-
-      <p>Of course, this requires the author to properly label user data
-      (e.g., when sending it to the client).</p>
-      
-
-
-      <p class="note" role="note">Note, sub-domains should be used where possible to ensure
-      isolation. Nevertheless, COWL’s labels can serve as another
-      layer of defense.</p>
-      
-
-
-      <p><a href="#examples-isolation">§1.2.3 Content isolation via privilege separation</a> shows how to implement this example
-      using the <code>COWL</code> response header.</p>
       
     
      </div>

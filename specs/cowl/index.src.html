@@ -210,7 +210,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
   <section>
   <h3 id="examples">Use Cases/Examples</h3>
-  <h4>Confining untrusted third-party services</h4>
+  <h4 id="examples-checker">Confining untrusted third-party services</h4>
 
   An author wishes to use a service, loaded in the form of an iframe,
   without trusting it (or its dependencies) to not leak her
@@ -222,7 +222,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   to ensure that it can only communicate according to the
   author-specified policy&mdash;the label.
 
-  <div id="example-checker" class="example">
+  <div class="example">
     Consider using a third-party password strength checker provided by
     <code>https://untrusted.com</code>.  To protect the
     confidentiality of the password, the
@@ -303,8 +303,6 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     response.
     <!-- TODO: link labeled-text -->
   </div>
-
-
 
   <h4 id="examples-isolation">Content isolation via privilege separation</h4>
 
@@ -671,26 +669,29 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     <dl>
       <dt>Policy specification via <a>origin labels</a></dt>
       <dd>
-      COWL provides a JavaScript <a interface>Label</a> interface and
-      a <code>COWL</code> HTTP response header for specifying
-      confidentiality and integrity policies on data and content in
-      terms of <a>origins</a>.
+      COWL provides a <a interface>Label</a> interface for specifying
+      confidentiality and integrity policies in terms of
+        <a>origins</a>. <a>Labels</a> can be associated with data and
+        content using the JavaScript <a interface>LabeledObject</a>
+      and <a interface>COWL</a> interfaces or the <code>COWL</code>
+      HTTP response header.
       </dd>
-      <dt><a>Privileges<a></dt>
+      <dt>Explicit authority via <a>privileges<a></dt>
       <dd>
-      COWL provides a JavaScript interface and a <code>COWL</code>
-      HTTP response header for explicitly setting the authority of a
-      context. COWL also provides a JavaScript <a
+      The COWL framework provides a JavaScript <a
       interface>Privilege</a> interface for operating on and minting
-      <a>privileges</a>.
+      new <a>privileges</a>.  The <a interface>COWL</a> JavaScript
+      interface and <code>COWL</code> HTTP response header can be used
+      used to explicitly set the authority of a context.
       </dd>
       <dt>Confinement enforcement mechanism</dt>
       <dd>
       COWL extends <a>browsing contexts</a> and <a>Workers</a> with
-      labels and privileges, which are used when enforcing confinement,
-      i.e., when restricting a context's network and cross-document
-      messaging communications. This document also defines the
-      enforcement mechanism.
+      labels and privileges, which are used when enforcing
+      confinement, i.e., when restricting a context's network and
+      cross-document messaging communication.  This document defines
+      the necessary changes to existing browser constructs and
+      algorithms to enforce confinement.
       </dd>
     </dl>
 
@@ -778,7 +779,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         <a>DOMString</a>, run the following sub-steps:
 
           1. Set <var>O</var> to the result of invoking the
-          <a>Label()</a> constructor with <a argument
+          <a>Label(other)</a> constructor with <a argument
           for="Label/and(other)">other</a> as an argument, if the
           constructor did not raise an exception.
 
@@ -800,7 +801,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         <a>DOMString</a>, run the following sub-steps:
 
           1. Set <var>O</var> to the result of invoking the
-          <a>Label()</a> constructor with <a argument
+          <a>Label(other)</a> constructor with <a argument
           for="Label/_or(other)">other</a> as an argument, if the
           constructor did not raise an exception.
 
@@ -816,14 +817,15 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
     ISSUE: describe the <a>toJSON()</a> and <a>fromJSON()</a>
 
+    <h4>Examples</h4>
+
     <div class="example">
       Example labels. Intuition for each label's semantics is given in
       the context of it being used as a confidentiality label (C) and
       integrity label (I).
       <pre><code>
-      // Create an empty label.
-      // C: This corresponds to public data.
-      // I: This corresponds to non-endorsed/untrustworthy data.
+      // C: Public data.
+      // I: Non-endorsed/untrustworthy data.
       var empty = new <a interface>Label</a>();
 
       // C: Data confidential to a.com.
@@ -844,36 +846,59 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       </code></pre>
       Examples of label comparisons with intuition for the semantics.
       <pre><code>
-      // C: a.com data is more sensitive than public data.
-      // I: data endorsed by a.com is more trustworthy than non-endorsed/untrustworthy data.
+      // C: Data confidential to a.com (b.com) data is more sensitive than public data.
+      // I: Data endorsed by a.com (b.com) is more trustworthy than non-endorsed/untrustworthy data.
       a.subsumes(empty) === true;
       b.subsumes(empty) === true;
 
       // C: Data that is confidential to a.com and b.com is more
-      // confidential than data that is only sensitive to a.com.
-      //
+      //    confidential than data that is only sensitive to a.com (b.com).
       // I: Data that is endorsed/trusted by both a.com and b.com is
-      // more trustworthy than data endorsed only by a.com
+      //    more trustworthy than data endorsed only by a.com (b.com).
       aANDb.subsumes(a) === true;
       aANDb.subsumes(b) === true;
 
-      // C: Data that that is confidential to a.com is not comparable to
-      // data that is confidential to b.com
-      //
-      // I: Data that that is endorsed by a.com is not comparable to
-      // data that is endorsed to b.com
+      // C: Data that that is confidential to a.com (b.com) is not comparable to
+      //    data that is confidential to b.com (a.com).
+      // I: Data that that is endorsed by a.com (b.com) is not comparable to
+      //    data that is endorsed to b.com (a.com).
       a.subsumes(b) === false;
       b.subsumes(a) === false;
 
-      // C: Data that is confidential to a.com is more confidential than data that is confidential
-      // to either a.com or b.com. Alternative intuition: data that can be read by a.com or b.com
-      // can necessarily be read by an entity that can read a.com data alone.
-      //
-      // I: Data that is endorsed by a.com is more trustworthy than data that is endorsed/trusted
-      // by either a.com or b.com. Alternative intuition: an entity that trusts data that is
-      // endorsed by either a.com or b.com necessarily trusts data endorsed by a.com alone.
+      // C: Data that is confidential to a.com (b.com) is more confidential than data that is
+      //    confidential to either a.com or b.com. Alternative intuition: data that can be read by
+      //    a.com or b.com can be read by an entity that can read a.com (b.com) data alone.
+      // I: Data that is endorsed by a.com (b.com) is more trustworthy than data that is endorsed
+      //    by either a.com or b.com. Alternative intuition: an entity that trusts data that is
+      //    endorsed by either a.com or b.com necessarily trusts data endorsed by a.com (b.com) alone.
       a.subsumes(aOrb) === true;
       b.subsumes(aOrb) === true;
+      </code></pre>
+    </div>
+
+    <div class="example">
+      Using the labels defined in the above example, this example
+      shows how labels are serialized/deserialized. We only define an
+      additional label:
+      <pre><code>
+      var aORbANDc = aORb.and(new <a interface>Label</a>("https://c.com");
+      </code></pre>
+
+      Converting to JSON:
+      <pre><code>
+      JSON.stringify(empty)    === '[[]]';
+      JSON.stringify(a)        === '[["https://a.com"]]';
+      JSON.stringify(aANDb)    === '[["https://a.com"], ["https://b.com"]]';
+      JSON.stringify(aORb)     === '[["https://a.com", "https://b.com"]]';
+      JSON.stringify(aORbANDc) === '[["https://a.com", "https://b.com"], ["https://c.com"]]';
+      </code></pre>
+      Converting from JSON:
+      <pre><code>
+      <a interface>Label</a>.fromJSON([[]]).equals(empty);
+      <a interface>Label</a>.fromJSON([["https://a.com"]]).equals(a);
+      <a interface>Label</a>.fromJSON([["https://a.com"], ["https://b.com"]]).equals(aANDb);
+      <a interface>Label</a>.fromJSON([["https://a.com", "https://b.com"]]).equals(aORb);
+      <a interface>Label</a>.fromJSON([["https://a.com", "https://b.com"], ["https://c.com"]]).equals(aORbANDc);
       </code></pre>
     </div>
   </section>
@@ -903,7 +928,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
     A privilege <var>P1</var> is said to be a <dfn>delegated
       privilege</dfn> of <var>P2</var> if <var>P2</var>'s <a>internal
-      privilege label</a> subsumes <var>P1</var>'s <a>internal
+      privilege label</a> <a>subsumes</a> <var>P1</var>'s <a>internal
     privilege label</a>.
 
     <pre class="idl">
@@ -942,52 +967,60 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     <dl dfn-for="Privilege">
       <dt><dfn method title="asLabel()">asLabel()</dfn></dt>
       <dd>
-      MUST return the <a>internal privilege label</a> of the
+      The user agent MUST return the <a>internal privilege label</a> of the
       <a interface>Privilege</a> on which the method has been called.
       </dd>
       <dt><dfn method title="combine(other)">combine(Privilege other)</dfn></dt>
       <dd>
-      MUST return a new <a interface>Privilege</a> whose <a>internal
+      The user agent MUST return a new <a interface>Privilege</a> whose <a>internal
       privilege label</a> is <a>equivalent</a> to a <a>label</a>
       created according to an algorithm equivalent to the following:
       
-      1. Let <var>lintrnal</var> be the
+      1. Let <var>internalLabel</var> be the
       <a>internal privilege label</a> of the 
       <a interface>Privilege</a> on which the method has been called.
 
-      2. Let <var>lother</var> be the <a>internal privilege label</a> of
+      2. Let <var>otherLabel</var> be the <a>internal privilege label</a> of
       the <a argument for="Privilege/combine(other)">other</a> argument.
 
-      3. Return <code><var>linternal</var>.<a method for="Label/and(other)">and</a>(<var>lother</var>)</code>.
+      3. Return <code><var>internalLabel</var>.<a method for="Label/and(other)">and</a>(<var>otherLabel</var>)</code>.
+      <!-- TODO: and is not linked -->
       </dd>
       <dt><dfn method title="delegate(label)">delegate(Label label)</dfn></dt>
       <dd>
-      MUST return a new <a interface>Privilege</a> whose <a>internal
+      The user agent MUST return a new <a interface>Privilege</a> whose <a>internal
       privilege label</a> is <a>equivalent</a> to a <a>label</a>
       created according to an algorithm equivalent to the following:
       
-        1. Let <var>linternal</var> be the
+        1. Let <var>internalLabel</var> be the
         <a>internal privilege label</a> of the 
         <a interface>Privilege</a> on which the method has been called.
 
-        2. Let <var>lother</var> be the <a>internal privilege label</a> of
-        the <a argument for="Privilege/combine(other)">other</a> argument.
+        2. If the <var>internalLabel</var> does not <a>subsume</a> the
+        <a argument for="Privilege/delegate(label)">label</a>
+        argument, the user agent MUST throw a <a spec="HTML5">SecurityError</a>
+        exception and terminate this algorithm.
 
-        3. Return <code><var>linternal</var>.<a method for="Label/and(other)">and</a>(<var>lother</var>)</code>.
+        3. Else, the user agent MUST return a new <a interface>Privilege</a> that has an
+        <a>internal privilege label</a> set to
+        <a argument for="Privilege/delegate(label)">label</a>.
       </dd>
     </dl>
 
     <div class="note">
-      Note, the <a interface>Privilege</a> constructors and
-      <a>delegate()</a> provide a way creating privileges.  Context
-      code must still take <a>ownership</a> of a privilege or set the
-      <a>current privilege</a> to it, for the privilege to be used (to
-      bypass label restrictions).
+      Note, the <a interface>Privilege</a> constructors and the
+      <a>combine()</a> and <a>delegate()</a> methods provide a way
+      creating privileges.  Context code must still take
+      <a>ownership</a> of a privilege or set the <a>current
+      privilege</a> to it for the privilege to be used
+      (to bypass label restrictions).
     </div>
+
+    <h4>Examples</h4>
 
     <div class="example">
       To be backwards-compatible with the Same-Origin Policy, COWL
-      grants each <a>browsing context</a> a <a>default initial privilege</a>
+      grants each <a>browsing context</a> a <a>default privilege</a>
       that corresponds to their origin. For example, a page on
       <code>https://example.com</code> has a privilege whose <a>internal
       privilege label</a> is
@@ -1000,27 +1033,27 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       <code><a interface>Label</a>("https://example.com")</code> does
       not restrict the context from communicating&mdash;and thus
       accidentally leak that object's contents&mdash;to another origin.
-      To prevent such bugs, the author can drop the privilege by
+      To prevent accidental leaks, the author can drop the privilege by
       setting the <a>current privilege</a> to an <a>empty
       privilege</a>:
       <pre><code>
         // Save privilege in case we need it later:
         var __savedPriv = COWL.privilege;
 
-        // Drop privilege:
+        // Drop privilege (set the <a>context privilege</a> to the <a>empty privilege</a>):
         COWL.privilege = new <a>Privilege</a>();
       </code></pre>
 
       After this point, if the context reads data with a
       <code><a interface>Label</a>("https://example.com")</code>
-      confidentiality label, COWL will limit it ability to communicate
-      with <code>https://example.com")</code>.
+      confidentiality label, COWL will restrict it to communicating
+      to <code>https://example.com</code>.
     </div>
 
     <div class="example">
-      Consider a modification to <a href="#example-checker">
-        password-checker example</a> that uses <a>FreshPrivilege()</a>s
-      to ensure that the untrusted checker cannot communicate with any
+      Consider an extension to password-checker example of
+      [[#examples-checker]] that uses <a>FreshPrivilege()</a>s to
+      ensure that the untrusted checker cannot communicate with any
       entity other than the parent context.
       <pre><code>
         // Create new fresh privilege: 
@@ -1045,18 +1078,21 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     </div>
 
     <div id="university-example-js" class="example">
-      Suppose <code>https://university.edu</code> wished to isolate
-      different parts of their site, for example, according to the
-      users. The author can drop the privilege of a page
-      <code>https://university.edu/~user1</code>:
+
+      Consider an implementation of the content isolation example of
+      [[#examples-isolation]] using the COWL JavaScript API.
+      In this example, the author <code>https://university.edu</code> isolates
+      different parts of their site according to
+      users, in this case <code>user1</code>:
 
       <pre><code lang-js>
-        var uni = new <a interface>Label</a>("https://university.edu");
+        // The label corresponding to the university origin:
+        var uni = new <a interface>Label</a>(window.location.origin);
         // Create a new label that corresponds to user1's data on university.edu:
         var user1 = uni.or("cowl://user1"); // Here the cowl:// is an arbitrary <a>scheme</a>
 
-        // Assume: COWL.privilege.asLabel().equals(uni);
-        // Drop the current context privilege to a delegated privilege:
+        // Originally, COWL.privilege.asLabel().equals(uni).
+        // Drop the current <a>context privilege</a> to a delegated privilege:
         COWL.privilege = COWL.privilege.delegate(user1);
       </code></pre>
 
@@ -1064,20 +1100,11 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       that is labeled
       <code><a interface>Label</a>("https://university.edu").or("cowl://user1")</code>;
       it cannot disseminate data that is
-      sensitive to the university and is thus labeled
-      <code><a interface>Label</a>("https://university.edu")</code>;
-      or another user's data (e.g.,
+      sensitive to the university (e.g., which is labeled
+      <code><a interface>Label</a>("https://university.edu")</code>)
+      or another user's data (e.g., <code>user2</code>'s data is
+      labeled
       <code><a interface>Label</a>("https://university.edu").or("cowl://user2")</code>).
-
-      Of course, this requires the author to properly label user data
-      (e.g., when sending it to the client).
-
-      Note, sub-domains should be used where possible to ensure
-      isolation. Nevertheless, COWL's labels can serve as another
-      layer of defense.
-
-      [[#examples-isolation]] shows how to implement this example
-      using the <code>COWL</code> response header.
     </div>
 
   </section>

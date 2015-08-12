@@ -665,6 +665,35 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 <section>
   <h2 id="framework">Framework</h2>
 
+    <em>This sub-section is not normative.</em>
+
+    In a nut-shell, the COWL framework provides:
+    <dl>
+      <dt>Policy specification via <a>origin labels</a></dt>
+      <dd>
+      COWL provides a JavaScript <a interface>Label</a> interface and
+      a <code>COWL</code> HTTP response header for specifying
+      confidentiality and integrity policies on data and content in
+      terms of <a>origins</a>.
+      </dd>
+      <dt><a>Privileges<a></dt>
+      <dd>
+      COWL provides a JavaScript interface and a <code>COWL</code>
+      HTTP response header for explicitly setting the authority of a
+      context. COWL also provides a JavaScript <a
+      interface>Privilege</a> interface for operating on and minting
+      <a>privileges</a>.
+      </dd>
+      <dt>Confinement enforcement mechanism</dt>
+      <dd>
+      COWL extends <a>browsing contexts</a> and <a>Workers</a> with
+      labels and privileges, which are used when enforcing confinement,
+      i.e., when restricting a context's network and cross-document
+      messaging communications. This document also defines the
+      enforcement mechanism.
+      </dd>
+    </dl>
+
   <section>
     <h3 id="label">Label interface</h3>
 
@@ -1466,33 +1495,6 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   </section>
 
 </section>
-
-<!-- Big Text: workers -->
-<section>
-  <h2 id="lworkers">Light-weight Workers</h2>
-
-  <pre class="idl">
-    [Constructor(DOMString scriptURL, InitCOWLstate? initState)]
-    interface LWorker : EventTarget {
-      void postMessage(any message);
-      [TreatNonCallableAsNull] attribute Function? onmessage;
-    }
-  </pre>
-
-  ISSUE: describe worker interface
-
-  <h3 id="lworker-global">The <a>LWorkerGlobalScope</a> interface</h3>
-
-  <pre class="idl">
-  interface LWorkerGlobalScope : DedicatedWorkerGlobalScope {
-  };
-  </pre>
-
-  ISSUE: describe worker global
-
-
-</section>
-
 
 <!-- Big Text: algorithms -->
 <section>

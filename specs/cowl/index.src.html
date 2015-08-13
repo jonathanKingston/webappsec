@@ -301,7 +301,6 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     COWL only allows the code to inspect the response if the
     <a>context labels</a> are more restricting than the labels of the
     response.
-    <!-- TODO: link labeled-text -->
   </div>
 
   <h4 id="examples-isolation">Content isolation via privilege separation</h4>
@@ -533,7 +532,6 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       invoking <a>context tainting</a> algorithm, to reflect that it
       has read sensitive (of different trustworthiness) data and
       should be confined accordingly.
-      <!-- TODO: context labels should be linked -->
     </li>
   </ol>
   <h3>Privileges</h3>
@@ -696,10 +694,11 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     </dl>
 
   <section>
-    <h3 id="label">Label interface</h3>
+    <h3 id="label">Label Interface</h3>
 
-    Each <a>label</a> is represented by a <a interface>Label</a>
-    object, the interface of which is defined in this section.
+    Each <a>label</a> is an immutable object represented by a
+    <a interface>Label</a> object, the interface of which is defined in
+    this section.
 
     A <a interface>Label</a> MUST have an internal <dfn>label set</dfn>, which is
     a non-empty set of <a>disjunction set</a>s.
@@ -711,7 +710,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       set</a> contains a single, empty <a>disjunction set</a>.
 
     <pre class="idl">
-      [Constructor, Constructor(DOMString origin)]
+      [Constructor, Constructor(DOMString origin), Exposed=Window, Worker]
       interface Label {
         boolean equals(Label other);
         boolean subsumes(Label other);
@@ -756,14 +755,14 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     <dl dfn-for="Label">
       <dt><dfn method title="equals(other)">equals(Label other)</dfn></dt>
       <dd>
-        MUST return <code>true</code> if the <a interface>Label</a> on
+        The user agent MUST return <code>true</code> if the <a interface>Label</a> on
         which the method has been called is <a>equivalent</a> to the
         <a argument for="Label/equals(other)">other</a>
         parameter; otherwise it MUST return <code>false</code>
       </dd>
       <dt><dfn method title="subsumes(other)">subsumes(Label other)</dfn></dt>
       <dd>
-        MUST return <code>true</code> if the <a interface>Label</a> on
+        The user agent MUST return <code>true</code> if the <a interface>Label</a> on
         which the method has been called <a>subsumes</a> the
         <a argument for="Label/subsumes(other)">other</a>
         parameter; otherwise it MUST return <code>false</code>
@@ -906,9 +905,9 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   <section>
     <h3 id="privileges">Privilege Interface</h3>
 
-    Each <a>privilege</a> is represented by a <a
-    interface>Privilege</a> object, the interface of which is
-    defined in this section.
+    Each <a>privilege</a> is an immutable object represented by a <a
+        interface>Privilege</a> object, the interface of which is
+      defined in this section.
 
     A <a interface>Privilege</a> MUST have an <dfn>internal privilege
     label</dfn>.
@@ -932,7 +931,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     privilege label</a>.
 
     <pre class="idl">
-      [Constructor, NamedConstructor=FreshPrivilege]
+      [Constructor, NamedConstructor=FreshPrivilege, Exposed=Window, Worker]
       interface Privilege {
         Label asLabel();
 
@@ -1110,37 +1109,38 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   </section>
 
   <section>
-    <h3 id="context-labels">Labeled Contexts and Workers Interface</h3>
+    <h3 id="context-labels">Labeled Context Interface</h3>
 
     COWL extends <a>browsing contexts</a> and <a>Workers</a> with a
-    corresponding <dfn>COWL state</dfn>, which consists of:
+    <dfn>COWL state</dfn>, which is used to restrict the context's
+    communication channels. The term <dfn>context</dfn> is used to
+    refer to both browsing contexts and Workers. The COWL state consists of:
 
     * The <dfn>confinement mode</dfn> status, which indicates whether
-    or not COWL is enabled and thus <a>labels</a> should be enforced
-    in the current context.
+    or not COWL confinement is enabled and thus <a>labels</a> should
+    be enforced in the current context.
 
-    * The <dfn>context confidentiality label</dfn>, which reflects
-    the sensitivity of the data that the context has read, and thus
-    can write to.
+    * The <dfn>context <a>labels</a></dfn>: 
 
-    * The <dfn>context integrity label</dfn>, which reflects the
-    integrity of the data that the context has read, and thus can
-    write to.
+      * <dfn>context confidentiality label</dfn> reflects the
+      sensitivity of the data that the context has read.
 
-    * The <dfn>context privilege</dfn>, which encodes the context's
-    ability to bypass restrictions of certain labels.
+      * <dfn>context integrity label</dfn> reflects the integrity of
+      the data that the context has read.
 
-    Each <a>browsing context</a>'s and <a>Worker</a>'s <dfn>COWL
-    state</dfn> MUST be initially set to the <dfn>default COWL
-    state</dfn>, where:
+    * The <dfn>context <a>privilege</a></dfn>, which encodes the context's
+    ability to bypass the restrictions of certain labels.
+
+    Each context's <dfn>COWL state</dfn> MUST be initially set to the
+    <dfn>default COWL state</dfn>, where:
 
     * The <a>confinement mode</a> is disabled.
 
     * The <a>context confidentiality label</a> is set to the
-    <dfn>default confidentiality label</dfn>: an <a>empty label</a>.
+    <dfn>default confidentiality label</dfn>: <a>empty label</a>.
 
     * The <a>context integrity label</a> is set to the
-    <dfn>default integrity label</dfn>: an <a>empty label</a>.
+    <dfn>default integrity label</dfn>: <a>empty label</a>.
 
     * The <a>context privilege</a> is set to the
     <dfn>default privilege</dfn>: a
@@ -1150,38 +1150,33 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     Worker's <a>origin</a>.
 
     <div class="note">
-      To be backwards-compatible with the Same-Origin Policy the
-      <a>default COWL state</a> is very relaxed. Specifically:
+      The <a>default COWL state</a> is backwards-compatible with the
+      existing model. Specifically:
       
       * Unless <a>confinement mode</a> is enabled, a context is not
-      subject to label restrictions. (Of course, algorithms such as the
-      <a>context tainting</a> algorithm implicitly enable confinement
-      mode.)
+      subject to confinement.
 
-      * Unless the <a>current confidentiality</a> label is
-      set&mdash;explicitly or implicitly via the <a>context tainting</a>
-      algorithm&mdash;to a non-<a>empty label</a>, it can communicate to
-      any context, server or Worker; code is only subject to the
-      restrictions imposed by other mechanism such as the Same-Origin
-      Policy, CSP, and CORS.
+      * Unless the <a>current confidentiality label</a> is
+      set to a non-<a>empty label</a>, the context's communication
+      is unrestricted; code is only
+      subject to the restrictions imposed by other mechanism such as
+      the Same-Origin Policy, CSP, and CORS.
 
-      * Unless the <a>current privilege</a> is adjusted, even when
-      <a>confinement mode</a> is enabled, code can accidentally leak
-      data sensitive to the context's <a>origin</a>. Such data is
-      implicitly declassified using the <a>context privilege</a>.
-      Authors should always send <a>LabeledObjects()</a> to explicitly
-      communicate the sensitivity (and integrity) of the data they are
-      sharing.
+      * Unless the <a>current privilege</a> is dropped or set to a
+      <a>delegated privilege</a>, code can disseminate data sensitive
+      to the context's <a>origin</a>, even when <a>confinement
+      mode</a> is enabled.  Such data is implicitly declassified using
+      the <a>context privilege</a>.  Authors should always send
+      <a interface>LabeledObject</a>s to explicitly communicate the sensitivity
+      (and integrity) of the data they are sharing.
        
-      ISSUE: for discussion: should privileges be used explicitly
-      instead?
-
     </div>
 
-    Each context and Worker's <a>COWL state</a> is made available via
-    the <a interface>COWL</a> interface defined below.
+    Each browsing context and Worker's <a>COWL state</a> is made
+    available via the <a interface>COWL</a> interface defined below.
 
     <pre class="idl">
+      [Exposed=Window, Worker]
       interface COWL {
         static void enable();
         static boolean isEnabled();
@@ -1203,7 +1198,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         * On setting, the user agent MUST use an algorithm equivalent
         to the following:
 
-          0. Enable <a> confinement mode</a>.
+          0. Enable <a>confinement mode</a>.
 
           1. Let <var>conf</var> be the set confidentiality label.
 
@@ -1217,7 +1212,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
           exception and terminate this algorithm.
 
           4. Else, the user agent MUST set the <a>current
-          confidentiality label</a> to <var>conf</var>
+          confidentiality label</a> to <var>conf</var>.
 
       </dd>
       <dt><dfn attribute title="COWL/integrity">integrity</dfn></dt>
@@ -1228,20 +1223,20 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         * On setting, the user agent MUST use an algorithm equivalent
         to the following:
 
-          0. Enable <a> confinement mode</a>.
+          0. Enable <a>confinement mode</a>.
 
           1. Let <var>int</var> be the set integrity label.
         
           2. Let <var>canWrite</var> be the result of invoking the
           <a>write check</a> algorithm with the <a>current
-          confidentiality label</a> and <var>conf</var>.
+          confidentiality label</a> and <var>int</var>.
           
           3. If <var>canWrite</var> is <code>false</code>, the user
           agent MUST throw a <a spec="HTML5">SecurityError</a>
           exception and terminate this algorithm.
 
           4. Else, the user agent MUST set the <a>current
-          integrity label</a> to <var>int</var>
+          integrity label</a> to <var>int</var>.
 
       </dd>
       <dt><dfn attribute title="COWL/privilege">privilege</dfn></dt>
@@ -1265,18 +1260,28 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       <dt><dfn method title="COWL/isEnabled()">isEnabled()</dfn></dt>
       <dd>
         On invocation, the user agent MUST return <code>true</code> if
-        the <a>confinement mode</a> was enabled for the current
+        the <a>confinement mode</a> is enabled for the current
         context; else, it MUST return <code>false</code>
       </dd>
     </dl>
+
+    ISSUE: once enforcement mode is enabled, we should be using the
+    current state info to enforce confinement; make a note of it here
+    and how we actually do this
+
+    <h4>Examples</h4>
+
+    ISSUE: Add some examples showing how to use the <a interface>COWL</a>
+    object. And to provide some intuition for the semantics.
   </section>
+
 
   <section>
     <h3 id="object-labels">Labeled Objects Interface</h3>
 
     A <a interface>LabeledObject</a> interface represents an immutable
-    object that has associated with it confidentiality and integrity
-    labels.
+    object that is protected by a confidentiality and integrity
+    label, i.e., the object has associated labels.
 
     This API is designed to be used in conjunction with other APIs and
     elements on the web platform. In particular: <a>postMessage()</a>,
@@ -1284,7 +1289,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     overloaded <code>send()</code> method for <a interface>LabeledObject</a>
     arguments).
 
-    ISSUE: receive too..
+    <!-- TODO: send is not linked -->
 
     A <a interface>LabeledObject</a> MUST have an internal <dfn>protected
       object</dfn>, a confidentiality <a>label</a>, and an
@@ -1296,14 +1301,14 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       Label? integrity;
     };
 
-    [Constructor(object obj, CILabel labels)]
+    [Constructor(object obj, CILabel labels), Exposed=Window, Worker]
     interface LabeledObject {
       readonly attribute Label confidentiality;
       readonly attribute Label integrity;
 
       [GetterThrows] readonly attribute object protectedObject;
 
-      [Throws] LabeledObject clone(CILabel newLabels);
+      [Throws] LabeledObject clone(CILabel labels);
     };
     </pre>
     <h4>Constructors</h4>
@@ -1337,7 +1342,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       MUST throw a <a spec="HTML5">SecurityError</a> exception
       and terminate this algorithm.
 
-      6. Else, the constructor MUST return a new
+      6. Else, the user agent MUST return a new
       <a interface>LabeledObject</a>, with the <a>protected object</a>
       set to <var>obj clone</var>, the confidentiality label set to
       <var>conf</var>, and the integrity
@@ -1347,8 +1352,8 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
     <div class="note">
       Because COWL enforces labels at context boundaries, there is
-      usually no reason to label an object and then use the labeled
-      object within the same context.  <a interface>LabeledObject</a>s
+      usually no reason to label an object and then use the <a>labeled
+      object</a> within the same context.  <a interface>LabeledObject</a>s
       are mainly useful for sending sensitive data to an untrusted
       context, e.g., via cross-document messaging, as a way to ensure
       that the data's confidentiality and integrity (as specified by
@@ -1378,19 +1383,19 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         interface>LabeledObject</a>'s confidentiality and integrity labels.
         
         2. If the <a>context tainting</a> algorithm raises an
-        exception, rethrow the exception and terminate this algorithm.
+        exception, re-throw the exception and terminate this algorithm.
 
-        3. Return the <a interface>LabeledObject</a>'s <a>protected
-        object</a>.
+        3. Else, the user agent MUST return the
+        <a interface>LabeledObject</a>'s <a>protected object</a>.
       </dd>
     </dl>
 
     <div class="note">
       Note: the labels of a <a interface>LabeledObject</a> are
-      essentially public: code can always inspect labels. However, to
-      inspect the internal, <a>protected object</a> the current
-      context must be tainted according to the object's labels. This
-      ensures two things:
+      essentially public since code can always inspect the labels.
+      However, to inspect the internal, <a>protected object</a>, the
+      current context must be tainted according to the object's
+      labels. This ensures two things:
 
       * The context can't violate the confidentiality of the data (as
       specified by the confidentiality label) by communicating
@@ -1406,8 +1411,56 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     </div>
 
     <h4>Methods</h4>
+    <dl dfn-for="LabeledObject">
+      <dt><dfn method title="clone(labels)">clone(CILabel labels)</dfn></dt>
+      <dd>
+      On invocation, the user agent MUST use an algorithm equivalent
+      to the following:
 
-    ISSUE: describe <code>clone</code>
+      0. Let <var>obj</var> be the <a>protected object</a> of the
+      object on which the method was invoked.
+
+      1. Let <var>conf</var> be the confidentiality label of the
+      object on which the method was invoked.
+
+      2. Let <var>int</var> be the integrity label of the
+      object on which the method was invoked.
+
+      3. Let <var>newConf</var> be the <a dict-member
+      for="CILabel">confidentiality</a> member of the <a argument
+      for="LabeledObject/clone(labels)">labels</a> argument, if it is
+      set.  Otherwise, let <var>newConf</var> be <var>conf</conf>.
+
+      4. Let <var>newInt</var> be the <a dict-member
+      for="CILabel">integrity</a> member of the <a argument
+      for="LabeledObject/clone(labels)">labels</a>
+      parameter, if it is set.  Otherwise, let <var>newInt</var> be
+      <var>int</conf>.
+
+      5. Let <var>privs</var> be the <a>internal privilege
+      label</a> of the current <a>context privileges</a>.
+
+      6. If <code><var>newConf</var>.and(<var>privs</var>).subsumes(<var>conf</var>)</code>
+      returns <code>false</code> or
+      if <code><var>int</var>.and(<var>privs</var>).subsumes(<var>newInt</var>)</code>
+      returns <code>false</code>, the method
+      MUST throw a <a spec="HTML5">SecurityError</a> exception and
+      terminate this algorithm.
+
+        Note, these checks ensure that the new labels of the object are
+        at least as restricting as the original labels, taking into
+        consideration the privileges of the context.
+
+      7. Else, the user agent MUST return a new
+      <a interface>LabeledObject</a>, with the <a>protected object</a>
+      set to <var>obj</var>, the confidentiality label set to
+      <var>newConf</var>, and the integrity label set to <var>newInt</var>.
+      </dd>
+    </dl>
+
+    <h4>Examples</h4>
+
+    ISSUE: add examples
 
     <h4 id="extension-xhr">Extensions to <a>XMLHttpRequest</a></h4>
 

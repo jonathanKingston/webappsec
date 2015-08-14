@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-12">12 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-14">14 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -207,14 +207,17 @@ further.</p>
         <li><a href="#attributes0"><span class="secno">3.4.2</span> <span class="content">Attributes</span></a>
         <li><a href="#methods2"><span class="secno">3.4.3</span> <span class="content">Methods</span></a>
         <li><a href="#examples3"><span class="secno">3.4.4</span> <span class="content">Examples</span></a>
-        <li><a href="#extension-xhr"><span class="secno">3.4.5</span> <span class="content">Extensions to <span>XMLHttpRequest</span></span></a>
-         <ul class="toc">
-          <li><a href="#request"><span class="secno">3.4.5.1</span> <span class="content">Request</span></a>
-          <li><a href="#response"><span class="secno">3.4.5.2</span> <span class="content">Response</span></a>
-         </ul>
        </ul>
-      <li><a href="#response-header"><span class="secno">3.5</span> <span class="content">The <code>COWL</code> HTTP Response Header Field</span></a>
-      <li><a href="#request-header"><span class="secno">3.6</span> <span class="content">The <code>COWL</code> HTTP Request Header Field</span></a>
+      <li><a href="#header"><span class="secno">3.5</span> <span class="content">The <code>Sec-COWL</code> HTTP Headers</span></a>
+       <ul class="toc">
+        <li><a href="#request-header"><span class="secno">3.5.1</span> <span class="content">The <code>Sec-COWL</code> HTTP Request Header Field</span></a>
+        <li><a href="#response-header"><span class="secno">3.5.2</span> <span class="content">The <code>Sec-COWL</code> HTTP Response Header Field</span></a>
+       </ul>
+      <li><a href="#extension-xhr"><span class="secno">3.6</span> <span class="content">Extensions to <span>XMLHttpRequest</span></span></a>
+       <ul class="toc">
+        <li><a href="#sending-labeled-objects"><span class="secno">3.6.1</span> <span class="content">Sending <span>labeled objects</span></span></a>
+        <li><a href="#receiving-labeled-objects"><span class="secno">3.6.2</span> <span class="content"><span>Receiving </span><span>labeled objects</span></span></a>
+       </ul>
      </ul>
     <li><a href="#algorithms"><span class="secno">4</span> <span class="content">Algorithms</span></a>
      <ul class="toc">
@@ -223,7 +226,6 @@ further.</p>
       <li><a href="#label-reduce"><span class="secno">4.3</span> <span class="content">Label Downgrade</span></a>
       <li><a href="#taint-context"><span class="secno">4.4</span> <span class="content">Context Tainting</span></a>
       <li><a href="#write-check"><span class="secno">4.5</span> <span class="content">Write Check</span></a>
-      <li><a href="#labeldobject-serialization"><span class="secno">4.6</span> <span class="content">Serializing Labeld Objects</span></a>
      </ul>
     <li><a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ul class="toc">
@@ -353,26 +355,26 @@ further.</p>
      <ol>
       <li data-md="">
        <p>Authors should be able to specify confidentiality and integrity
-policies on data in terms of origin labels: the origins to whom the
-data is confidential and the origins that endorse the data.  This
-allows authors to share sensitive data with third-party content and
-impose restrictions on the origins with which it can communicate
-once it inspects the sensitive data. Dually, it allows authors to
-share data via intermediate content while retaining its integrity.</p>
+ policies on data in terms of origin labels: the origins to whom the
+ data is confidential and the origins that endorse the data.  This
+ allows authors to share sensitive data with third-party content and
+ impose restrictions on the origins with which it can communicate
+ once it inspects the sensitive data. Dually, it allows authors to
+ share data via intermediate content while retaining its integrity.</p>
        
 
 
       <li data-md="">
        <p>Authors should be able to run code with <em>least privilege</em>
-by restricting the origins the code can communicate with and thus
-how it can disseminate sensitive data.</p>
+ by restricting the origins the code can communicate with and thus
+ how it can disseminate sensitive data.</p>
        
 
 
       <li data-md="">
        <p>Authors should be able to <em>privilege separate</em>
-applications by compartmentalizing them into separate contexts that
-have <a data-link-type="dfn" href="#delegated-privilege">delegated privileges</a>.</p>
+ applications by compartmentalizing them into separate contexts that
+ have <a data-link-type="dfn" href="#delegated-privilege">delegated privileges</a>.</p>
        
 </ol>
      
@@ -464,14 +466,14 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
   <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origins</a> that can access the data <a data-link-type="biblio" href="#biblio-cors">[CORS]</a>, the operator
   wishes to restrict how the data is further disseminated by these
   origins. To do so, the operator sends a response header
-  field named <code>COWL</code> (described in <a href="#response-header">§3.5 The COWL HTTP Response Header Field</a>)
+  field named <code>Sec-COWL</code> (described in <a href="#response-header">§3.5.2 The Sec-COWL HTTP Response Header Field</a>)
   whose value contains the sensitivity of the data in the form of a
   serialized confidentiality <a data-link-type="dfn" href="#label">label</a>.  In turn, COWL enforces the label
   restrictions on the third-party code, once it inspects the response.</p>
      
 
   
-     <div class="example" id="example-c7fee9ee"><a class="self-link" href="#example-c7fee9ee"></a>
+     <div class="example" id="example-350de039"><a class="self-link" href="#example-350de039"></a>
     The server operator of <code>https://provider.com</code> uses a
     CORS response header to grant <code>https://mashup.com</code>
     access to a resource. The operator also sets a <code>COWL</code>
@@ -481,13 +483,13 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
 
     
       <pre><code><a data-link-type="dfn" href="http://www.w3.org/TR/cors/#access-control-allow-origin-response-header">Access-Control-Allow-Origin</a>: https://mashup.com
-<a href="#response-header">COWL</a>: confidentiality: [ ["https://provider.com"] ]
+<a href="#response-header">Sec-COWL</a>: <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a> [ ["https://provider.com"] ]
 </code></pre>
       
 
 
       <p>Once a <code>https://mashup.com</code> context reads the labeled
-    response (see <a href="#extension-xhr">§3.4.5 Extensions to XMLHttpRequest</a>), COWL imposes the label
+    response (see <a href="#extension-xhr">§3.6 Extensions to XMLHttpRequest</a>), COWL imposes the label
     restrictions and confines the code to only communicate with
     <code>https://provider.com</code>.</p>
       
@@ -520,18 +522,18 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
      
 
   
-     <div class="example" id="example-39fffd45"><a class="self-link" href="#example-39fffd45"></a>
+     <div class="example" id="example-25b3dc50"><a class="self-link" href="#example-25b3dc50"></a>
     Suppose <code>https://university.edu</code> wished to isolate
     different parts of their site according to users. The server
     operator can weaken the privilege of a page when serving user
     content by providing a response header field named
-    <code>COWL</code> (see <a href="#response-header">§3.5 The COWL HTTP Response Header Field</a>) whose value contains
+    <code>Sec-COWL</code> (see <a href="#response-header">§3.5.2 The Sec-COWL HTTP Response Header Field</a>) whose value contains
     the serialized <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a>. For example, for any
-    resources under <code>https://university.edu/~user1</code>, the
+    content under <code>https://university.edu/~user1</code>, the
     following header is set:
 
     
-      <pre><code><a href="#response-header">COWL</a>: privilege: [ ['self', 'cowl://user1'] ]
+      <pre><code><a href="#response-header">Sec-COWL</a>: ctx-privilege [ ['self', 'cowl://user1'] ]
 </code></pre>
       
 
@@ -583,7 +585,7 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
      
 
   
-     <div class="example" id="example-d3d479ef"><a class="self-link" href="#example-d3d479ef"></a>
+     <div class="example" id="example-b43e3b3c"><a class="self-link" href="#example-b43e3b3c"></a>
     The author of <code>https://example.com</code> can drop privileges
     in JavaScript:
 
@@ -597,11 +599,11 @@ COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privil
 
 
       <p>Or, by setting the content’s initial privilege to the <a data-link-type="dfn" href="#empty-privilege">empty
-      privilege</a> using <code>COWL</code> response header:</p>
+      privilege</a> using <code>Sec-COWL</code> response header:</p>
       
 
     
-      <pre><code><a href="#response-header">COWL</a>: privilege: [ [] ]
+      <pre><code><a href="#response-header">Sec-COWL</a>: <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a> [ [] ]
 </code></pre>
       
 
@@ -990,7 +992,7 @@ reflects the fact that the object (produced by
       confidentiality and integrity policies in terms of
         <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origins</a>. <a data-link-type="dfn" href="#label">Labels</a> can be associated with data and
         content using the JavaScript <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>
-      and <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> interfaces or the <code>COWL</code>
+      and <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> interfaces or the <code>Sec-COWL</code>
       HTTP response header.
       
      
@@ -1000,7 +1002,7 @@ reflects the fact that the object (produced by
      <dd><a data-link-type="dfn">
       The COWL framework provides a JavaScript </a><a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> interface for operating on and minting
       new <a data-link-type="dfn" href="#privilege">privileges</a>.  The <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> JavaScript
-      interface and <code>COWL</code> HTTP response header can be used
+      interface and <code>Sec-COWL</code> HTTP response header can be used
       used to explicitly set the authority of a context.
       
      
@@ -1242,7 +1244,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
      
 
     
-     <div class="example" id="example-7f7928d8"><a class="self-link" href="#example-7f7928d8"></a>
+     <div class="example" id="example-71d217c6"><a class="self-link" href="#example-71d217c6"></a>
       Example labels. Intuition for each label’s semantics is given in
       the context of it being used as a confidentiality label (C) and
       integrity label (I).
@@ -1295,8 +1297,8 @@ b.subsumes(a) === false;
 //    confidential to either a.com or b.com. Alternative intuition: data that can be read by
 //    a.com or b.com can be read by an entity that can read a.com (b.com) data alone.
 // I: Data that is endorsed by a.com (b.com) is more trustworthy than data that is endorsed
-//    by either a.com or b.com. Alternative intuition: an entity that trusts data that is
-//    endorsed by either a.com or b.com necessarily trusts data endorsed by a.com (b.com) alone.
+//    by either a.com or b.com. Alternative intuition: an entity that trusts data endorsed
+//    by either a.com or b.com necessarily trusts data endorsed by a.com (b.com) alone.
 a.subsumes(aOrb) === true;
 b.subsumes(aOrb) === true;
 </code></pre>
@@ -2069,6 +2071,9 @@ label set to <var>int</var>.</p>
          
 </ol>
       
+
+      
+
     
      </dl>
      
@@ -2259,12 +2264,207 @@ set to <var>obj</var>, the confidentiality label set to
      <p class="issue" id="issue-a71b8ddb"><a class="self-link" href="#issue-a71b8ddb"></a> add examples</p>
      
 
+  
+    </section>
+
+  
+    <section>
     
-     <h4 class="heading settled" data-level="3.4.5" id="extension-xhr"><span class="secno">3.4.5. </span><span class="content">Extensions to <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a></span><a class="self-link" href="#extension-xhr"></a></h4>
+     <h3 class="heading settled" data-level="3.5" id="header"><span class="secno">3.5. </span><span class="content">The <code>Sec-COWL</code> HTTP Headers</span><a class="self-link" href="#header"></a></h3>
+     
+
+
+     <p>The <code>Sec-COWL</code> HTTP request and response headers are
+    used by user agents and servers to convey <a data-link-type="dfn" href="#label-metadata">label metadata</a> to
+    servers and user agents, respectively.</p>
+     
+
+
+     <p><dfn data-dfn-type="dfn" data-noexport="" id="label-metadata">Label metadata<a class="self-link" href="#label-metadata"></a></dfn> is either <a data-link-type="dfn" href="#labeled-context-metadata">labeled context metadata</a>
+    or <a data-link-type="dfn" href="#labeled-data-metadata">labeled data metadata</a>.</p>
+     
+
+
+     <p><dfn data-dfn-type="dfn" data-noexport="" id="labeled-context-metadata">Labeled context metadata<a class="self-link" href="#labeled-context-metadata"></a></dfn> encodes <a data-link-type="dfn" href="#cowl-state">COWL state</a>
+    information, including:</p>
+     
+
+
+     <ul>
+      <li data-md="">
+       <p>the serialized <a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a> given by the <a data-link-type="dfn" href="#ctx_confidentiality">ctx-confidentiality</a> directive,</p>
+       
+
+      <li data-md="">
+       <p>the serialized <a data-link-type="dfn" href="#context-integrity-label">context integrity label</a> given by the <a data-link-type="dfn" href="#ctx_integrity">ctx-integrity</a> directive, and</p>
+       
+
+      <li data-md="">
+       <p>the serialized <a data-link-type="dfn" href="#context-privilege">context privilege</a>’s <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> given by the <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a> directive.</p>
+       
+</ul>
+     
+
+     <p>Its ABNF is:</p>
      
 
     
-     <h5 class="heading settled" data-level="3.4.5.1" id="request"><span class="secno">3.4.5.1. </span><span class="content">Request</span><a class="self-link" href="#request"></a></h5>
+     <pre><dfn data-dfn-type="dfn" data-noexport="" id="ctx_metadata">ctx-metadata<a class="self-link" href="#ctx_metadata"></a></dfn>        = <a data-link-type="dfn" href="#ctx_directive">ctx-directive</a> *( ";" [ <a data-link-type="dfn" href="#ctx_directive">ctx-directive</a> ] )
+<dfn data-dfn-type="dfn" data-noexport="" id="ctx_directive">ctx-directive<a class="self-link" href="#ctx_directive"></a></dfn>       = *<a data-link-type="dfn">WSP</a> <a data-link-type="dfn" href="#ctx_directive_name">ctx-directive-name</a> 1*<a data-link-type="dfn">WSP</a> <a data-link-type="dfn" href="#label_set">label-set</a>
+<dfn data-dfn-type="dfn" data-noexport="" id="ctx_directive_name">ctx-directive-name<a class="self-link" href="#ctx_directive_name"></a></dfn>  = "<dfn data-dfn-type="dfn" data-noexport="" id="ctx_confidentiality">ctx-confidentiality<a class="self-link" href="#ctx_confidentiality"></a></dfn>" / "<dfn data-dfn-type="dfn" data-noexport="" id="ctx_integrity">ctx-integrity<a class="self-link" href="#ctx_integrity"></a></dfn>" / "<dfn data-dfn-type="dfn" data-noexport="" id="ctx_privilege">ctx-privilege<a class="self-link" href="#ctx_privilege"></a></dfn>"
+</pre>
+     
+
+
+     <p><dfn data-dfn-type="dfn" data-noexport="" id="labeled-data-metadata">Labeled data metadata<a class="self-link" href="#labeled-data-metadata"></a></dfn> is used to convey the
+    confidentiality and integrity labels of an HTTP request (by
+    <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>) or HTTP response, using the
+    <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a> directive and <a data-link-type="dfn" href="#data_integrity">data-integrity</a>
+    directive directives.  Its ABNF is:</p>
+     
+
+    
+     <pre><dfn data-dfn-type="dfn" data-noexport="" id="data_metadata">data-metadata<a class="self-link" href="#data_metadata"></a></dfn>       = <a data-link-type="dfn" href="#data_directive">data-directive</a> *( ";" [ <a data-link-type="dfn" href="#data_directive">data-directive</a> ] )
+<dfn data-dfn-type="dfn" data-noexport="" id="data_directive">data-directive<a class="self-link" href="#data_directive"></a></dfn>      = *<a data-link-type="dfn">WSP</a> <a data-link-type="dfn" href="#data_directive_name">data-directive-name</a> 1*<a data-link-type="dfn">WSP</a> <a data-link-type="dfn" href="#label_set">label-set</a>
+<dfn data-dfn-type="dfn" data-noexport="" id="data_directive_name">data-directive-name<a class="self-link" href="#data_directive_name"></a></dfn> = "<dfn data-dfn-type="dfn" data-noexport="" id="data_confidentiality">data-confidentiality<a class="self-link" href="#data_confidentiality"></a></dfn>" / "<dfn data-dfn-type="dfn" data-noexport="" id="data_integrity">data-integrity<a class="self-link" href="#data_integrity"></a></dfn>"
+</pre>
+     
+
+
+     <p>The ABNF for <dfn data-dfn-type="dfn" data-noexport="" id="serialized-labels">serialized labels<a class="self-link" href="#serialized-labels"></a></dfn> is:</p>
+     
+
+    
+     <pre><dfn data-dfn-type="dfn" data-noexport="" id="label_set">label-set<a class="self-link" href="#label_set"></a></dfn>           = "[" <a data-link-type="dfn" href="#disjunction_set">disjunction-set</a> *( "," [ <a data-link-type="dfn" href="#disjunction_set">disjunction-set</a> ] ) "]" 
+<dfn data-dfn-type="dfn" data-noexport="" id="disjunction_set">disjunction-set<a class="self-link" href="#disjunction_set"></a></dfn>     = "[" [ <a data-link-type="dfn" href="#source_expression">source-expression</a> *( "," [ <a data-link-type="dfn" href="#source_expression">source-expression</a> ] ) ] "]" 
+<dfn data-dfn-type="dfn" data-noexport="" id="source_expression">source-expression<a class="self-link" href="#source_expression"></a></dfn>   = "'self'" / "'unique'" / <a data-link-type="dfn" href="https://www.w3.org/TR/CSP2/#source-list-syntax">host-source</a>
+</pre>
+     
+
+    
+     <section>
+      
+      <h4 class="heading settled" data-level="3.5.1" id="request-header"><span class="secno">3.5.1. </span><span class="content">The <code>Sec-COWL</code> HTTP Request Header Field</span><a class="self-link" href="#request-header"></a></h4>
+      
+
+
+      <p>The ABNF for the <code>Sec-COWL</code> HTTP request header is:</p>
+      
+
+      
+      <pre>"Sec-COWL:" <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a> / <a data-link-type="dfn" href="#data_metadata">data-metadata</a>
+</pre>
+      
+
+
+      <p>The user agent MUST send a header field named <code>Sec-COWL</code>
+      along with requests if <a data-link-type="dfn" href="#confinement-mode">confinement mode</a> is enabled.
+      The value of this header MUST contain the <a data-link-type="dfn" href="#labeled-context-metadata">labeled context
+      metadata</a> of the context that performed the request. This
+      <a data-link-type="dfn" href="#labeled-context-metadata">labeled context metadata</a> MUST include the current
+      <a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a>, <a data-link-type="dfn" href="#context-integrity-label">context integrity
+      label</a>, and <a data-link-type="dfn" href="#context-privilege">context privileges</a>.</p>
+      
+
+
+
+      <p class="note" role="note">Note, as described in <a href="#extension-xhr">§3.6 Extensions to XMLHttpRequest</a>, when sending <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s, the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> additionally
+      sets a header with the <code>Sec-COWL</code> field name, but
+      with <a data-link-type="dfn" href="#labeled-data-metadata">labeled data metadata</a> as the value.</p>
+      
+
+      
+      <div class="example" id="example-89644cdc"><a class="self-link" href="#example-89644cdc"></a>
+        Request header from an <code>http://a.com</code> page that has
+        read data sensitive to <code>http://b.com</code>.
+        
+       <pre><code>Sec-COWL: <a data-link-type="dfn" href="#ctx_confidentiality">ctx-confidentiality</a> [ ['https://b.com'] ];
+          <a data-link-type="dfn" href="#ctx_integrity">ctx-integrity</a> [ [] ];
+          <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a> [ ['https://a.com'] ];
+</code></pre>
+       
+      
+      </div>
+      
+      
+      <div class="example" id="example-213e4d1b"><a class="self-link" href="#example-213e4d1b"></a>
+        Request header from a public, untrustworthy
+        <code>http://university.edu</code> context that <a data-link-type="dfn" href="#owns">owns</a> a
+        <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a>:
+        
+       <pre><code>Sec-COWL: <a data-link-type="dfn" href="#ctx_confidentiality">ctx-confidentiality</a> [ [] ];
+          <a data-link-type="dfn" href="#ctx_integrity">ctx-integrity</a> [ [] ];
+          <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a> [ ['http://university.edu', 'cowl://user1'] ];
+</code></pre>
+       
+      
+      </div>
+      
+    
+     </section>
+     
+
+    
+     <section>
+      
+      <h4 class="heading settled" data-level="3.5.2" id="response-header"><span class="secno">3.5.2. </span><span class="content">The <code>Sec-COWL</code> HTTP Response Header Field</span><a class="self-link" href="#response-header"></a></h4>
+      
+
+      
+      <pre>"Sec-COWL:" <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a> / <a data-link-type="dfn" href="#data_metadata">data-metadata</a>
+</pre>
+      
+
+
+      <p class="issue" id="issue-f4bc3b24"><a class="self-link" href="#issue-f4bc3b24"></a> describe how response header is processes</p>
+      
+
+
+      <p class="issue" id="issue-8027d210"><a class="self-link" href="#issue-8027d210"></a> describe how labeled headers and XHR work</p>
+      
+
+      
+      <div class="example" id="example-85fc8790"><a class="self-link" href="#example-85fc8790"></a>
+        The author of <code>http://a.com</code> may wish to reply to a 
+        request with data that is sensitive to both <code>https://a.com</code> and
+        <a data-link-type="dfn">https://b.com</a>, while simultaneously indicating that
+        it endorses the data:
+        
+       <pre><code>Sec-COWL: <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a> [ ['https://a.com'], ['https://b.com'] ];
+          <a data-link-type="dfn" href="#data_integrity">data-integrity</a> [ ['https://a.com'] ];
+</code></pre>
+       
+      
+      </div>
+      
+      
+      <div class="example" id="example-16f97c55"><a class="self-link" href="#example-16f97c55"></a>
+        An author may wish to specify that the
+        <code>https://university.edu/~user1</code> page should run with
+        a delegated privilege—namely, 
+        <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu/").or("cowl://user1")</code>—from
+         the start:
+        
+       <pre><code>Sec-COWL: <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a> [ ['self', 'cowl://user1'] ];
+</code></pre>
+       
+      
+      </div>
+      
+    
+     </section>
+     
+  
+    </section>
+
+  
+    <section>
+    
+     <h3 class="heading settled" data-level="3.6" id="extension-xhr"><span class="secno">3.6. </span><span class="content">Extensions to <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a></span><a class="self-link" href="#extension-xhr"></a></h3>
+     
+
+    
+     <h4 class="heading settled" data-level="3.6.1" id="sending-labeled-objects"><span class="secno">3.6.1. </span><span class="content">Sending <a data-link-type="dfn" href="#labeled-objects">labeled objects</a></span><a class="self-link" href="#sending-labeled-objects"></a></h4>
      
       This specification extends the
       <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#interface-xmlhttprequest">XMLHttpRequest</a> interface with and overloaded
@@ -2278,152 +2478,59 @@ set to <var>obj</var>, the confidentiality label set to
 </pre>
      
 
-     <p>The <dfn class="idl-code" data-dfn-for="XMLHttpRequest" data-dfn-type="method" data-export="" id="dom-xmlhttprequest-sendlobj" title="XMLHttpRequest/send(lobj)">send(lobj)<a class="self-link" href="#dom-xmlhttprequest-sendlobj"></a></dfn>  method must run these steps:</p>
+     <p>The <dfn class="idl-code" data-dfn-for="XMLHttpRequest" data-dfn-type="method" data-export="" id="dom-xmlhttprequest-sendlobj" title="XMLHttpRequest/send(lobj)">send(lobj)<a class="self-link" href="#dom-xmlhttprequest-sendlobj"></a></dfn>  method MUST run these steps:</p>
      
 
 
      <ol>
       <li data-md="">
-       <p>Let <var>obj</var> be the serialized object produced by
-invoking the <a data-link-type="dfn" href="#labeledobject-serialization">LabeledObject serialization</a> algorithm with
-the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a>
-argument.</p>
+       <p>Let <var>obj</var> be the <a data-link-type="dfn" href="#protected-object">protected object</a> of the
+ <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
        
 
 
       <li data-md="">
-       <p>Call the
-<a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
-method on the object this method was called on with 
-<var>obj</var> as an argument.</p>
+       <p>Append a header named <code>Sec-COWL</code> to the
+ <a href="https://xhr.spec.whatwg.org/#author-request-headers">author
+   request headers</a> associated with the object this
+ methods was called on.  The value of the
+ <code>Sec-COWL</code> header MUST be <a data-link-type="dfn" href="#labeled-data-metadata">labeled data
+   metadata</a> containing the confidentiality and integrity
+ labels of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
        
-</ol>
-     
-
-     <p class="issue" id="issue-8e9dcf2b"><a class="self-link" href="#issue-8e9dcf2b"></a> send() is not well-defined. Should we only allow JSON
-      objects for LabeldObject? Or should we have a header associated
-      with object and use normal serialization?</p>
-     
 
 
-    
-     <h5 class="heading settled" data-level="3.4.5.2" id="response"><span class="secno">3.4.5.2. </span><span class="content">Response</span><a class="self-link" href="#response"></a></h5>
+      <li data-md="">
+       <p>Invoke the
+ <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+ method on the object this method was called on with 
+ <var>obj</var> as an argument.</p>
+       
+
+
+       <p class="note" role="note">Note, that <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+ throws an exception in step 4 if <var>obj</var> cannot be <a data-link-type="dfn">serialized</a>.
+ User agents MUST ensure that all <a data-link-type="dfn" href="#protected-object">protected object</a>s can be
+ serialized at the time of creating <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a><a data-link-type="dfn">s.</a></p><a data-link-type="dfn">
+</a></ol><a data-link-type="dfn">
+    </a>
+     <h4 class="heading settled" data-level="3.6.2" id="receiving-labeled-objects"><span class="secno">3.6.2. </span><span class="content"><a data-link-type="dfn">Receiving </a><a data-link-type="dfn" href="#labeled-objects">labeled objects</a></span><a class="self-link" href="#receiving-labeled-objects"></a></h4>
      
       This specification extends the
       <code><a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a></code> with a new
       response type:
       
-     <pre class="idl">enum XMLHttpRequestResponseType {
-  ... existing response types ...,
-  "labeled-text"
+     <pre class="idl">enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a> {
+  // ... existing response types ...,
+  "labeled-json"
 };
 </pre>
      
 
 
-     <p class="issue" id="issue-3f45d629"><a class="self-link" href="#issue-3f45d629"></a> Should we have labeld-json, labeled-blob, etc.?</p>
-     
-
-
-     <p class="issue" id="issue-656b48b1"><a class="self-link" href="#issue-656b48b1"></a> completed definition for XHR response.</p>
-     
-
-  
-    </section>
-
-  
-    <section>
-    
-     <h3 class="heading settled" data-level="3.5" id="response-header"><span class="secno">3.5. </span><span class="content">The <code>COWL</code> HTTP Response Header Field</span><a class="self-link" href="#response-header"></a></h3>
-     
-
-
-     <p class="issue" id="issue-e30b85a5"><a class="self-link" href="#issue-e30b85a5"></a> describe response header grammar</p>
-     
-
-
-     <p class="issue" id="issue-f4bc3b24"><a class="self-link" href="#issue-f4bc3b24"></a> describe how response header is processes</p>
-     
-
-
-     <p class="issue" id="issue-8027d210"><a class="self-link" href="#issue-8027d210"></a> describe how labeled headers and XHR work</p>
-     
-
-    
-     <div class="example" id="example-cccc17f6"><a class="self-link" href="#example-cccc17f6"></a>
-      The author of <code>http://a.com</code> may wish to reply to a 
-      request with data that is sensitive to both <code>https://a.com</code> and
-      <a data-link-type="dfn">https://b.com</a>, while simultaneously indicating that
-      it endorses the data:
-      
-      <pre><code>COWL: <a data-link-type="dfn">confidentiality-label</a> [ ['https://a.com'], ['https://b.com'] ];
-      <a data-link-type="dfn">integrity-label</a> [ ['https://a.com'] ];
-</code></pre>
-      
-    
-     </div>
+     <p class="issue" id="issue-190c86c0"><a class="self-link" href="#issue-190c86c0"></a> completed definition</p>
      
     
-     <div class="example" id="example-af83b2df"><a class="self-link" href="#example-af83b2df"></a>
-      An author may wish to specify that the
-      <code>https://university.edu/~user1</code> page should run with
-      a delegated privilege—namely, 
-      <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu/").or("cowl://user1")</code>—from
-       the start:
-      
-      <pre><code>COWL: <a data-link-type="dfn" href="#privilege">privilege</a> [ ['self', 'cowl://user1'] ];
-</code></pre>
-      
-    
-     </div>
-     
-  
-    </section>
-
-  
-    <section>
-    
-     <h3 class="heading settled" data-level="3.6" id="request-header"><span class="secno">3.6. </span><span class="content">The <code>COWL</code> HTTP Request Header Field</span><a class="self-link" href="#request-header"></a></h3>
-     
-    The user agent MUST send a header field named <dfn data-dfn-type="dfn" data-local-lt="COWL" data-noexport="" id="cowl0"><code>COWL</code><a class="self-link" href="#cowl0"></a></dfn>
-    along with requests if <a data-link-type="dfn" href="#confinement-mode">confinement mode</a> is enabled.
-    The value of this header MUST contain the
-    stringyfied context’s <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a>,
-    <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a>, and <a data-link-type="dfn" href="#current-privilege">current privilege</a>, as
-    defined by the following ABNF grammar:
-
-
-     <p class="issue" id="issue-1d09bad5"><a class="self-link" href="#issue-1d09bad5"></a> describe request header grammar</p>
-     
-
-    
-     <div class="example" id="example-d074badb"><a class="self-link" href="#example-d074badb"></a>
-      Request header from an <code>http://a.com</code> context that has
-      read data sensitive to <code>http://b.com</code>.
-      
-      <pre><code>COWL: <a data-link-type="dfn">confidentiality-label</a> [ ['https://b.com'] ];
-      <a data-link-type="dfn">integrity-label</a> [ [] ];
-      <a data-link-type="dfn" href="#privilege">privilege</a> [ ['https://a.com'] ];
-</code></pre>
-      
-    
-     </div>
-     
-    
-     <div class="example" id="example-7e38bf47"><a class="self-link" href="#example-7e38bf47"></a>
-      Request header from a public, untrustworthy
-      <code>http://university.edu</code> context that owns a
-      delegated privilege:
-      
-      <pre><code>COWL: <a data-link-type="dfn">confidentiality-label</a> [ [] ];
-      <a data-link-type="dfn">integrity-label</a> [ [] ];
-      <a data-link-type="dfn" href="#privilege">privilege</a> [ ['http://university.edu', 'cowl://user1'] ];
-</code></pre>
-      
-    
-     </div>
-     
-  
     </section>
 
 </section>
@@ -2512,25 +2619,6 @@ method on the object this method was called on with
 
   
     </section>
-
-  
-    <section>
-    
-     <h3 class="heading settled" data-level="4.6" id="labeldobject-serialization"><span class="secno">4.6. </span><span class="content">Serializing Labeld Objects</span><a class="self-link" href="#labeldobject-serialization"></a></h3>
-     
-    The <dfn data-dfn-type="dfn" data-noexport="" id="labeledobject-serialization">LabeledObject serialization<a class="self-link" href="#labeledobject-serialization"></a></dfn> algorithm takes a <a class="idl-code" data-link-type="interface">LabeldObject</a> and returns a serialized version of
-      it.
-
-
-     <p class="issue" id="issue-a91b62a7"><a class="self-link" href="#issue-a91b62a7"></a> describe LabeldObject serialization</p>
-     
-
-    </section>
-
-
-    <p class="issue" id="issue-19556c70"><a class="self-link" href="#issue-19556c70"></a> most of the spec talks about contexts not at all about
-    workers; should revise to be more general. (Should mostly be
-    straightforward.)</p>
 
 </section></main>
 
@@ -2627,20 +2715,26 @@ method on the object this method was called on with
    <li>context labels, <a href="#context-labels0">3.3</a>
    <li>context privilege, <a href="#context-privilege">3.3</a>
    <li>context tainting, <a href="#context-tainting">4.4</a>
-   <li>COWL
-    <ul>
-     <li>(interface), <a href="#cowl">3.3</a>
-     <li>definition of, <a href="#cowl0">3.6</a>
-     <li>definition of, <a href="#cowl0">3.6</a>
-    </ul>
+   <li>COWL, <a href="#cowl">3.3</a>
    <li>COWL state
     <ul>
      <li>definition of, <a href="#cowl-state">3.3</a>
      <li>definition of, <a href="#cowl-state0">3.3</a>
     </ul>
+   <li>ctx-confidentiality, <a href="#ctx_confidentiality">3.5</a>
+   <li>ctx-directive, <a href="#ctx_directive">3.5</a>
+   <li>ctx-directive-name, <a href="#ctx_directive_name">3.5</a>
+   <li>ctx-integrity, <a href="#ctx_integrity">3.5</a>
+   <li>ctx-metadata, <a href="#ctx_metadata">3.5</a>
+   <li>ctx-privilege, <a href="#ctx_privilege">3.5</a>
    <li>current confidentiality label, <a href="#current-confidentiality-label">2.1</a>
    <li>current integrity label, <a href="#current-integrity-label">2.1</a>
    <li>current privilege, <a href="#current-privilege">2.2</a>
+   <li>data-confidentiality, <a href="#data_confidentiality">3.5</a>
+   <li>data-directive, <a href="#data_directive">3.5</a>
+   <li>data-directive-name, <a href="#data_directive_name">3.5</a>
+   <li>data-integrity, <a href="#data_integrity">3.5</a>
+   <li>data-metadata, <a href="#data_metadata">3.5</a>
    <li>default confidentiality label, <a href="#default-confidentiality-label">3.3</a>
    <li>default COWL state, <a href="#default-cowl-state">3.3</a>
    <li>default integrity label, <a href="#default-integrity-label">3.3</a>
@@ -2648,6 +2742,7 @@ method on the object this method was called on with
    <li>delegated
       privilege, <a href="#delegated-privilege">3.2</a>
    <li>delegate(label), <a href="#dom-privilege-delegatelabel">3.2.2</a>
+   <li>disjunction-set, <a href="#disjunction_set">3.5</a>
    <li>disjunction set, <a href="#disjunction-set">3.1</a>
    <li>dropping privileges, <a href="#dropping-privileges">3.2</a>
    <li>effective confidentiality label, <a href="#effective-confidentiality-label">2.2</a>
@@ -2669,17 +2764,19 @@ method on the object this method was called on with
     label, <a href="#internal-privilege-label">3.2</a>
    <li>isEnabled(), <a href="#dom-cowl-isenabled">3.3.2</a>
    <li>Label(), <a href="#dom-label-label">3.1.1</a>
-   <li>Label, <a href="#label1">3.1</a>
    <li>label
     <ul>
      <li>definition of, <a href="#label">2.1</a>
      <li>argument for Privilege/delegate(label), <a href="#dom-privilege-delegatelabel-label">3.2</a>
     </ul>
+   <li>Label, <a href="#label1">3.1</a>
    <li>label downgrade, <a href="#label-downgrade">4.3</a>
+   <li>Labeled context metadata, <a href="#labeled-context-metadata">3.5</a>
+   <li>Labeled data metadata, <a href="#labeled-data-metadata">3.5</a>
    <li>LabeledObject, <a href="#labeledobject">3.4</a>
    <li>LabeledObject(obj, labels), <a href="#dom-labeledobject-labeledobjectobj-labels">3.4.1</a>
    <li>labeled objects, <a href="#labeled-objects">2.1</a>
-   <li>LabeledObject serialization, <a href="#labeledobject-serialization">4.6</a>
+   <li>Label metadata, <a href="#label-metadata">3.5</a>
    <li>label normal form reduction, <a href="#label-normal-form-reduction">4.1</a>
    <li>Label(origin), <a href="#dom-label-labelorigin">3.1.1</a>
    <li>labels
@@ -2688,8 +2785,9 @@ method on the object this method was called on with
      <li>argument for LabeledObject/clone(labels), <a href="#dom-labeledobject-clonelabels-labels">3.4</a>
     </ul>
    <li>label set, <a href="#label-set">3.1</a>
+   <li>label-set, <a href="#label_set">3.5</a>
    <li>label subsumption, <a href="#label-subsumption">4.2</a>
-   <li>lobj, <a href="#dom-xmlhttprequest-sendlobj-lobj">3.4.5.1</a>
+   <li>lobj, <a href="#dom-xmlhttprequest-sendlobj-lobj">3.6.1</a>
    <li>normal form, <a href="#normal-form">2.1</a>
    <li>obj
     <ul>
@@ -2711,17 +2809,19 @@ method on the object this method was called on with
    <li>ownership, <a href="#ownership">2.2</a>
    <li>owns, <a href="#owns">2.2</a>
    <li>Privilege, <a href="#privilege0">3.2</a>
+   <li>Privilege(), <a href="#dom-privilege-privilege">3.2.1</a>
    <li>privilege
     <ul>
      <li>definition of, <a href="#privilege">2.2</a>
      <li>attribute for COWL, <a href="#dom-cowl-privilege">3.3.1</a>
     </ul>
-   <li>Privilege(), <a href="#dom-privilege-privilege">3.2.1</a>
    <li>protectedObject, <a href="#dom-labeledobject-protectedobject">3.4.2</a>
    <li>protected
       object, <a href="#protected-object">3.4</a>
    <li>restricting, <a href="#restricting">2.1</a>
-   <li>send(lobj), <a href="#dom-xmlhttprequest-sendlobj">3.4.5.1</a>
+   <li>send(lobj), <a href="#dom-xmlhttprequest-sendlobj">3.6.1</a>
+   <li>serialized labels, <a href="#serialized-labels">3.5</a>
+   <li>source-expression, <a href="#source_expression">3.5</a>
    <li>subsumes, <a href="#subsumes">2.1</a>
    <li>subsumes(other), <a href="#dom-label-subsumesother">3.1.2</a>
    <li>tainted, <a href="#tainted">2.1</a>
@@ -2733,6 +2833,10 @@ method on the object this method was called on with
    <li><a data-link-type="biblio" href="#biblio-cors">[cors]</a> defines the following terms:
     <ul>
      <li><a href="http://www.w3.org/TR/cors/#access-control-allow-origin-response-header">access-control-allow-origin</a>
+    </ul>
+   <li><a data-link-type="biblio" href="#biblio-csp2">[CSP2]</a> defines the following terms:
+    <ul>
+     <li><a href="https://www.w3.org/TR/CSP2/#source-list-syntax">host-source</a>
     </ul>
    <li><a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
     <ul>
@@ -2775,6 +2879,8 @@ method on the object this method was called on with
   <h2 class="no-num heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-csp2"><a class="self-link" href="#biblio-csp2"></a>[CSP2]
+   <dd>Mike West; Adam Barth; Dan Veditz. <a href="https://w3c.github.io/webappsec/specs/content-security-policy/">Content Security Policy Level 2</a>. CR. URL: <a href="https://w3c.github.io/webappsec/specs/content-security-policy/">https://w3c.github.io/webappsec/specs/content-security-policy/</a>
    <dt id="biblio-ecma-262"><a class="self-link" href="#biblio-ecma-262"></a>[ECMA-262]
    <dd>Allen Wirfs-Brock. <a href="http://www.ecma-international.org/ecma-262/6.0/">ECMA-262 6th Edition, The ECMAScript 2015 Language Specification</a>. June 2015. Standard. URL: <a href="http://www.ecma-international.org/ecma-262/6.0/">http://www.ecma-international.org/ecma-262/6.0/</a>
    <dt id="biblio-rfc6454"><a class="self-link" href="#biblio-rfc6454"></a>[RFC6454]
@@ -2852,9 +2958,9 @@ partial interface <a class="idl-code" data-link-type="interface" href="https://x
   void <a class="idl-code" data-link-type="method" href="#dom-xmlhttprequest-sendlobj">send</a>(<a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a>);
 };
 
-enum XMLHttpRequestResponseType {
-  ... existing response types ...,
-  "labeled-text"
+enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a> {
+  // ... existing response types ...,
+  "labeled-json"
 };
 
 </pre>
@@ -2870,22 +2976,12 @@ enum XMLHttpRequestResponseType {
    <div class="issue"> Add some examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>
     object. And to provide some intuition for the semantics.<a href="#issue-0c285526"> ↵ </a></div>
    <div class="issue"> add examples<a href="#issue-a71b8ddb"> ↵ </a></div>
-   <div class="issue"> send() is not well-defined. Should we only allow JSON
-      objects for LabeldObject? Or should we have a header associated
-      with object and use normal serialization?<a href="#issue-8e9dcf2b"> ↵ </a></div>
-   <div class="issue"> Should we have labeld-json, labeled-blob, etc.?<a href="#issue-3f45d629"> ↵ </a></div>
-   <div class="issue"> completed definition for XHR response.<a href="#issue-656b48b1"> ↵ </a></div>
-   <div class="issue"> describe response header grammar<a href="#issue-e30b85a5"> ↵ </a></div>
    <div class="issue"> describe how response header is processes<a href="#issue-f4bc3b24"> ↵ </a></div>
    <div class="issue"> describe how labeled headers and XHR work<a href="#issue-8027d210"> ↵ </a></div>
-   <div class="issue"> describe request header grammar<a href="#issue-1d09bad5"> ↵ </a></div>
+   <div class="issue"> completed definition<a href="#issue-190c86c0"> ↵ </a></div>
    <div class="issue"> describe the reduction algorithm<a href="#issue-a82506bb"> ↵ </a></div>
    <div class="issue"> describe the subsumes algorithm<a href="#issue-3dc7e411"> ↵ </a></div>
    <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div>
    <div class="issue"> describe taint<a href="#issue-9c43f37a"> ↵ </a></div>
-   <div class="issue"> describe write check<a href="#issue-821539a6"> ↵ </a></div>
-   <div class="issue"> describe LabeldObject serialization<a href="#issue-a91b62a7"> ↵ </a></div>
-   <div class="issue"> most of the spec talks about contexts not at all about
-    workers; should revise to be more general. (Should mostly be
-    straightforward.)<a href="#issue-19556c70"> ↵ </a></div></div></body>
+   <div class="issue"> describe write check<a href="#issue-821539a6"> ↵ </a></div></div></body>
 </html>

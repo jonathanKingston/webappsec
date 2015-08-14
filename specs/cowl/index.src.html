@@ -31,6 +31,8 @@ spec: WORKERS; urlPrefix: http://www.w3.org/TR/workers/
 spec: CSP2; urlPrefix: https://www.w3.org/TR/CSP2/
   type: dfn
     text: content-security-policy
+  type: dfn
+    text: host-source; url: source-list-syntax
 spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
   type: element-attr
     urlPrefix: embedded-content-0.html
@@ -191,20 +193,20 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   <!-- TODO: fix targetOrigin link in above paragraph -->
 
   1. Authors should be able to specify confidentiality and integrity
-  policies on data in terms of origin labels: the origins to whom the
-  data is confidential and the origins that endorse the data.  This
-  allows authors to share sensitive data with third-party content and
-  impose restrictions on the origins with which it can communicate
-  once it inspects the sensitive data. Dually, it allows authors to
-  share data via intermediate content while retaining its integrity.
+     policies on data in terms of origin labels: the origins to whom the
+     data is confidential and the origins that endorse the data.  This
+     allows authors to share sensitive data with third-party content and
+     impose restrictions on the origins with which it can communicate
+     once it inspects the sensitive data. Dually, it allows authors to
+     share data via intermediate content while retaining its integrity.
 
   2. Authors should be able to run code with <em>least privilege</em>
-  by restricting the origins the code can communicate with and thus
-  how it can disseminate sensitive data.
+     by restricting the origins the code can communicate with and thus
+     how it can disseminate sensitive data.
 
   3. Authors should be able to <em>privilege separate</em>
-  applications by compartmentalizing them into separate contexts that
-  have <a>delegated privileges</a>.
+     applications by compartmentalizing them into separate contexts that
+     have <a>delegated privileges</a>.
 
   </section>
 
@@ -273,7 +275,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   <a>origins</a> that can access the data [[!CORS]], the operator
   wishes to restrict how the data is further disseminated by these
   origins. To do so, the operator sends a response header
-  field named <code>COWL</code> (described in [[#response-header]])
+  field named <code>Sec-COWL</code> (described in [[#response-header]])
   whose value contains the sensitivity of the data in the form of a
   serialized confidentiality <a>label</a>.  In turn, COWL enforces the label
   restrictions on the third-party code, once it inspects the response.
@@ -288,7 +290,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
     <pre><code>
      <a>Access-Control-Allow-Origin</a>: https://mashup.com
-     <a href="#response-header">COWL</a>: confidentiality: [ ["https://provider.com"] ]
+     <a href="#response-header">Sec-COWL</a>: <a>data-confidentiality</a> [ ["https://provider.com"] ]
     </code></pre>
 
     Once a <code>https://mashup.com</code> context reads the labeled
@@ -320,13 +322,13 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     different parts of their site according to users. The server
     operator can weaken the privilege of a page when serving user
     content by providing a response header field named
-    <code>COWL</code> (see [[#response-header]]) whose value contains
+    <code>Sec-COWL</code> (see [[#response-header]]) whose value contains
     the serialized <a>delegated privilege</a>. For example, for any
-    resources under <code>https://university.edu/~user1</code>, the
+    content under <code>https://university.edu/~user1</code>, the
     following header is set:
 
     <pre><code>
-     <a href="#response-header">COWL</a>: privilege: [ ['self', 'cowl://user1'] ]
+     <a href="#response-header">Sec-COWL</a>: ctx-privilege [ ['self', 'cowl://user1'] ]
     </code></pre>
 
     Having this privilege can be understood as having the authority of
@@ -376,10 +378,10 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     </code></pre>
 
     Or, by setting the content's initial privilege to the <a>empty
-      privilege</a> using <code>COWL</code> response header:
+      privilege</a> using <code>Sec-COWL</code> response header:
 
     <pre><code>
-     <a href="#response-header">COWL</a>: privilege: [ [] ]
+     <a href="#response-header">Sec-COWL</a>: <a>ctx-privilege</a> [ [] ]
     </code></pre>
 
     Note, while this ensures that the context code cannot, for instance,
@@ -671,7 +673,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       confidentiality and integrity policies in terms of
         <a>origins</a>. <a>Labels</a> can be associated with data and
         content using the JavaScript <a interface>LabeledObject</a>
-      and <a interface>COWL</a> interfaces or the <code>COWL</code>
+      and <a interface>COWL</a> interfaces or the <code>Sec-COWL</code>
       HTTP response header.
       </dd>
       <dt>Explicit authority via <a>privileges<a></dt>
@@ -679,7 +681,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       The COWL framework provides a JavaScript <a
       interface>Privilege</a> interface for operating on and minting
       new <a>privileges</a>.  The <a interface>COWL</a> JavaScript
-      interface and <code>COWL</code> HTTP response header can be used
+      interface and <code>Sec-COWL</code> HTTP response header can be used
       used to explicitly set the authority of a context.
       </dd>
       <dt>Confinement enforcement mechanism</dt>
@@ -868,8 +870,8 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       //    confidential to either a.com or b.com. Alternative intuition: data that can be read by
       //    a.com or b.com can be read by an entity that can read a.com (b.com) data alone.
       // I: Data that is endorsed by a.com (b.com) is more trustworthy than data that is endorsed
-      //    by either a.com or b.com. Alternative intuition: an entity that trusts data that is
-      //    endorsed by either a.com or b.com necessarily trusts data endorsed by a.com (b.com) alone.
+      //    by either a.com or b.com. Alternative intuition: an entity that trusts data endorsed
+      //    by either a.com or b.com necessarily trusts data endorsed by a.com (b.com) alone.
       a.subsumes(aOrb) === true;
       b.subsumes(aOrb) === true;
       </code></pre>
@@ -1348,6 +1350,9 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       <var>conf</var>, and the integrity
       label set to <var>int</var>.
       </dd>
+      
+      <!-- TODO: link JSON -->
+
     </dl>
 
     <div class="note">
@@ -1462,9 +1467,135 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
     ISSUE: add examples
 
-    <h4 id="extension-xhr">Extensions to <a>XMLHttpRequest</a></h4>
+  </section>
 
-    <h5>Request</h5>
+  <section>
+    <h3 id="header">The <code>Sec-COWL</code> HTTP Headers</h3>
+
+    The <code>Sec-COWL</code> HTTP request and response headers are
+    used by user agents and servers to convey <a>label metadata</a> to
+    servers and user agents, respectively.
+
+    <dfn>Label metadata</dfn> is either <a>labeled context metadata</a>
+    or <a>labeled data metadata</a>.
+
+    <dfn>Labeled context metadata</dfn> encodes <a>COWL state</a>
+    information, including:
+
+    * the serialized <a>context confidentiality label</a> given by the <a>ctx-confidentiality</a> directive,
+    * the serialized <a>context integrity label</a> given by the <a>ctx-integrity</a> directive, and
+    * the serialized <a>context privilege</a>'s <a>internal privilege label</a> given by the <a>ctx-privilege</a> directive.
+    
+    Its ABNF is:
+
+    <pre>
+      <dfn>ctx-metadata</dfn>        = <a>ctx-directive</a> *( ";" [ <a>ctx-directive</a> ] )
+      <dfn>ctx-directive</dfn>       = *<a>WSP</a> <a>ctx-directive-name</a> 1*<a>WSP</a> <a>label-set</a>
+      <dfn>ctx-directive-name</dfn>  = "<dfn>ctx-confidentiality</dfn>" / "<dfn>ctx-integrity</dfn>" / "<dfn>ctx-privilege</dfn>"
+    </pre>
+
+    <dfn>Labeled data metadata</dfn> is used to convey the
+    confidentiality and integrity labels of an HTTP request (by
+    <a>XMLHttpRequest</a>) or HTTP response, using the
+    <a>data-confidentiality</a> directive and <a>data-integrity</a>
+    directive directives.  Its ABNF is:
+
+    <pre>
+      <dfn>data-metadata</dfn>       = <a>data-directive</a> *( ";" [ <a>data-directive</a> ] )
+      <dfn>data-directive</dfn>      = *<a>WSP</a> <a>data-directive-name</a> 1*<a>WSP</a> <a>label-set</a>
+      <dfn>data-directive-name</dfn> = "<dfn>data-confidentiality</dfn>" / "<dfn>data-integrity</dfn>"
+    </pre>
+
+    The ABNF for <dfn>serialized labels</dfn> is:
+
+    <pre>
+      <dfn>label-set</dfn>           = "[" <a>disjunction-set</a> *( "," [ <a>disjunction-set</a> ] ) "]" 
+      <dfn>disjunction-set</dfn>     = "[" [ <a>source-expression</a> *( "," [ <a>source-expression</a> ] ) ] "]" 
+      <dfn>source-expression</dfn>   = "'self'" / "'unique'" / <a>host-source</a>
+    </pre>
+
+    <section>
+      <h4 id="request-header">The <code>Sec-COWL</code> HTTP Request Header Field</h4>
+
+      The ABNF for the <code>Sec-COWL</code> HTTP request header is:
+
+      <pre>
+        "Sec-COWL:" <a>ctx-metadata</a> / <a>data-metadata</a>
+      </pre>
+
+      The user agent MUST send a header field named <code>Sec-COWL</code>
+      along with requests if <a>confinement mode</a> is enabled.
+      The value of this header MUST contain the <a>labeled context
+      metadata</a> of the context that performed the request. This
+      <a>labeled context metadata</a> MUST include the current
+      <a>context confidentiality label</a>, <a>context integrity
+      label</a>, and <a>context privileges</a>.
+
+
+      Note, as described in [[#extension-xhr]], when sending <a
+      interface>LabeledObject</a>s, the <a>XMLHttpRequest</a> additionally
+      sets a header with the <code>Sec-COWL</code> field name, but
+      with <a>labeled data metadata</a> as the value.
+
+      <div class="example">
+        Request header from an <code>http://a.com</code> page that has
+        read data sensitive to <code>http://b.com</code>.
+        <pre><code>
+        Sec-COWL: <a>ctx-confidentiality</a> [ ['https://b.com'] ];
+                  <a>ctx-integrity</a> [ [] ];
+                  <a>ctx-privilege</a> [ ['https://a.com'] ];
+        </code></pre>
+      </div>
+      <div class="example">
+        Request header from a public, untrustworthy
+        <code>http://university.edu</code> context that <a>owns</a> a
+        <a>delegated privilege</a>:
+        <pre><code>
+        Sec-COWL: <a>ctx-confidentiality</a> [ [] ];
+                  <a>ctx-integrity</a> [ [] ];
+                  <a>ctx-privilege</a> [ ['http://university.edu', 'cowl://user1'] ];
+        </code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h4 id="response-header">The <code>Sec-COWL</code> HTTP Response Header Field</h4>
+
+      <pre>
+        "Sec-COWL:" <a>ctx-metadata</a> / <a>data-metadata</a>
+      </pre>
+
+      ISSUE: describe how response header is processes
+
+      ISSUE: describe how labeled headers and XHR work
+
+      <div class="example">
+        The author of <code>http://a.com</code> may wish to reply to a 
+        request with data that is sensitive to both <code>https://a.com</code> and
+        <a>https://b.com</a>, while simultaneously indicating that
+        it endorses the data:
+        <pre><code>
+        Sec-COWL: <a>data-confidentiality</a> [ ['https://a.com'], ['https://b.com'] ];
+                  <a>data-integrity</a> [ ['https://a.com'] ];
+        </code></pre>
+      </div>
+      <div class="example">
+        An author may wish to specify that the
+        <code>https://university.edu/~user1</code> page should run with
+        a delegated privilege&mdash;namely, 
+        <code><a interface>Label</a>("https://university.edu/").or("cowl://user1")</code>&mdash;from
+         the start:
+        <pre><code>
+        Sec-COWL: <a>ctx-privilege</a> [ ['self', 'cowl://user1'] ];
+        </code></pre>
+      </div>
+    </section>
+  </section>
+
+  <section>
+    <h3 id="extension-xhr">Extensions to <a>XMLHttpRequest</a></h3>
+
+    <h4>Sending <a>labeled objects</a></h4>
       This specification extends the
       <a interface>XMLHttpRequest</a> interface with and overloaded
       <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
@@ -1476,103 +1607,42 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         };
       </pre>
       The <dfn method title="XMLHttpRequest/send(lobj)"
-        for="XMLHttpRequest">send(lobj)</dfn>  method must run these steps:
+        for="XMLHttpRequest">send(lobj)</dfn>  method MUST run these steps:
 
-      1. Let <var>obj</var> be the serialized object produced by
-      invoking the <a>LabeledObject serialization</a> algorithm with
-      the <a argument for="XMLHttpRequest/send(lobj)">lobj</a>
-      argument.
+      1. Let <var>obj</var> be the <a>protected object</a> of the 
+         <a argument for="XMLHttpRequest/send(lobj)">lobj</a> argument.
 
-      2. Call the
-      <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
-      method on the object this method was called on with 
-      <var>obj</var> as an argument.
+      2. Append a header named <code>Sec-COWL</code> to the
+         <a href="https://xhr.spec.whatwg.org/#author-request-headers">author
+           request headers</a> associated with the object this
+         methods was called on.  The value of the
+         <code>Sec-COWL</code> header MUST be <a>labeled data
+           metadata</a> containing the confidentiality and integrity
+         labels of the <a argument for="XMLHttpRequest/send(lobj)">lobj</a> argument.
 
-      ISSUE: send() is not well-defined. Should we only allow JSON
-      objects for LabeldObject? Or should we have a header associated
-      with object and use normal serialization?
-
-
-    <h5>Response</h5>
+      3. Invoke the
+         <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+         method on the object this method was called on with 
+         <var>obj</var> as an argument.
+         
+         Note, that <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+         throws an exception in step 4 if <var>obj</var> cannot be <a>serialized</a>.
+         User agents MUST ensure that all <a>protected object</a>s can be
+         serialized at the time of creating <a interface>LabeledObject<a>s.
+      
+    <h4>Receiving <a>labeled objects</a></h4>
       This specification extends the
       <code><a enum>XMLHttpRequestResponseType</a></code></h5> with a new
       response type:
       <pre class="idl">
         enum <a href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a> {
-          ... existing response types ...,
-          "labeled-text"
+          // ... existing response types ...,
+          "labeled-json"
         };
       </pre>
-      
-      ISSUE: Should we have labeld-json, labeled-blob, etc.?
 
-      ISSUE: completed definition for XHR response.
-
-  </section>
-
-  <section>
-    <h3 id="response-header">The <code>COWL</code> HTTP Response Header Field</h3>
-
-    ISSUE: describe response header grammar
-
-    ISSUE: describe how response header is processes
-
-    ISSUE: describe how labeled headers and XHR work
-
-    <div class="example">
-      The author of <code>http://a.com</code> may wish to reply to a 
-      request with data that is sensitive to both <code>https://a.com</code> and
-      <a>https://b.com</a>, while simultaneously indicating that
-      it endorses the data:
-      <pre><code>
-      COWL: <a>confidentiality-label</a> [ ['https://a.com'], ['https://b.com'] ];
-            <a>integrity-label</a> [ ['https://a.com'] ];
-      </code></pre>
-    </div>
-    <div class="example">
-      An author may wish to specify that the
-      <code>https://university.edu/~user1</code> page should run with
-      a delegated privilege&mdash;namely, 
-      <code><a interface>Label</a>("https://university.edu/").or("cowl://user1")</code>&mdash;from
-       the start:
-      <pre><code>
-      COWL: <a>privilege</a> [ ['self', 'cowl://user1'] ];
-      </code></pre>
-    </div>
-  </section>
-
-  <section>
-    <h3 id="request-header">The <code>COWL</code> HTTP Request Header Field</h3>
-    The user agent MUST send a header field named <dfn
-    local-lt="COWL"><code>COWL</code></dfn>
-    along with requests if <a>confinement mode</a> is enabled.
-    The value of this header MUST contain the
-    stringyfied context's <a>current confidentiality label</a>,
-    <a>current integrity label</a>, and <a>current privilege</a>, as
-    defined by the following ABNF grammar:
-
-    ISSUE: describe request header grammar
-
-    <div class="example">
-      Request header from an <code>http://a.com</code> context that has
-      read data sensitive to <code>http://b.com</code>.
-      <pre><code>
-      COWL: <a>confidentiality-label</a> [ ['https://b.com'] ];
-            <a>integrity-label</a> [ [] ];
-            <a>privilege</a> [ ['https://a.com'] ];
-      </code></pre>
-    </div>
-    <div class="example">
-      Request header from a public, untrustworthy
-      <code>http://university.edu</code> context that owns a
-      delegated privilege:
-      <pre><code>
-      COWL: <a>confidentiality-label</a> [ [] ];
-            <a>integrity-label</a> [ [] ];
-            <a>privilege</a> [ ['http://university.edu', 'cowl://user1'] ];
-      </code></pre>
-    </div>
-  </section>
+      ISSUE: completed definition
+    </section>
 
 </section>
 
@@ -1628,16 +1698,3 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     ISSUE: describe write check
 
   </section>
-
-  <section>
-    <h3 id="labeldobject-serialization">Serializing Labeld Objects</h3>
-    The <dfn>LabeledObject serialization</dfn> algorithm takes a <a
-        interface>LabeldObject</a> and returns a serialized version of
-      it.
-
-      ISSUE: describe LabeldObject serialization
-</section>
-
-    ISSUE: most of the spec talks about contexts not at all about
-    workers; should revise to be more general. (Should mostly be
-    straightforward.)

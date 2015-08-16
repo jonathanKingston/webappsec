@@ -1399,11 +1399,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         1. Invoke the <a>context tainting</a> algorithm with the <a
         interface>LabeledObject</a>'s confidentiality and integrity labels.
         
-        2. If the <a>context tainting</a> algorithm raises an
-        exception, re-throw the exception and terminate this algorithm.
-
-        3. Else, the user agent MUST return the
-        <a interface>LabeledObject</a>'s <a>protected object</a>.
+        3. Return <a interface>LabeledObject</a>'s <a>protected object</a>.
       </dd>
     </dl>
 
@@ -1702,9 +1698,28 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     The <dfn>context tainting</dfn> algorithm takes a two labels,
     <var>confidentiality</var> and <var>integrity</var>, and updates
     the <a>context labels</a> to allow for reading data labeled with
-    these labels.
+    these labels. The user agent MUST use an algorithm whose behavior
+    is as follows:
 
-    ISSUE: describe taint
+    1. Enable <a>confinement mode</a>, if it is not enabled.
+    
+    2. Let <var>currentConf</var> be the current <a>context
+       confidentiality label</a>.
+
+    3. Let <var>currentInt</var> be the current <a>context
+       integrity label</a>.
+
+    4. Set the <a>context confidentiality label</a> to the
+       <a>Label</a> returned by the by the <a>label downgrade</a>
+       algorithm when invoked with
+       <var>currentConf</var>.<a>and(<var>confidentiality</var>)</a>
+       and <a>current privilege</a>.
+
+    4. Set the <a>context integrity label</a> to the
+       <a>Label</a> returned by the by the <a>label downgrade</a>
+       algorithm when invoked with
+       <var>currentInt</var>.<a>_or(<var>integrity</var>)</a>
+       and <a>current privilege</a>.
 
 
   </section>

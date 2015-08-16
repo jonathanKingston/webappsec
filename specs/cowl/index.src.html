@@ -47,6 +47,7 @@ spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
       text: structured clone; url: structured-clone
       text: structurally cloned; url: structured-clone
       text: structurally clonable; url: structured-clone
+      text: internal structured cloning algorithm; url: internal-structured-cloning-algorithm
 spec: RFC6454; urlPrefix: https://tools.ietf.org/html/rfc6454
   type: dfn
     text: origin; url: section-3.2
@@ -690,13 +691,13 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       labels and privileges, which are used when enforcing
       confinement, i.e., when restricting a context's network and
       cross-document messaging communication.  This document defines
-      the necessary changes to existing browser constructs and
-      algorithms to enforce confinement.
+      the necessary changes and extensions to existing browser
+      constructs and algorithms to enforce confinement.
       </dd>
     </dl>
 
   <section>
-    <h3 id="label">Label Interface</h3>
+    <h3 id="label">Labels</h3>
 
     Each <a>label</a> is an immutable object represented by a
     <a interface>Label</a> object, the interface of which is defined in
@@ -905,7 +906,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   </section>
 
   <section>
-    <h3 id="privileges">Privilege Interface</h3>
+    <h3 id="privileges">Privileges</h3>
 
     Each <a>privilege</a> is an immutable object represented by a <a
         interface>Privilege</a> object, the interface of which is
@@ -1111,7 +1112,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   </section>
 
   <section>
-    <h3 id="context-labels">Labeled Context Interface</h3>
+    <h3 id="context-labels">Labeled Contexts</h3>
 
     COWL extends <a>browsing contexts</a> and <a>Workers</a> with a
     <dfn>COWL state</dfn>, which is used to restrict the context's
@@ -1279,7 +1280,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
 
   <section>
-    <h3 id="object-labels">Labeled Objects Interface</h3>
+    <h3 id="object-labels">Labeled Objects</h3>
 
     A <a interface>LabeledObject</a> interface represents an immutable
     object that is protected by a confidentiality and integrity
@@ -1514,13 +1515,15 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       <dfn>source-expression</dfn>   = "'self'" / "'unique'" / <a>host-source</a>
     </pre>
 
+    ISSUE: define parsing algorithms
+
     <section>
       <h4 id="request-header">The <code>Sec-COWL</code> HTTP Request Header Field</h4>
 
       The ABNF for the <code>Sec-COWL</code> HTTP request header is:
 
       <pre>
-        "Sec-COWL:" <a>ctx-metadata</a> / <a>data-metadata</a>
+        "Sec-COWL:" ( <a>ctx-metadata</a> [ 1*<a>WSP</a> <a>data-metadata</a> ] ) / ( <a>data-metadata</a> 1*<a>WSP</a> <a>ctx-metadata</a> )
       </pre>
 
       The user agent MUST send a header field named <code>Sec-COWL</code>
@@ -1533,9 +1536,8 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
 
       Note, as described in [[#extension-xhr]], when sending <a
-      interface>LabeledObject</a>s, the <a>XMLHttpRequest</a> additionally
-      sets a header with the <code>Sec-COWL</code> field name, but
-      with <a>labeled data metadata</a> as the value.
+      interface>LabeledObject</a>s, <a>XMLHttpRequest</a> additionally
+      adds the <a>labeled data metadata</a> to the header value.
 
       <div class="example">
         Request header from an <code>http://a.com</code> page that has
@@ -1547,13 +1549,17 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         </code></pre>
       </div>
       <div class="example">
-        Request header from a public, untrustworthy
-        <code>http://university.edu</code> context that <a>owns</a> a
-        <a>delegated privilege</a>:
+        <a>XMLHttpRequest</a> request (of a <a>labeled object</a>
+        confidential to <code>https://university.edu</code>) sent from
+        a public, untrustworthy <code>http://university.edu</code>
+        context that <a>owns</a> a <a>delegated privilege</a>.
+
         <pre><code>
         Sec-COWL: <a>ctx-confidentiality</a> [ [] ];
                   <a>ctx-integrity</a> [ [] ];
                   <a>ctx-privilege</a> [ ['http://university.edu', 'cowl://user1'] ];
+                  <a>data-confidentiality</a> [ ['http://university.edu'] ];
+                  <a>data-integrity</a> [ [] ];
         </code></pre>
       </div>
     </section>
@@ -1561,6 +1567,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     <section>
       <h4 id="response-header">The <code>Sec-COWL</code> HTTP Response Header Field</h4>
 
+      The ABNF for the <code>Sec-COWL</code> HTTP response header is:
       <pre>
         "Sec-COWL:" <a>ctx-metadata</a> / <a>data-metadata</a>
       </pre>
@@ -1607,7 +1614,8 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         };
       </pre>
       The <dfn method title="XMLHttpRequest/send(lobj)"
-        for="XMLHttpRequest">send(lobj)</dfn>  method MUST run these steps:
+      for="XMLHttpRequest">send(lobj)</dfn>  method MUST use an
+      algorithm that is equivalent to the following:
 
       1. Let <var>obj</var> be the <a>protected object</a> of the 
          <a argument for="XMLHttpRequest/send(lobj)">lobj</a> argument.
@@ -1697,4 +1705,42 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
     ISSUE: describe write check
 
+  </section>
+  <section>
+    <h3 id="structured-cloning">Structured Cloning</h3>
+    When a user agent is required to obtain a <a>structured clone</a>
+    of an object whose type is defined in this document, it MUST use
+    an algorithm whose behavior is as follows:
+
+    1. Let <var>input</var> be the value being cloned.
+
+    2. If <var>input</var> is a <a interface>Label</a> object, let
+       <var>output</var> be a newly constructed <a interface>Label</a>
+       object with the same <a>label set</a> as that of
+       <var>input</var>.
+
+    3. If <var>input</var> is a <a interface>Privilege</a> object
+       that was constructed with the <a>FreshPrivilege()</a>
+       constructor, let <var>output</var> be a newly constructed <a
+       interface>Privilege</a> object with the same <a>internal
+       privilege label</a> as that of <var>input</var>.
+
+       <div class="note">
+       To prevent attacks that launder page privileges, the current
+       version of COWL only allows transferring fresh privileges.
+       </div>
+
+    4. If <var>input</var> is a <a interface>LabeledObject</a> object, let
+       <var>output</var> be a newly constructed <a
+       interface>LabeledObject</a> object with the same internal
+       <a>protected object</a>, confidentiality label, and integrity
+       label as that of <var>input</var>.
+
+    5. Return <var>output</var>.
+
+    Note, cross-context messaging constructs such as
+    <a>postMessage()</a> use the <a>structured clone</a> algorithm
+    (e.g., see the <a>internal structured cloning algorithm</a>). As a
+    result, authors can transfer COWL object types, such as <a
+    interface>LabeledObject</a>s, to other contexts.
   </section>

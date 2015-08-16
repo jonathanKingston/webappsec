@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-14">14 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-15">15 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -183,25 +183,25 @@ further.</p>
      </ul>
     <li><a href="#framework"><span class="secno">3</span> <span class="content">Framework</span></a>
      <ul class="toc">
-      <li><a href="#label0"><span class="secno">3.1</span> <span class="content">Label Interface</span></a>
+      <li><a href="#label0"><span class="secno">3.1</span> <span class="content">Labels</span></a>
        <ul class="toc">
         <li><a href="#constructors"><span class="secno">3.1.1</span> <span class="content">Constructors</span></a>
         <li><a href="#methods"><span class="secno">3.1.2</span> <span class="content">Methods</span></a>
         <li><a href="#examples0"><span class="secno">3.1.3</span> <span class="content">Examples</span></a>
        </ul>
-      <li><a href="#privileges0"><span class="secno">3.2</span> <span class="content">Privilege Interface</span></a>
+      <li><a href="#privileges0"><span class="secno">3.2</span> <span class="content">Privileges</span></a>
        <ul class="toc">
         <li><a href="#constructors0"><span class="secno">3.2.1</span> <span class="content">Constructors</span></a>
         <li><a href="#methods0"><span class="secno">3.2.2</span> <span class="content">Methods</span></a>
         <li><a href="#examples1"><span class="secno">3.2.3</span> <span class="content">Examples</span></a>
        </ul>
-      <li><a href="#context-labels"><span class="secno">3.3</span> <span class="content">Labeled Context Interface</span></a>
+      <li><a href="#context-labels"><span class="secno">3.3</span> <span class="content">Labeled Contexts</span></a>
        <ul class="toc">
         <li><a href="#attributes"><span class="secno">3.3.1</span> <span class="content">Attributes</span></a>
         <li><a href="#methods1"><span class="secno">3.3.2</span> <span class="content">Methods</span></a>
         <li><a href="#examples2"><span class="secno">3.3.3</span> <span class="content">Examples</span></a>
        </ul>
-      <li><a href="#object-labels"><span class="secno">3.4</span> <span class="content">Labeled Objects Interface</span></a>
+      <li><a href="#object-labels"><span class="secno">3.4</span> <span class="content">Labeled Objects</span></a>
        <ul class="toc">
         <li><a href="#constructors1"><span class="secno">3.4.1</span> <span class="content">Constructors</span></a>
         <li><a href="#attributes0"><span class="secno">3.4.2</span> <span class="content">Attributes</span></a>
@@ -226,6 +226,7 @@ further.</p>
       <li><a href="#label-reduce"><span class="secno">4.3</span> <span class="content">Label Downgrade</span></a>
       <li><a href="#taint-context"><span class="secno">4.4</span> <span class="content">Context Tainting</span></a>
       <li><a href="#write-check"><span class="secno">4.5</span> <span class="content">Write Check</span></a>
+      <li><a href="#structured-cloning"><span class="secno">4.6</span> <span class="content">Structured Cloning</span></a>
      </ul>
     <li><a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ul class="toc">
@@ -682,7 +683,7 @@ COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privil
 
       <p>When associated with a <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">context</a>, the label restricts the
       origins that the context can communicate with, as detailed in
-      <a href="#context-labels">§3.3 Labeled Context Interface</a>.</p>
+      <a href="#context-labels">§3.3 Labeled Contexts</a>.</p>
       
 
       
@@ -727,7 +728,7 @@ COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privil
       specifies the origins to whom the object is sensitive, while an
       integrity label specifies the origins that endorse the object.
       Objects that have labels associated with them are called
-      <dfn data-dfn-type="dfn" data-noexport="" id="labeled-objects">labeled objects<a class="self-link" href="#labeled-objects"></a></dfn>.  <a href="#object-labels">§3.4 Labeled Objects Interface</a> defines how
+      <dfn data-dfn-type="dfn" data-noexport="" id="labeled-objects">labeled objects<a class="self-link" href="#labeled-objects"></a></dfn>.  <a href="#object-labels">§3.4 Labeled Objects</a> defines how
       labels are associated with objects.</p>
       
 
@@ -793,7 +794,7 @@ reflects the fact that the object (produced by
      <li>
       The <dfn data-dfn-type="dfn" data-noexport="" id="current-confidentiality-label">current confidentiality label<a class="self-link" href="#current-confidentiality-label"></a></dfn> is the
       confidentiality label associated with the current context.
-      <a href="#context-labels">§3.3 Labeled Context Interface</a> specifies how labels are associated with
+      <a href="#context-labels">§3.3 Labeled Contexts</a> specifies how labels are associated with
       contexts.
     
      
@@ -801,7 +802,7 @@ reflects the fact that the object (produced by
      <li>
       The <dfn data-dfn-type="dfn" data-noexport="" id="current-integrity-label">current integrity label<a class="self-link" href="#current-integrity-label"></a></dfn> is the
       integrity label associated with the current context.
-      <a href="#context-labels">§3.3 Labeled Context Interface</a> specifies how labels are associated with
+      <a href="#context-labels">§3.3 Labeled Contexts</a> specifies how labels are associated with
       contexts.
     
      
@@ -929,7 +930,7 @@ reflects the fact that the object (produced by
 
       <p class="note" role="note">Note, <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing contexts</a> have a <a data-link-type="dfn" href="#current-privilege">current privilege</a>
       that, by default, corresponds to the origin of the context, as
-      described in <a href="#context-labels">§3.3 Labeled Context Interface</a>. But, authors should set the <a data-link-type="dfn" href="#current-privilege">current
+      described in <a href="#context-labels">§3.3 Labeled Contexts</a>. But, authors should set the <a data-link-type="dfn" href="#current-privilege">current
       privilege</a> to a <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a> to follow
       the principle of least privilege.</p>
       
@@ -938,7 +939,7 @@ reflects the fact that the object (produced by
     
      <li>
       The <dfn data-dfn-type="dfn" data-noexport="" id="current-privilege">current privilege<a class="self-link" href="#current-privilege"></a></dfn> is the privilege associated
-      with the current context. <a href="#context-labels">§3.3 Labeled Context Interface</a> specifies how
+      with the current context. <a href="#context-labels">§3.3 Labeled Contexts</a> specifies how
       privileges are associated with contexts.
     
      
@@ -1015,8 +1016,8 @@ reflects the fact that the object (produced by
       labels and privileges, which are used when enforcing
       confinement, i.e., when restricting a context’s network and
       cross-document messaging communication.  This document defines
-      the necessary changes to existing browser constructs and
-      algorithms to enforce confinement.
+      the necessary changes and extensions to existing browser
+      constructs and algorithms to enforce confinement.
       
      
     
@@ -1025,7 +1026,7 @@ reflects the fact that the object (produced by
   
     <section>
     
-     <h3 class="heading settled" data-level="3.1" id="label0"><span class="secno">3.1. </span><span class="content">Label Interface</span><a class="self-link" href="#label0"></a></h3>
+     <h3 class="heading settled" data-level="3.1" id="label0"><span class="secno">3.1. </span><span class="content">Labels</span><a class="self-link" href="#label0"></a></h3>
      
 
 
@@ -1348,7 +1349,7 @@ JSON.stringify(aORbANDc) === '[["https://a.com", "https://b.com"], ["https://c.c
   
     <section>
     
-     <h3 class="heading settled" data-level="3.2" id="privileges0"><span class="secno">3.2. </span><span class="content">Privilege Interface</span><a class="self-link" href="#privileges0"></a></h3>
+     <h3 class="heading settled" data-level="3.2" id="privileges0"><span class="secno">3.2. </span><span class="content">Privileges</span><a class="self-link" href="#privileges0"></a></h3>
      
 
 
@@ -1651,7 +1652,7 @@ COWL.privilege = COWL.privilege.delegate(user1);
   
     <section>
     
-     <h3 class="heading settled" data-level="3.3" id="context-labels"><span class="secno">3.3. </span><span class="content">Labeled Context Interface</span><a class="self-link" href="#context-labels"></a></h3>
+     <h3 class="heading settled" data-level="3.3" id="context-labels"><span class="secno">3.3. </span><span class="content">Labeled Contexts</span><a class="self-link" href="#context-labels"></a></h3>
      
 
 
@@ -1969,7 +1970,7 @@ and set the <a data-link-type="dfn" href="#current-privilege">current privilege<
   
     <section>
     
-     <h3 class="heading settled" data-level="3.4" id="object-labels"><span class="secno">3.4. </span><span class="content">Labeled Objects Interface</span><a class="self-link" href="#object-labels"></a></h3>
+     <h3 class="heading settled" data-level="3.4" id="object-labels"><span class="secno">3.4. </span><span class="content">Labeled Objects</span><a class="self-link" href="#object-labels"></a></h3>
      
 
 
@@ -2341,6 +2342,10 @@ set to <var>obj</var>, the confidentiality label set to
 </pre>
      
 
+
+     <p class="issue" id="issue-82a70e9f"><a class="self-link" href="#issue-82a70e9f"></a> define parsing algorithms</p>
+     
+
     
      <section>
       
@@ -2352,7 +2357,7 @@ set to <var>obj</var>, the confidentiality label set to
       
 
       
-      <pre>"Sec-COWL:" <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a> / <a data-link-type="dfn" href="#data_metadata">data-metadata</a>
+      <pre>"Sec-COWL:" ( <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a> [ 1*<a data-link-type="dfn">WSP</a> <a data-link-type="dfn" href="#data_metadata">data-metadata</a> ] ) / ( <a data-link-type="dfn" href="#data_metadata">data-metadata</a> 1*<a data-link-type="dfn">WSP</a> <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a> )
 </pre>
       
 
@@ -2368,9 +2373,8 @@ set to <var>obj</var>, the confidentiality label set to
 
 
 
-      <p class="note" role="note">Note, as described in <a href="#extension-xhr">§3.6 Extensions to XMLHttpRequest</a>, when sending <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s, the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> additionally
-      sets a header with the <code>Sec-COWL</code> field name, but
-      with <a data-link-type="dfn" href="#labeled-data-metadata">labeled data metadata</a> as the value.</p>
+      <p class="note" role="note">Note, as described in <a href="#extension-xhr">§3.6 Extensions to XMLHttpRequest</a>, when sending <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s, <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> additionally
+      adds the <a data-link-type="dfn" href="#labeled-data-metadata">labeled data metadata</a> to the header value.</p>
       
 
       
@@ -2387,14 +2391,18 @@ set to <var>obj</var>, the confidentiality label set to
       </div>
       
       
-      <div class="example" id="example-213e4d1b"><a class="self-link" href="#example-213e4d1b"></a>
-        Request header from a public, untrustworthy
-        <code>http://university.edu</code> context that <a data-link-type="dfn" href="#owns">owns</a> a
-        <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a>:
+      <div class="example" id="example-4b4bb868"><a class="self-link" href="#example-4b4bb868"></a>
+        <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> request (of a <a data-link-type="dfn" href="#labeled-objects">labeled object</a>
+        confidential to <code>https://university.edu</code>) sent from
+        a public, untrustworthy <code>http://university.edu</code>
+        context that <a data-link-type="dfn" href="#owns">owns</a> a <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a>.
+
         
        <pre><code>Sec-COWL: <a data-link-type="dfn" href="#ctx_confidentiality">ctx-confidentiality</a> [ [] ];
           <a data-link-type="dfn" href="#ctx_integrity">ctx-integrity</a> [ [] ];
           <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a> [ ['http://university.edu', 'cowl://user1'] ];
+          <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a> [ ['http://university.edu'] ];
+          <a data-link-type="dfn" href="#data_integrity">data-integrity</a> [ [] ];
 </code></pre>
        
       
@@ -2410,6 +2418,9 @@ set to <var>obj</var>, the confidentiality label set to
       <h4 class="heading settled" data-level="3.5.2" id="response-header"><span class="secno">3.5.2. </span><span class="content">The <code>Sec-COWL</code> HTTP Response Header Field</span><a class="self-link" href="#response-header"></a></h4>
       
 
+
+      <p>The ABNF for the <code>Sec-COWL</code> HTTP response header is:</p>
+      
       
       <pre>"Sec-COWL:" <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a> / <a data-link-type="dfn" href="#data_metadata">data-metadata</a>
 </pre>
@@ -2478,7 +2489,8 @@ set to <var>obj</var>, the confidentiality label set to
 </pre>
      
 
-     <p>The <dfn class="idl-code" data-dfn-for="XMLHttpRequest" data-dfn-type="method" data-export="" id="dom-xmlhttprequest-sendlobj" title="XMLHttpRequest/send(lobj)">send(lobj)<a class="self-link" href="#dom-xmlhttprequest-sendlobj"></a></dfn>  method MUST run these steps:</p>
+     <p>The <dfn class="idl-code" data-dfn-for="XMLHttpRequest" data-dfn-type="method" data-export="" id="dom-xmlhttprequest-sendlobj" title="XMLHttpRequest/send(lobj)">send(lobj)<a class="self-link" href="#dom-xmlhttprequest-sendlobj"></a></dfn>  method MUST use an
+      algorithm that is equivalent to the following:</p>
      
 
 
@@ -2617,6 +2629,66 @@ set to <var>obj</var>, the confidentiality label set to
      <p class="issue" id="issue-821539a6"><a class="self-link" href="#issue-821539a6"></a> describe write check</p>
      
 
+  
+    </section>
+  
+    <section>
+    
+     <h3 class="heading settled" data-level="4.6" id="structured-cloning"><span class="secno">4.6. </span><span class="content">Structured Cloning</span><a class="self-link" href="#structured-cloning"></a></h3>
+     
+    When a user agent is required to obtain a <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structured clone</a>
+    of an object whose type is defined in this document, it MUST use
+    an algorithm whose behavior is as follows:
+
+
+     <ol>
+      <li data-md="">
+       <p>Let <var>input</var> be the value being cloned.</p>
+       
+
+
+      <li data-md="">
+       <p>If <var>input</var> is a <a class="idl-code" data-link-type="interface" href="#label1">Label</a> object, let
+ <var>output</var> be a newly constructed <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
+ object with the same <a data-link-type="dfn" href="#label-set">label set</a> as that of
+ <var>input</var>.</p>
+       
+
+
+      <li data-md="">
+       <p>If <var>input</var> is a <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> object
+ that was constructed with the <a data-link-type="functionish" href="#dom-privilege-freshprivilege">FreshPrivilege()</a>
+ constructor, let <var>output</var> be a newly constructed <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> object with the same <a data-link-type="dfn" href="#internal-privilege-label">internal
+ privilege label</a> as that of <var>input</var>.</p>
+       
+
+ 
+       <div class="note" role="note">
+ To prevent attacks that launder page privileges, the current
+ version of COWL only allows transferring fresh privileges.
+ </div>
+       
+
+
+      <li data-md="">
+       <p>If <var>input</var> is a <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> object, let
+ <var>output</var> be a newly constructed <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> object with the same internal
+ <a data-link-type="dfn" href="#protected-object">protected object</a>, confidentiality label, and integrity
+ label as that of <var>input</var>.</p>
+       
+
+
+      <li data-md="">
+       <p>Return <var>output</var>.</p>
+       
+</ol>
+     
+
+     <p class="note" role="note">Note, cross-context messaging constructs such as
+    <a data-link-type="functionish" href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a> use the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structured clone</a> algorithm
+    (e.g., see the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm">internal structured cloning algorithm</a>). As a
+    result, authors can transfer COWL object types, such as <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s, to other contexts.</p>
+     
   
     </section>
 
@@ -2843,6 +2915,7 @@ set to <var>obj</var>, the confidentiality label set to
      <li><a href="http://www.w3.org/TR/html5/browsers.html#windows">browsing context</a>
      <li><a href="http://www.w3.org/TR/html5/browsers.html#windows">context</a>
      <li><a href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element">iframe</a>
+     <li><a href="http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm">internal structured cloning algorithm</a>
      <li><a href="http://www.w3.org/TR/html5/embedded-content-0.html#attr-iframe-sandbox">sandbox</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structurally clonable</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structurally cloned</a>
@@ -2976,6 +3049,7 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> Add some examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>
     object. And to provide some intuition for the semantics.<a href="#issue-0c285526"> ↵ </a></div>
    <div class="issue"> add examples<a href="#issue-a71b8ddb"> ↵ </a></div>
+   <div class="issue"> define parsing algorithms<a href="#issue-82a70e9f"> ↵ </a></div>
    <div class="issue"> describe how response header is processes<a href="#issue-f4bc3b24"> ↵ </a></div>
    <div class="issue"> describe how labeled headers and XHR work<a href="#issue-8027d210"> ↵ </a></div>
    <div class="issue"> completed definition<a href="#issue-190c86c0"> ↵ </a></div>

@@ -716,7 +716,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       [Constructor, Constructor(DOMString origin), Exposed=Window, Worker]
       interface Label {
         boolean equals(Label other);
-        boolean subsumes(Label other);
+        boolean subsumes(Label other, optional Privilege priv);
 
         Label and((Label or DOMString) other);
         Label _or((Label or DOMString) other);
@@ -763,12 +763,23 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         <a argument for="Label/equals(other)">other</a>
         parameter; otherwise it MUST return <code>false</code>
       </dd>
-      <dt><dfn method title="subsumes(other)">subsumes(Label other)</dfn></dt>
+      <dt><dfn method title="subsumes(other, priv)">subsumes(Label other, optional Privilege priv)</dfn></dt>
       <dd>
-        The user agent MUST return <code>true</code> if the <a interface>Label</a> on
-        which the method has been called <a>subsumes</a> the
-        <a argument for="Label/subsumes(other)">other</a>
-        parameter; otherwise it MUST return <code>false</code>
+        The user agent MUST use an algorithm equivalent to the
+        following:
+        
+        1. Let <var>lab</var> be the <a>Label</a> on which the method
+           has been called. 
+
+        2. If the <a argument for="Label/subsumes(other, priv)">priv</a> argument is
+           provided, let <var>lab</var> be
+           <code><var>lab</var>.<a>and</a>(priv.<a>asLabel()</a>)</code>.
+
+           <!-- TODO: link and above -->
+
+        3. Return <code>true</code> if <var>lab</var> <a>subsumes</a> the
+           <a argument for="Label/subsumes(other, priv)">other</a>
+           parameter and <code>false</code> otherwise.
       </dd>
       <dt><dfn method title="and(other)">and((Label or DOMString) other)</dfn></dt>
       <dd>
@@ -1424,43 +1435,45 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       to the following:
 
       0. Let <var>obj</var> be the <a>protected object</a> of the
-      object on which the method was invoked.
+         object on which the method was invoked.
 
       1. Let <var>conf</var> be the confidentiality label of the
-      object on which the method was invoked.
+         object on which the method was invoked.
 
       2. Let <var>int</var> be the integrity label of the
-      object on which the method was invoked.
+         object on which the method was invoked.
 
       3. Let <var>newConf</var> be the <a dict-member
-      for="CILabel">confidentiality</a> member of the <a argument
-      for="LabeledObject/clone(labels)">labels</a> argument, if it is
-      set.  Otherwise, let <var>newConf</var> be <var>conf</conf>.
+         for="CILabel">confidentiality</a> member of the <a argument
+         for="LabeledObject/clone(labels)">labels</a> argument, if it is
+         set.  Otherwise, let <var>newConf</var> be <var>conf</conf>.
 
       4. Let <var>newInt</var> be the <a dict-member
-      for="CILabel">integrity</a> member of the <a argument
-      for="LabeledObject/clone(labels)">labels</a>
-      parameter, if it is set.  Otherwise, let <var>newInt</var> be
-      <var>int</conf>.
+          for="CILabel">integrity</a> member of the <a argument
+          for="LabeledObject/clone(labels)">labels</a>
+          parameter, if it is set.  Otherwise, let <var>newInt</var> be
+          <var>int</conf>.
 
       5. Let <var>privs</var> be the <a>internal privilege
-      label</a> of the current <a>context privileges</a>.
+         label</a> of the current <a>context privileges</a>.
 
-      6. If <code><var>newConf</var>.and(<var>privs</var>).subsumes(<var>conf</var>)</code>
-      returns <code>false</code> or
-      if <code><var>int</var>.and(<var>privs</var>).subsumes(<var>newInt</var>)</code>
-      returns <code>false</code>, the method
-      MUST throw a <a spec="HTML5">SecurityError</a> exception and
-      terminate this algorithm.
+      6. If <code><var>newConf</var>.<a>subsumes(<var>conf</var>, <var>privs</var>)</a></code>
+         returns <code>false</code> or
+         if <code><var>int</var>.<a>subsumes(<var>newInt</var>, <var>privs</var>)</a></code>
+         returns <code>false</code>, the method
+         MUST throw a <a spec="HTML5">SecurityError</a> exception and
+         terminate this algorithm.
 
-        Note, these checks ensure that the new labels of the object are
-        at least as restricting as the original labels, taking into
-        consideration the privileges of the context.
-
+         <!-- TODO:  link SecurityError -->
+      
+         Note, these checks ensure that the new labels of the object are
+         at least as restricting as the original labels, taking into
+         consideration the privileges of the context.
+      
       7. Else, the user agent MUST return a new
-      <a interface>LabeledObject</a>, with the <a>protected object</a>
-      set to <var>obj</var>, the confidentiality label set to
-      <var>newConf</var>, and the integrity label set to <var>newInt</var>.
+         <a interface>LabeledObject</a>, with the <a>protected object</a>
+         set to <var>obj</var>, the confidentiality label set to
+         <var>newConf</var>, and the integrity label set to <var>newInt</var>.
       </dd>
     </dl>
 

@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-15">15 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-16">16 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -1054,7 +1054,7 @@ reflects the fact that the object (produced by
      <pre class="idl">[<a class="idl-code" data-link-type="constructor" href="#dom-label-label">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-label-labelorigin">Constructor</a>(DOMString <dfn class="idl-code" data-dfn-for="Label/Label(origin)" data-dfn-type="argument" data-export="" id="dom-label-labelorigin-origin">origin<a class="self-link" href="#dom-label-labelorigin-origin"></a></dfn>), Exposed=Window, Worker]
 interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="label1">Label<a class="self-link" href="#label1"></a></dfn> {
   boolean <a class="idl-code" data-link-type="method" href="#dom-label-equalsother">equals</a>(<a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label/equals(other)" data-dfn-type="argument" data-export="" id="dom-label-equalsother-other">other<a class="self-link" href="#dom-label-equalsother-other"></a></dfn>);
-  boolean <a class="idl-code" data-link-type="method" href="#dom-label-subsumesother">subsumes</a>(<a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label/subsumes(other)" data-dfn-type="argument" data-export="" id="dom-label-subsumesother-other">other<a class="self-link" href="#dom-label-subsumesother-other"></a></dfn>);
+  boolean <a class="idl-code" data-link-type="method" href="#dom-label-subsumesother-priv">subsumes</a>(<a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label/subsumes(other, priv)" data-dfn-type="argument" data-export="" id="dom-label-subsumesother-priv-other">other<a class="self-link" href="#dom-label-subsumesother-priv-other"></a></dfn>, optional <a data-link-type="idl-name" href="#privilege0">Privilege</a> <dfn class="idl-code" data-dfn-for="Label/subsumes(other, priv)" data-dfn-type="argument" data-export="" id="dom-label-subsumesother-priv-priv">priv<a class="self-link" href="#dom-label-subsumesother-priv-priv"></a></dfn>);
 
   <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="and(other)" id="dom-label-andother">and<a class="self-link" href="#dom-label-andother"></a></dfn>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <dfn class="idl-code" data-dfn-for="Label/and(other)" data-dfn-type="argument" data-export="" id="dom-label-andother-other">other<a class="self-link" href="#dom-label-andother-other"></a></dfn>);
   <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="_or(other)" id="dom-label-_orother">_or<a class="self-link" href="#dom-label-_orother"></a></dfn>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <dfn class="idl-code" data-dfn-for="Label/_or(other)" data-dfn-type="argument" data-export="" id="dom-label-_orother-other">other<a class="self-link" href="#dom-label-_orother-other"></a></dfn>);
@@ -1133,15 +1133,37 @@ itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org
       
       
       
-      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="subsumes(other)" id="dom-label-subsumesother" title="subsumes(other)">subsumes(Label other)<a class="self-link" href="#dom-label-subsumesother"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="subsumes(other, priv)|subsumes(other)" id="dom-label-subsumesother-priv" title="subsumes(other, priv)">subsumes(Label other, optional Privilege priv)<a class="self-link" href="#dom-label-subsumesother-priv"></a></dfn>
       
       
       <dd>
-        The user agent MUST return <code>true</code> if the <a class="idl-code" data-link-type="interface" href="#label1">Label</a> on
-        which the method has been called <a data-link-type="dfn" href="#subsumes">subsumes</a> the
-        <a class="idl-code" data-link-type="argument" href="#dom-label-subsumesother-other">other</a>
-        parameter; otherwise it MUST return <code>false</code>
-      
+        The user agent MUST use an algorithm equivalent to the
+        following:
+
+
+       <ol>
+        <li data-md="">
+         <p>Let <var>lab</var> be the <a data-link-type="dfn" href="#label">Label</a> on which the method
+ has been called.</p>
+         
+
+
+        <li data-md="">
+         <p>If the <a class="idl-code" data-link-type="argument" href="#dom-label-subsumesother-priv-priv">priv</a> argument is
+ provided, let <var>lab</var> be
+ <code><var>lab</var>.<a data-link-type="dfn">and</a>(priv.<a data-link-type="functionish" href="#dom-privilege-aslabel">asLabel()</a>)</code>.</p>
+         
+
+ 
+
+
+        <li data-md="">
+         <p>Return <code>true</code> if <var>lab</var> <a data-link-type="dfn" href="#subsumes">subsumes</a> the
+ <a class="idl-code" data-link-type="argument" href="#dom-label-subsumesother-priv-other">other</a>
+ parameter and <code>false</code> otherwise.</p>
+         
+</ol>
+             
       
       
       <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" id="dom-label-andlabel-or-domstring-other" title="and(other)">and((Label or DOMString) other)<a class="self-link" href="#dom-label-andlabel-or-domstring-other"></a></dfn>
@@ -2194,62 +2216,64 @@ influenced the computation.</p>
        <ol>
         <li data-md="">
          <p>Let <var>obj</var> be the <a data-link-type="dfn" href="#protected-object">protected object</a> of the
-object on which the method was invoked.</p>
+ object on which the method was invoked.</p>
          
 
 
         <li data-md="">
          <p>Let <var>conf</var> be the confidentiality label of the
-object on which the method was invoked.</p>
+ object on which the method was invoked.</p>
          
 
 
         <li data-md="">
          <p>Let <var>int</var> be the integrity label of the
-object on which the method was invoked.</p>
+ object on which the method was invoked.</p>
          
 
 
         <li data-md="">
          <p>Let <var>newConf</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-confidentiality">confidentiality</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-clonelabels-labels">labels</a> argument, if it is
-set.  Otherwise, let <var>newConf</var> be <var>conf.</var></p>
+ set.  Otherwise, let <var>newConf</var> be <var>conf.</var></p>
          
 
 
         <li data-md="">
          <p>Let <var>newInt</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-integrity">integrity</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-clonelabels-labels">labels</a>
-parameter, if it is set.  Otherwise, let <var>newInt</var> be
-<var>int.</var></p>
+  parameter, if it is set.  Otherwise, let <var>newInt</var> be
+  <var>int.</var></p>
          
 
 
         <li data-md="">
          <p>Let <var>privs</var> be the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege
-label</a> of the current <a data-link-type="dfn" href="#context-privilege">context privileges</a>.</p>
+ label</a> of the current <a data-link-type="dfn" href="#context-privilege">context privileges</a>.</p>
          
 
 
         <li data-md="">
-         <p>If <code><var>newConf</var>.and(<var>privs</var>).subsumes(<var>conf</var>)</code>
-returns <code>false</code> or
-if <code><var>int</var>.and(<var>privs</var>).subsumes(<var>newInt</var>)</code>
-returns <code>false</code>, the method
-MUST throw a <a data-link-type="dfn">SecurityError</a> exception and
-terminate this algorithm.</p>
+         <p>If <code><var>newConf</var>.<a data-link-type="functionish" href="#dom-label-subsumesother-priv">subsumes(<var>conf</var>, <var>privs</var>)</a></code>
+ returns <code>false</code> or
+ if <code><var>int</var>.<a data-link-type="functionish" href="#dom-label-subsumesother-priv">subsumes(<var>newInt</var>, <var>privs</var>)</a></code>
+ returns <code>false</code>, the method
+ MUST throw a <a data-link-type="dfn">SecurityError</a> exception and
+ terminate this algorithm.</p>
          
+
+ 
 
 
          <p class="note" role="note">Note, these checks ensure that the new labels of the object are
-at least as restricting as the original labels, taking into
-consideration the privileges of the context.</p>
+ at least as restricting as the original labels, taking into
+ consideration the privileges of the context.</p>
          
 
 
         <li data-md="">
          <p>Else, the user agent MUST return a new
-<a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>, with the <a data-link-type="dfn" href="#protected-object">protected object</a>
-set to <var>obj</var>, the confidentiality label set to
-<var>newConf</var>, and the integrity label set to <var>newInt</var>.</p>
+ <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>, with the <a data-link-type="dfn" href="#protected-object">protected object</a>
+ set to <var>obj</var>, the confidentiality label set to
+ <var>newConf</var>, and the integrity label set to <var>newInt</var>.</p>
          
 </ol>
       
@@ -2873,13 +2897,14 @@ set to <var>obj</var>, the confidentiality label set to
    <li>other
     <ul>
      <li>argument for Label/equals(other), <a href="#dom-label-equalsother-other">3.1</a>
-     <li>argument for Label/subsumes(other), <a href="#dom-label-subsumesother-other">3.1</a>
+     <li>argument for Label/subsumes(other, priv), <a href="#dom-label-subsumesother-priv-other">3.1</a>
      <li>argument for Label/and(other), <a href="#dom-label-andother-other">3.1</a>
      <li>argument for Label/_or(other), <a href="#dom-label-_orother-other">3.1</a>
      <li>argument for Privilege/combine(other), <a href="#dom-privilege-combineother-other">3.2</a>
     </ul>
    <li>ownership, <a href="#ownership">2.2</a>
    <li>owns, <a href="#owns">2.2</a>
+   <li>priv, <a href="#dom-label-subsumesother-priv-priv">3.1</a>
    <li>Privilege, <a href="#privilege0">3.2</a>
    <li>Privilege(), <a href="#dom-privilege-privilege">3.2.1</a>
    <li>privilege
@@ -2895,7 +2920,8 @@ set to <var>obj</var>, the confidentiality label set to
    <li>serialized labels, <a href="#serialized-labels">3.5</a>
    <li>source-expression, <a href="#source_expression">3.5</a>
    <li>subsumes, <a href="#subsumes">2.1</a>
-   <li>subsumes(other), <a href="#dom-label-subsumesother">3.1.2</a>
+   <li>subsumes(other), <a href="#dom-label-subsumesother-priv">3.1.2</a>
+   <li>subsumes(other, priv), <a href="#dom-label-subsumesother-priv">3.1.2</a>
    <li>tainted, <a href="#tainted">2.1</a>
    <li>toJSON(), <a href="#dom-label-tojson">3.1</a>
    <li>unprivileged, <a href="#unprivileged">3.2</a>
@@ -2984,7 +3010,7 @@ set to <var>obj</var>, the confidentiality label set to
   <pre class="idl">[<a class="idl-code" data-link-type="constructor" href="#dom-label-label">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-label-labelorigin">Constructor</a>(DOMString <a href="#dom-label-labelorigin-origin">origin</a>), Exposed=Window, Worker]
 interface <a href="#label1">Label</a> {
   boolean <a class="idl-code" data-link-type="method" href="#dom-label-equalsother">equals</a>(<a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-equalsother-other">other</a>);
-  boolean <a class="idl-code" data-link-type="method" href="#dom-label-subsumesother">subsumes</a>(<a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-subsumesother-other">other</a>);
+  boolean <a class="idl-code" data-link-type="method" href="#dom-label-subsumesother-priv">subsumes</a>(<a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-subsumesother-priv-other">other</a>, optional <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a href="#dom-label-subsumesother-priv-priv">priv</a>);
 
   <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-andother">and</a>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <a href="#dom-label-andother-other">other</a>);
   <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-_orother">_or</a>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <a href="#dom-label-_orother-other">other</a>);

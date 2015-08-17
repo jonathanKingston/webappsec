@@ -1671,7 +1671,44 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     <var>label</var> argument and produces a <a>Label</a> value
     according to the following steps:
 
-    ISSUE: describe the reduction algorithm
+    1. Let <var>lset</var> be the <a>label set</a> of an <a>empty label</a>.
+
+    2. For each <a>disjunction set</a> <var>dset</var> in the
+       <a>label set</a> of <var>label</var>:
+
+       *  If there is no <a>disjunction set</a> in <var>lset</var>
+          that is a subset of <var>dset</var>, then:
+          
+          i. Remove every <a>disjunction set</a> in <var>lset</var> that
+          <var>dset</var> is a subset of.
+
+          ii. Add <var>dset</var> to <var>lset</var>.
+
+    3. Return a newly created <a>Label</a> whose <a>label set</a> is <var>lset</var>.
+
+    Note, this algorithms assumes that <a>disjunction sets</a> and
+    <a>label sets</a> do not have duplicate elements, like
+    mathematical sets.
+
+    <div class="example">
+      The <a>Label</a> API uses this algorithm to ensure that labels
+      don't have redundant information. Consider for example, the
+      following labels:
+      <pre><code>
+        var a    = <a>Label("https://a.com")</a>;  // https://a.com
+        var aORb = <a>Label("https://a.com")</a>.<a>_or("https://b.com")</a>; // https://a.com OR https://b.com
+        var a2   = a.<a>and(aORb)</a>; // https://a.com AND (https://a.com OR https://b.com) &equiv; https://a.com
+      </code></pre>
+
+      The label <code>a2</code> is equivalent to <code>a</code> (since
+      <code>a.<a>subsumes(aORb)</a></code>):
+
+      <pre><code>
+        a2.<a>toJSON()</a> === [["https://a.com"]];
+        a2.<a>equals(a)</a>;
+      </code></pre>
+
+    </div>
 
   </section>
   <section>

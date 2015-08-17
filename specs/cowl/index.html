@@ -2578,7 +2578,71 @@ influenced the computation.</p>
     according to the following steps:
 
 
-     <p class="issue" id="issue-a82506bb"><a class="self-link" href="#issue-a82506bb"></a> describe the reduction algorithm</p>
+     <ol>
+      <li data-md="">
+       <p>Let <var>lset</var> be the <a data-link-type="dfn" href="#label-set">label set</a> of an <a data-link-type="dfn" href="#empty-label">empty label</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>For each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> <var>dset</var> in the
+ <a data-link-type="dfn" href="#label-set">label set</a> of <var>label</var>:</p>
+       
+
+
+       <ul>
+        <li data-md="">
+         <p>If there is no <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> in <var>lset</var>
+  that is a subset of <var>dset</var>, then:</p>
+         
+
+
+         <p>i. Remove every <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> in <var>lset</var> that
+  <var>dset</var> is a subset of.</p>
+         
+
+
+         <p>ii. Add <var>dset</var> to <var>lset</var>.</p>
+         
+</ul>
+       
+
+      <li data-md="">
+       <p>Return a newly created <a data-link-type="dfn" href="#label">Label</a> whose <a data-link-type="dfn" href="#label-set">label set</a> is <var>lset</var>.</p>
+       
+</ol>
+     
+
+     <p class="note" role="note">Note, this algorithms assumes that <a data-link-type="dfn" href="#disjunction-set">disjunction sets</a> and
+    <a data-link-type="dfn" href="#label-set">label sets</a> do not have duplicate elements, like
+    mathematical sets.</p>
+     
+
+    
+     <div class="example" id="example-d5fc36c1"><a class="self-link" href="#example-d5fc36c1"></a>
+      The <a data-link-type="dfn" href="#label">Label</a> API uses this algorithm to ensure that labels
+      don’t have redundant information. Consider for example, the
+      following labels:
+      
+      <pre><code>var a    = <a data-link-type="functionish" href="#dom-label-label">Label("https://a.com")</a>;  // https://a.com
+var aORb = <a data-link-type="functionish" href="#dom-label-label">Label("https://a.com")</a>.<a data-link-type="functionish" href="#dom-label-_orlabel-or-domstring-other">_or("https://b.com")</a>; // https://a.com OR https://b.com
+var a2   = a.<a data-link-type="functionish" href="#dom-label-andlabel-or-domstring-other">and(aORb)</a>; // https://a.com AND (https://a.com OR https://b.com) ≡ https://a.com
+</code></pre>
+      
+
+
+      <p>The label <code>a2</code> is equivalent to <code>a</code> (since
+      <code>a.<a data-link-type="functionish" href="#dom-label-subsumesother-priv">subsumes(aORb)</a></code>):</p>
+      
+
+      
+      <pre><code>a2.<a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> === [["https://a.com"]];
+a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
+</code></pre>
+      
+
+    
+     </div>
      
 
   
@@ -3153,6 +3217,5 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> describe how response header is processes<a href="#issue-f4bc3b24"> ↵ </a></div>
    <div class="issue"> describe how labeled headers and XHR work<a href="#issue-8027d210"> ↵ </a></div>
    <div class="issue"> completed definition<a href="#issue-190c86c0"> ↵ </a></div>
-   <div class="issue"> describe the reduction algorithm<a href="#issue-a82506bb"> ↵ </a></div>
    <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div></div></body>
 </html>

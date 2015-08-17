@@ -2593,7 +2593,30 @@ influenced the computation.</p>
     these steps:
 
 
-     <p class="issue" id="issue-3dc7e411"><a class="self-link" href="#issue-3dc7e411"></a> describe the subsumes algorithm</p>
+     <ol>
+      <li data-md="">
+       <p>Return <code>true</code> if for each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a>
+<var>b</var> in the <a data-link-type="dfn" href="#label-set">label set</a> of <var>B</var>, there is
+<a data-link-type="dfn" href="#disjunction-set">disjunction set</a> <var>a</var> in the <a data-link-type="dfn" href="#label-set">label set</a> of
+<var>A</var> such that <var>a</var> is a <em>subset</em> of
+<var>b</var>.</p>
+       
+</ol>
+     
+    
+
+
+     <ol>
+      <li data-md="">
+       <p>Else, return <code>false</code>.</p>
+       
+</ol>
+     
+
+     <p class="note" role="note">Note, when interpreting labels as mathematical formulae, <a data-link-type="dfn" href="#label-subsumption">label
+    subsumption</a> is logical implication: <var>A</var>
+    subsumes <var>B</var> is equivalent as <var>A</var>
+    <em>implies</em> <var>B</var>, i.e, <var>A</var>⇒<var>B</var>.</p>
      
 
   
@@ -3131,6 +3154,5 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> describe how labeled headers and XHR work<a href="#issue-8027d210"> ↵ </a></div>
    <div class="issue"> completed definition<a href="#issue-190c86c0"> ↵ </a></div>
    <div class="issue"> describe the reduction algorithm<a href="#issue-a82506bb"> ↵ </a></div>
-   <div class="issue"> describe the subsumes algorithm<a href="#issue-3dc7e411"> ↵ </a></div>
    <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div></div></body>
 </html>

@@ -1680,7 +1680,20 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     <var>A</var> and <var>B</var> and produces a boolean according to
     these steps:
 
-    ISSUE: describe the subsumes algorithm
+    1. Return <code>true</code> if for each <a>disjunction set</a>
+    <var>b</var> in the <a>label set</a> of <var>B</var>, there is
+    <a>disjunction set</a> <var>a</var> in the <a>label set</a> of
+    <var>A</var> such that <var>a</var> is a <em>subset</em> of
+    <var>b</var>.
+
+    <!-- TODO: link subset -->
+
+    2. Else, return <code>false</code>.
+
+    Note, when interpreting labels as mathematical formulae, <a>label
+    subsumption</a> is logical implication: <var>A</var>
+    subsumes <var>B</var> is equivalent as <var>A</var>
+    <em>implies</em> <var>B</var>, i.e, <var>A</var>&Rightarrow;<var>B</var>.
 
   </section>
   <section>

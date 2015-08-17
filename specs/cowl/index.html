@@ -1843,24 +1843,23 @@ to the following:</p>
            
 
 
-
           <li data-md="">
            <p>Let <var>canWrite</var> be the result of invoking
-the <a data-link-type="dfn" href="#write-check0">write check</a> algorithm with <var>conf</var>
-and the <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a>.</p>
+ the <a data-link-type="dfn" href="#write-check0">write check</a> algorithm with <var>conf</var>
+ and the <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a>.</p>
            
 
 
           <li data-md="">
            <p>If <var>canWrite</var> is <code>false</code>, the user
-agent MUST throw a <a data-link-type="dfn">SecurityError</a>
-exception and terminate this algorithm.</p>
+ agent MUST throw a <a data-link-type="dfn">SecurityError</a>
+ exception and terminate this algorithm.</p>
            
 
 
           <li data-md="">
            <p>Else, the user agent MUST set the <a data-link-type="dfn" href="#current-confidentiality-label">current
-confidentiality label</a> to <var>conf</var>.</p>
+ confidentiality label</a> to <var>conf</var>.</p>
            
 </ol></ul>
        
@@ -1898,21 +1897,21 @@ to the following:</p>
 
           <li data-md="">
            <p>Let <var>canWrite</var> be the result of invoking the
-<a data-link-type="dfn" href="#write-check0">write check</a> algorithm with the <a data-link-type="dfn" href="#current-confidentiality-label">current
-confidentiality label</a> and <var>int</var>.</p>
+ <a data-link-type="dfn" href="#write-check0">write check</a> algorithm with the <a data-link-type="dfn" href="#current-confidentiality-label">current
+ confidentiality label</a> and <var>int</var>.</p>
            
 
 
           <li data-md="">
            <p>If <var>canWrite</var> is <code>false</code>, the user
-agent MUST throw a <a data-link-type="dfn">SecurityError</a>
-exception and terminate this algorithm.</p>
+ agent MUST throw a <a data-link-type="dfn">SecurityError</a>
+ exception and terminate this algorithm.</p>
            
 
 
           <li data-md="">
            <p>Else, the user agent MUST set the <a data-link-type="dfn" href="#current-integrity-label">current
-integrity label</a> to <var>int</var>.</p>
+ integrity label</a> to <var>int</var>.</p>
            
 </ol></ul>
        
@@ -2628,11 +2627,6 @@ influenced the computation.</p>
 
      <ol>
       <li data-md="">
-       <p>Enable <a data-link-type="dfn" href="#confinement-mode">confinement mode</a>, if it is not enabled.</p>
-       
-
-
-      <li data-md="">
        <p>Let <var>currentConf</var> be the current <a data-link-type="dfn" href="#context-confidentiality-label">context
  confidentiality label</a>.</p>
        
@@ -2670,16 +2664,46 @@ influenced the computation.</p>
     
      <h3 class="heading settled" data-level="4.5" id="write-check"><span class="secno">4.5. </span><span class="content">Write Check</span><a class="self-link" href="#write-check"></a></h3>
      
-    The <dfn data-dfn-type="dfn" data-noexport="" id="write-check0">write check<a class="self-link" href="#write-check0"></a></dfn> algorithm takes a two labels,
-    <var>confidentiality</var> and <var>integrity</var>, and returns
+    The <dfn data-dfn-type="dfn" data-noexport="" id="write-check0">write check<a class="self-link" href="#write-check0"></a></dfn> algorithm takes two labels,
+    <var>objConf</var> and <var>objInt</var>, and returns
     <code>true</code> if the current context is allowed to write to
     (or create) an entity labeled as such; otherwise, it returns
-    <code>false</code>.
+    <code>false</code>. The user agent MUS use an algorithm whose
+    behavior is as follows:
 
 
-     <p class="issue" id="issue-821539a6"><a class="self-link" href="#issue-821539a6"></a> describe write check</p>
+     <ol>
+      <li data-md="">
+       <p>Let <var>currentConf</var> be the current <a data-link-type="dfn" href="#context-confidentiality-label">context
+ confidentiality label</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>currentInt</var> be the current <a data-link-type="dfn" href="#context-integrity-label">context
+ integrity label</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>privs</var> be the current <a data-link-type="dfn" href="#context-privilege">context privileges</a>.</p>
+       
+
+
+
+      <li data-md="">
+       <p>If <code><var>objConf</var>.<a data-link-type="functionish" href="#dom-label-subsumesother-priv">subsumes(<var>currentConf</var>, <var>privs</var>)</a></code>
+ of
+ <code><var>currentInt</var>.<a data-link-type="functionish" href="#dom-label-subsumesother-priv">subsumes(<var>objInt</var>, <var>privs</var>)</a></code>
+ return <code>false</code>, return <code>false</code>.</p>
+       
+
+
+      <li data-md="">
+       <p>Else, return <code>true</code>.</p>
+       
+</ol>
      
-
   
     </section>
   
@@ -3108,6 +3132,5 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> completed definition<a href="#issue-190c86c0"> ↵ </a></div>
    <div class="issue"> describe the reduction algorithm<a href="#issue-a82506bb"> ↵ </a></div>
    <div class="issue"> describe the subsumes algorithm<a href="#issue-3dc7e411"> ↵ </a></div>
-   <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div>
-   <div class="issue"> describe write check<a href="#issue-821539a6"> ↵ </a></div></div></body>
+   <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div></div></body>
 </html>

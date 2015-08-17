@@ -1216,17 +1216,16 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
           1. Let <var>conf</var> be the set confidentiality label.
 
-        
           2. Let <var>canWrite</var> be the result of invoking
-          the <a>write check</a> algorithm with <var>conf</var>
-          and the <a>current integrity label</a>.
+             the <a>write check</a> algorithm with <var>conf</var>
+             and the <a>current integrity label</a>.
           
           3. If <var>canWrite</var> is <code>false</code>, the user
-          agent MUST throw a <a spec="HTML5">SecurityError</a>
-          exception and terminate this algorithm.
+             agent MUST throw a <a spec="HTML5">SecurityError</a>
+             exception and terminate this algorithm.
 
           4. Else, the user agent MUST set the <a>current
-          confidentiality label</a> to <var>conf</var>.
+             confidentiality label</a> to <var>conf</var>.
 
       </dd>
       <dt><dfn attribute title="COWL/integrity">integrity</dfn></dt>
@@ -1242,15 +1241,15 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
           1. Let <var>int</var> be the set integrity label.
         
           2. Let <var>canWrite</var> be the result of invoking the
-          <a>write check</a> algorithm with the <a>current
-          confidentiality label</a> and <var>int</var>.
+             <a>write check</a> algorithm with the <a>current
+             confidentiality label</a> and <var>int</var>.
           
           3. If <var>canWrite</var> is <code>false</code>, the user
-          agent MUST throw a <a spec="HTML5">SecurityError</a>
-          exception and terminate this algorithm.
+             agent MUST throw a <a spec="HTML5">SecurityError</a>
+             exception and terminate this algorithm.
 
           4. Else, the user agent MUST set the <a>current
-          integrity label</a> to <var>int</var>.
+             integrity label</a> to <var>int</var>.
 
       </dd>
       <dt><dfn attribute title="COWL/privilege">privilege</dfn></dt>
@@ -1701,15 +1700,13 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     these labels. The user agent MUST use an algorithm whose behavior
     is as follows:
 
-    1. Enable <a>confinement mode</a>, if it is not enabled.
-    
-    2. Let <var>currentConf</var> be the current <a>context
+    1. Let <var>currentConf</var> be the current <a>context
        confidentiality label</a>.
 
-    3. Let <var>currentInt</var> be the current <a>context
+    2. Let <var>currentInt</var> be the current <a>context
        integrity label</a>.
 
-    4. Set the <a>context confidentiality label</a> to the
+    3. Set the <a>context confidentiality label</a> to the
        <a>Label</a> returned by the by the <a>label downgrade</a>
        algorithm when invoked with
        <var>currentConf</var>.<a>and(<var>confidentiality</var>)</a>
@@ -1725,13 +1722,28 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   </section>
   <section>
     <h3 id="write-check">Write Check</h3>
-    The <dfn>write check</dfn> algorithm takes a two labels,
-    <var>confidentiality</var> and <var>integrity</var>, and returns
+    The <dfn>write check</dfn> algorithm takes two labels,
+    <var>objConf</var> and <var>objInt</var>, and returns
     <code>true</code> if the current context is allowed to write to
     (or create) an entity labeled as such; otherwise, it returns
-    <code>false</code>.
+    <code>false</code>. The user agent MUS use an algorithm whose
+    behavior is as follows:
 
-    ISSUE: describe write check
+    1. Let <var>currentConf</var> be the current <a>context
+       confidentiality label</a>.
+
+    2. Let <var>currentInt</var> be the current <a>context
+       integrity label</a>.
+
+    3. Let <var>privs</var> be the current <a>context privileges</a>.
+
+
+    6. If <code><var>objConf</var>.<a>subsumes(<var>currentConf</var>, <var>privs</var>)</a></code>
+       of
+       <code><var>currentInt</var>.<a>subsumes(<var>objInt</var>, <var>privs</var>)</a></code>
+       return <code>false</code>, return <code>false</code>.
+
+    7. Else, return <code>true</code>.
 
   </section>
   <section>

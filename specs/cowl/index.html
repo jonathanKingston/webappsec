@@ -233,6 +233,9 @@ further.</p>
       <li><a href="#taint-context"><span class="secno">4.4</span> <span class="content">Context Tainting</span></a>
       <li><a href="#write-check"><span class="secno">4.5</span> <span class="content">Write Check</span></a>
       <li><a href="#structured-cloning"><span class="secno">4.6</span> <span class="content">Structured Cloning</span></a>
+      <li><a href="#should-block-fetch"><span class="secno">4.7</span> <span class="content">
+      Should fetching <var>request</var> be blocked as COWL?
+    </span></a>
      </ul>
     <li><a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ul class="toc">
@@ -2579,9 +2582,29 @@ influenced the computation.</p>
      
 
 
-     <p class="issue" id="issue-8a6c7238"><a class="self-link" href="#issue-8a6c7238"></a> describe modifications to fetch</p>
+     <p>The Fetch specification should contain the following
+          modifications in order to enable the rest of this
+          specification’s work <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a>:</p>
      
 
+
+     <ol>
+      <li data-md="">
+       <p>Perform the following step between step 4 and 5 in the
+ "<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#main-fetch">main fetch</a>" algorithm:</p>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p>If <a href="#should-block-fetch">should fetching <var>request</var> be blocked as
+  COWL</a> returns <strong>blocked</strong>, set
+  <var>response</var> to a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error">network error</a>.</p>
+         
+</ol>
+       
+</ol>
+     
         
      <h4 class="heading settled" data-level="3.7.2" id="modifications-to-cross_document-messaging"><span class="secno">3.7.2. </span><span class="content">Modifications to cross-document messaging</span><a class="self-link" href="#modifications-to-cross_document-messaging"></a></h4>
      
@@ -2634,21 +2657,24 @@ influenced the computation.</p>
        
 
 
-       <ul>
+       <ol>
         <li data-md="">
          <p>If there is no <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> in <var>lset</var>
   that is a subset of <var>dset</var>, then:</p>
          
 
 
-         <p>i. Remove every <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> in <var>lset</var> that
-  <var>dset</var> is a subset of.</p>
-         
+         <ol>
+          <li data-md="">
+           <p>Remove every <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> in <var>lset</var> that
+<var>dset</var> is a subset of.</p>
+           
 
 
-         <p>ii. Add <var>dset</var> to <var>lset</var>.</p>
-         
-</ul>
+          <li data-md="">
+           <p>Add <var>dset</var> to <var>lset</var>.</p>
+           
+</ol></ol>
        
 
       <li data-md="">
@@ -2897,8 +2923,125 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
      
   
     </section>
+  
+    <section>
+    
+     <h3 class="heading settled" data-level="4.7" id="should-block-fetch"><span class="secno">4.7. </span><span class="content">
+      Should fetching <var>request</var> be blocked as COWL?
+    </span><a class="self-link" href="#should-block-fetch"></a></h3>
+     
+    
+     <div class="note" role="note">
+      Note: this algorithm is used to determine whether a request should
+      be entirely blocked, because it may potentially leak sensitive
+      data to an unauthorized server.
+    </div>
+     
 
-</section></main>
+
+     <p>Given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request">Request</a> <var>request</var>, a user agent determines
+    whether the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request">Request</a> <var>request</var> should proceed or
+    not via the following algorithm:</p>
+     
+
+
+     <ol>
+      <li data-md="">
+       <p>Let <var>context</var> be the <strong>client</strong>
+ associated with the <var>request</var>.</p>
+       
+
+
+      <li data-md="">
+       <p>If <var>context</var> is null, let <var>context</var> be the
+ <a data-link-type="dfn" href="http://www.w3.org/TR/html5/webappapis.html#incumbent-settings-object">incumbent settings object</a>.</p>
+       
+
+
+       <p class="note" role="note">Note, the <strong>client</strong> associated with the
+ <var>request</var> is null when <a data-link-type="dfn">navigating</a>, so we use
+ the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/webappapis.html#incumbent-settings-object">incumbent settings object</a> to get the <a data-link-type="dfn" href="#cowl-state">COWL
+ state</a> of the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">context</a> that initiated the request.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>state</var> be the <a data-link-type="dfn" href="#cowl-state">COWL state</a> retrieved via the
+ <a data-link-type="dfn" href="http://www.w3.org/TR/html5/webappapis.html#settings-object">environment settings object</a> <var>context</var>.</p>
+       
+
+
+      <li data-md="">
+       <p>If the <var>state</var> <a data-link-type="dfn">confinement mode is not
+ enabled, return <strong>allowed</strong> and terminated this
+ algorithm.</a></p><a data-link-type="dfn">
+
+</a>
+      <li data-md="">
+       <p><a data-link-type="dfn">Let <var>conf</var> be the <var>state</var> </a><a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>priv</var> be the <var>state</var> <a data-link-type="dfn" href="#context-privilege">context privilege</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>newConf</var> be the <a data-link-type="dfn" href="#label">Label</a> created by invoking
+ the <a data-link-type="functionish" href="#dom-label-label">Label(origin)</a> constructor with the
+ <strong>url</strong> associated with the <var>request</var>.</p>
+       
+
+
+      <li data-md="">
+       <p>If <code><var>newConf</var>.<a data-link-type="dfn">subsumes(<var>conf</var>,
+  <var>priv</var>)</a></code> returns <code>true</code>, return
+  <strong>allowed</strong>.</p>
+       
+
+
+      <li data-md="">
+       <p>Else:</p>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p>If the <var>request</var> is a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#navigation-request">navigation request</a>
+ and the <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-context-frame-type">context frame type</a> is
+ <code>top-level</code> the user agent MAY return
+ <strong>allowed</strong>, but MUST indicate to the user
+ that data labeled <var>conf</var> may have been leaked due
+ to the navigation.  It is RECOMMENDED that user agents give
+ users the options to block the navigation, e.g., via a
+ pop-up dialog.</p>
+         
+
+
+         <p class="issue" id="issue-70e3bdc0"><a class="self-link" href="#issue-70e3bdc0"></a> We can simply disallow leaks via top-level
+ navigation at the cost of potentially forcing users to
+ navigate away by closing tabs or inputing another URL via
+ the address bar.  Feedback on this would be welcome.</p>
+         
+
+
+        <li data-md="">
+         <p>Else, return <strong>blocked</strong>.</p>
+         
+</ol></ol>
+     
+
+     <p class="note" role="note">Note, the integrity label of the <a data-link-type="dfn">current context</a> is not
+    used in this algorithm since, conceptually, the integrity label of
+    a server is the <a data-link-type="dfn" href="#empty-label">empty label</a> and, thus, always subsumed.</p>
+     
+
+  
+    </section>
+</section>
+
+</main>
 
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
 
@@ -3118,11 +3261,21 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
     <ul>
      <li><a href="https://www.w3.org/TR/CSP2/#source-list-syntax">host-source</a>
     </ul>
+   <li><a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> defines the following terms:
+    <ul>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-request-context-frame-type">context frame type</a>
+     <li><a href="https://fetch.spec.whatwg.org/#main-fetch">main fetch</a>
+     <li><a href="https://fetch.spec.whatwg.org/#navigation-request">navigation request</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-network-error">network error</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-request">request</a>
+    </ul>
    <li><a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
     <ul>
      <li><a href="http://www.w3.org/TR/html5/browsers.html#windows">browsing context</a>
      <li><a href="http://www.w3.org/TR/html5/browsers.html#windows">context</a>
+     <li><a href="http://www.w3.org/TR/html5/webappapis.html#settings-object">environment settings object</a>
      <li><a href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element">iframe</a>
+     <li><a href="http://www.w3.org/TR/html5/webappapis.html#incumbent-settings-object">incumbent settings object</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm">internal structured cloning algorithm</a>
      <li><a href="http://www.w3.org/TR/html5/embedded-content-0.html#attr-iframe-sandbox">sandbox</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structurally clonable</a>
@@ -3164,6 +3317,8 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
    <dd>Mike West; Adam Barth; Dan Veditz. <a href="https://w3c.github.io/webappsec/specs/content-security-policy/">Content Security Policy Level 2</a>. CR. URL: <a href="https://w3c.github.io/webappsec/specs/content-security-policy/">https://w3c.github.io/webappsec/specs/content-security-policy/</a>
    <dt id="biblio-ecma-262"><a class="self-link" href="#biblio-ecma-262"></a>[ECMA-262]
    <dd>Allen Wirfs-Brock. <a href="http://www.ecma-international.org/ecma-262/6.0/">ECMA-262 6th Edition, The ECMAScript 2015 Language Specification</a>. June 2015. Standard. URL: <a href="http://www.ecma-international.org/ecma-262/6.0/">http://www.ecma-international.org/ecma-262/6.0/</a>
+   <dt id="biblio-fetch"><a class="self-link" href="#biblio-fetch"></a>[FETCH]
+   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-rfc6454"><a class="self-link" href="#biblio-rfc6454"></a>[RFC6454]
    <dd>Adam Barth. <a href="http://www.ietf.org/rfc/rfc6454.txt">The Web Origin Concept</a>. RFC. URL: <a href="http://www.ietf.org/rfc/rfc6454.txt">http://www.ietf.org/rfc/rfc6454.txt</a>
    <dt id="biblio-url"><a class="self-link" href="#biblio-url"></a>[URL]
@@ -3262,9 +3417,12 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> describe how labeled headers and new XHR labeled-json interact<a href="#issue-6810ed35"> ↵ </a></div>
    <div class="issue"> describe how XHR response is different when labeled-json
       is used<a href="#issue-ede42c82"> ↵ </a></div>
-   <div class="issue"> describe modifications to fetch<a href="#issue-8a6c7238"> ↵ </a></div>
    <div class="issue"> describe modifications to <a data-link-type="functionish" href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a><a href="#issue-4cd4a1e3"> ↵ </a></div>
    <div class="issue"> describe modifications to Worker <code>postMessage()</code> and <code>parent.postMessage</code><a href="#issue-0f5c5044"> ↵ </a></div>
    <div class="issue"> should we restrict communication via more covert channels, e.g., height/width of iframe?<a href="#issue-142a18fc"> ↵ </a></div>
-   <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div></div></body>
+   <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div>
+   <div class="issue"> We can simply disallow leaks via top-level
+ navigation at the cost of potentially forcing users to
+ navigate away by closing tabs or inputing another URL via
+ the address bar.  Feedback on this would be welcome.<a href="#issue-70e3bdc0"> ↵ </a></div></div></body>
 </html>

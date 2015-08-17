@@ -38,6 +38,10 @@ spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
     urlPrefix: embedded-content-0.html
       text: sandbox; for: iframe; url: attr-iframe-sandbox
   type: dfn
+    urlPrefix: webappapis.html
+      text: environment settings object; url: settings-object
+      text: incumbent settings object; url: incumbent-settings-object
+  type: dfn
     urlPrefix: embedded-content-0.html
       text: iframe; url: the-iframe-element
     urlPrefix: browsers.html
@@ -66,7 +70,6 @@ spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
   type: dfn
     text: JSON object; url: section-2
     text: JSON stringification; url: section-2
-
 spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   type: dfn
     text: XMLHttpRequest
@@ -76,6 +79,15 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     text: XMLHttpRequestResponseType; url: xmlhttprequestresponsetype
   type: method
     text: send(); url: the-send()-method
+spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
+  type: dfn
+    text: fetching
+    text: main fetch; url: main-fetch
+    text: request; url: concept-request
+    text: response; url: concept-response
+    text: network error; url: concept-network-error
+    text: navigation request; url: navigation-request
+    text: context frame type; url: concept-request-context-frame-type
 </pre>
 
 <!-- BIBLIOGRAPHY -->
@@ -1666,7 +1678,17 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       <h3 id="enforcement">Confinement Enforcement</h3>
         <h4>Modifications to Fetch</a></h4>
 
-          ISSUE: describe modifications to fetch
+          The Fetch specification should contain the following
+          modifications in order to enable the rest of this
+          specification's work [[FETCH]]:
+
+          1. Perform the following step between step 4 and 5 in the
+             "<a>main fetch</a>" algorithm:
+
+             1. If <a href="#should-block-fetch">should fetching <var>request</var> be blocked as
+                COWL</a> returns <strong>blocked</strong>, set
+                <var>response</var> to a <a>network error</a>.
+
 
         <h4>Modifications to cross-document messaging</h4>
 
@@ -1696,13 +1718,13 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     2. For each <a>disjunction set</a> <var>dset</var> in the
        <a>label set</a> of <var>label</var>:
 
-       *  If there is no <a>disjunction set</a> in <var>lset</var>
+       1. If there is no <a>disjunction set</a> in <var>lset</var>
           that is a subset of <var>dset</var>, then:
           
-          i. Remove every <a>disjunction set</a> in <var>lset</var> that
+          1. Remove every <a>disjunction set</a> in <var>lset</var> that
           <var>dset</var> is a subset of.
 
-          ii. Add <var>dset</var> to <var>lset</var>.
+          2. Add <var>dset</var> to <var>lset</var>.
 
     3. Return a newly created <a>Label</a> whose <a>label set</a> is <var>lset</var>.
 
@@ -1854,3 +1876,71 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     result, authors can transfer COWL object types, such as <a
     interface>LabeledObject</a>s, to other contexts.
   </section>
+  <section>
+    <h3 id="should-block-fetch">
+      Should fetching <var>request</var> be blocked as COWL?
+    </h3>
+    <div class="note">
+      Note: this algorithm is used to determine whether a request should
+      be entirely blocked, because it may potentially leak sensitive
+      data to an unauthorized server.
+    </div>
+
+    Given a <a>Request</a> <var>request</var>, a user agent determines
+    whether the <a>Request</a> <var>request</var> should proceed or
+    not via the following algorithm:
+
+    1. Let <var>context</var> be the <strong>client</strong>
+       associated with the <var>request</var>.
+
+    2. If <var>context</var> is null, let <var>context</var> be the
+       <a>incumbent settings object</a>.
+
+       Note, the <strong>client</strong> associated with the
+       <var>request</var> is null when <a>navigating</a>, so we use
+       the <a>incumbent settings object</a> to get the <a>COWL
+       state</a> of the <a>context</a> that initiated the request.
+
+    2. Let <var>state</var> be the <a>COWL state</a> retrieved via the
+       <a>environment settings object</a> <var>context</var>.
+
+    3. If the <var>state</var> <a>confinement mode</code> is not
+       enabled, return <strong>allowed</strong> and terminated this
+       algorithm.
+
+    4. Let <var>conf</var> be the <var>state</var> <a>context confidentiality label</a>.
+
+    5. Let <var>priv</var> be the <var>state</var> <a>context privilege</a>.
+
+    6. Let <var>newConf</var> be the <a>Label</a> created by invoking
+       the <a>Label(origin)</a> constructor with the
+       <strong>url</strong> associated with the <var>request</var>.
+
+    7. If <code><var>newConf</var>.<a>subsumes(<var>conf</var>,
+        <var>priv</var>)</a></code> returns <code>true</code>, return
+        <strong>allowed</strong>.
+
+    8. Else:
+
+        1. If the <var>request</var> is a <a>navigation request</a>
+           and the <var>request</var>'s <a>context frame type</a> is
+           <code>top-level</code> the user agent MAY return
+           <strong>allowed</strong>, but MUST indicate to the user
+           that data labeled <var>conf</var> may have been leaked due
+           to the navigation.  It is RECOMMENDED that user agents give
+           users the options to block the navigation, e.g., via a
+           pop-up dialog.
+
+           ISSUE: We can simply disallow leaks via top-level
+           navigation at the cost of potentially forcing users to
+           navigate away by closing tabs or inputing another URL via
+           the address bar.  Feedback on this would be welcome.
+
+        2. Else, return <strong>blocked</strong>.
+
+    Note, the integrity label of the <a>current context</a> is not
+    used in this algorithm since, conceptually, the integrity label of
+    a server is the <a>empty label</a> and, thus, always subsumed.
+
+  </section>
+</section>

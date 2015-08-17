@@ -1474,7 +1474,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
     <h4>Examples</h4>
 
-    ISSUE: add examples
+    ISSUE: add examples showing how LabeledObjects are used
 
   </section>
 
@@ -1523,7 +1523,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
       <dfn>source-expression</dfn>   = "'self'" / "'unique'" / <a>host-source</a>
     </pre>
 
-    ISSUE: define parsing algorithms
+    ISSUE: define parsing algorithms for directives used in the Sec-COWL headers
 
     <section>
       <h4 id="request-header">The <code>Sec-COWL</code> HTTP Request Header Field</h4>
@@ -1582,7 +1582,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
 
       ISSUE: describe how response header is processes
 
-      ISSUE: describe how labeled headers and XHR work
+      ISSUE: describe how labeled headers and new XHR labeled-json interact
 
       <div class="example">
         The author of <code>http://a.com</code> may wish to reply to a 
@@ -1657,7 +1657,27 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
         };
       </pre>
 
-      ISSUE: completed definition
+      ISSUE: describe how XHR response is different when labeled-json
+      is used
+
+    </section>
+
+    <section>
+      <h3 id="enforcement">Confinement Enforcement</h3>
+        <h4>Modifications to Fetch</a></h4>
+
+          ISSUE: describe modifications to fetch
+
+        <h4>Modifications to cross-document messaging</h4>
+
+          ISSUE: describe modifications to <a>postMessage()</a>
+
+        <h4>Modifications to Web Worker messaging</h4>
+        
+          ISSUE: describe modifications to Worker <code>postMessage()</code> and <code>parent.postMessage</code>
+
+      ISSUE: should we restrict communication via more covert channels, e.g., height/width of iframe?
+
     </section>
 
 </section>

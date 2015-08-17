@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-16">16 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-17">17 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -217,6 +217,12 @@ further.</p>
        <ul class="toc">
         <li><a href="#sending-labeled-objects"><span class="secno">3.6.1</span> <span class="content">Sending <span>labeled objects</span></span></a>
         <li><a href="#receiving-labeled-objects"><span class="secno">3.6.2</span> <span class="content"><span>Receiving </span><span>labeled objects</span></span></a>
+       </ul>
+      <li><a href="#enforcement"><span class="secno">3.7</span> <span class="content">Confinement Enforcement</span></a>
+       <ul class="toc">
+        <li><a href="#modifications-to-fetch"><span class="secno">3.7.1</span> <span class="content">Modifications to Fetch</span></a>
+        <li><a href="#modifications-to-cross_document-messaging"><span class="secno">3.7.2</span> <span class="content">Modifications to cross-document messaging</span></a>
+        <li><a href="#modifications-to-web-worker-messaging"><span class="secno">3.7.3</span> <span class="content">Modifications to Web Worker messaging</span></a>
        </ul>
      </ul>
     <li><a href="#algorithms"><span class="secno">4</span> <span class="content">Algorithms</span></a>
@@ -2278,7 +2284,7 @@ influenced the computation.</p>
      
 
 
-     <p class="issue" id="issue-a71b8ddb"><a class="self-link" href="#issue-a71b8ddb"></a> add examples</p>
+     <p class="issue" id="issue-beccefce"><a class="self-link" href="#issue-beccefce"></a> add examples showing how LabeledObjects are used</p>
      
 
   
@@ -2359,7 +2365,7 @@ influenced the computation.</p>
      
 
 
-     <p class="issue" id="issue-82a70e9f"><a class="self-link" href="#issue-82a70e9f"></a> define parsing algorithms</p>
+     <p class="issue" id="issue-af1257c6"><a class="self-link" href="#issue-af1257c6"></a> define parsing algorithms for directives used in the Sec-COWL headers</p>
      
 
     
@@ -2447,7 +2453,7 @@ influenced the computation.</p>
       
 
 
-      <p class="issue" id="issue-8027d210"><a class="self-link" href="#issue-8027d210"></a> describe how labeled headers and XHR work</p>
+      <p class="issue" id="issue-6810ed35"><a class="self-link" href="#issue-6810ed35"></a> describe how labeled headers and new XHR labeled-json interact</p>
       
 
       
@@ -2556,8 +2562,46 @@ influenced the computation.</p>
      
 
 
-     <p class="issue" id="issue-190c86c0"><a class="self-link" href="#issue-190c86c0"></a> completed definition</p>
+     <p class="issue" id="issue-ede42c82"><a class="self-link" href="#issue-ede42c82"></a> describe how XHR response is different when labeled-json
+      is used</p>
      
+
+    
+    </section>
+
+    
+    <section>
+      
+     <h3 class="heading settled" data-level="3.7" id="enforcement"><span class="secno">3.7. </span><span class="content">Confinement Enforcement</span><a class="self-link" href="#enforcement"></a></h3>
+     
+        
+     <h4 class="heading settled" data-level="3.7.1" id="modifications-to-fetch"><span class="secno">3.7.1. </span><span class="content">Modifications to Fetch</span><a class="self-link" href="#modifications-to-fetch"></a></h4>
+     
+
+
+     <p class="issue" id="issue-8a6c7238"><a class="self-link" href="#issue-8a6c7238"></a> describe modifications to fetch</p>
+     
+
+        
+     <h4 class="heading settled" data-level="3.7.2" id="modifications-to-cross_document-messaging"><span class="secno">3.7.2. </span><span class="content">Modifications to cross-document messaging</span><a class="self-link" href="#modifications-to-cross_document-messaging"></a></h4>
+     
+
+
+     <p class="issue" id="issue-4cd4a1e3"><a class="self-link" href="#issue-4cd4a1e3"></a> describe modifications to <a data-link-type="functionish" href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a></p>
+     
+
+        
+     <h4 class="heading settled" data-level="3.7.3" id="modifications-to-web-worker-messaging"><span class="secno">3.7.3. </span><span class="content">Modifications to Web Worker messaging</span><a class="self-link" href="#modifications-to-web-worker-messaging"></a></h4>
+     
+
+
+     <p class="issue" id="issue-0f5c5044"><a class="self-link" href="#issue-0f5c5044"></a> describe modifications to Worker <code>postMessage()</code> and <code>parent.postMessage</code></p>
+     
+
+
+     <p class="issue" id="issue-142a18fc"><a class="self-link" href="#issue-142a18fc"></a> should we restrict communication via more covert channels, e.g., height/width of iframe?</p>
+     
+
     
     </section>
 
@@ -3212,10 +3256,15 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
     and how we actually do this<a href="#issue-7adbb59d"> ↵ </a></div>
    <div class="issue"> Add some examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>
     object. And to provide some intuition for the semantics.<a href="#issue-0c285526"> ↵ </a></div>
-   <div class="issue"> add examples<a href="#issue-a71b8ddb"> ↵ </a></div>
-   <div class="issue"> define parsing algorithms<a href="#issue-82a70e9f"> ↵ </a></div>
+   <div class="issue"> add examples showing how LabeledObjects are used<a href="#issue-beccefce"> ↵ </a></div>
+   <div class="issue"> define parsing algorithms for directives used in the Sec-COWL headers<a href="#issue-af1257c6"> ↵ </a></div>
    <div class="issue"> describe how response header is processes<a href="#issue-f4bc3b24"> ↵ </a></div>
-   <div class="issue"> describe how labeled headers and XHR work<a href="#issue-8027d210"> ↵ </a></div>
-   <div class="issue"> completed definition<a href="#issue-190c86c0"> ↵ </a></div>
+   <div class="issue"> describe how labeled headers and new XHR labeled-json interact<a href="#issue-6810ed35"> ↵ </a></div>
+   <div class="issue"> describe how XHR response is different when labeled-json
+      is used<a href="#issue-ede42c82"> ↵ </a></div>
+   <div class="issue"> describe modifications to fetch<a href="#issue-8a6c7238"> ↵ </a></div>
+   <div class="issue"> describe modifications to <a data-link-type="functionish" href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a><a href="#issue-4cd4a1e3"> ↵ </a></div>
+   <div class="issue"> describe modifications to Worker <code>postMessage()</code> and <code>parent.postMessage</code><a href="#issue-0f5c5044"> ↵ </a></div>
+   <div class="issue"> should we restrict communication via more covert channels, e.g., height/width of iframe?<a href="#issue-142a18fc"> ↵ </a></div>
    <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div></div></body>
 </html>

@@ -26,6 +26,9 @@ spec: WEBMESSAGING; urlPrefix: http://www.w3.org/TR/webmessaging/
     text: postMessage(); url: dom-window-postmessage
   type: dfn
     text: posting messages; url: posting-messages
+    text: owner; url: concept-port-owner
+    text: Message Port; url: messageport
+    text: MessagePort postMessage(); url: dom-messageport-postmessage
 spec: WORKERS; urlPrefix: http://www.w3.org/TR/workers/
   type: dfn
     text: Worker
@@ -1727,6 +1730,39 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
                 <var>conf</var> or if <var>int</var> does not
                 <a>subsume</a> <var>dstInt</var>, then abort the
                 remaining steps silently.
+
+          2. Perform the following step between step 9 and 10 in the 
+             <a>MessagePort <code>postMessage()</code></a> method:
+
+             1. Let <var>conf</var> be the current context's <a>effective
+                confidentiality label</a>, if <a>confinement mode</code> is
+                enabled and the <a>empty label</a> otherwise.
+
+             2. Let <var>int</var> be the current context's <a>effective
+                integrity label</a>, if <a>confinement mode</code> is
+                enabled and the <a>empty label</a> otherwise.
+
+
+             3. Let <var>dstState</var> be the <a>COWL state</a>
+                associated with the <a>owner</a> of the <var>target
+                port</var> the <a>Message Port </a>
+                <code>postMessage()</code> was called on.
+             
+             4. Let <var>dstConf</var> be the <var>state</var> <a>effective
+                confidentiality label</a>, if <a>confinement mode</code> is
+                enabled and the <a>empty label</a> otherwise.
+             
+             5. Let <var>dstInt</var> be the <var>state</var> <a>effective
+                integrity label</a>, if <a>confinement mode</code> is
+                enabled and the <a>empty label</a> otherwise.
+             
+             6. If <var>dstConf</var> does not <a>subsume</a>
+                <var>conf</var> or if <var>int</var> does not
+                <a>subsume</a> <var>dstInt</var>, then abort the
+                remaining steps.
+
+
+
 
         <h4>Modifications to Web Worker messaging</h4>
         

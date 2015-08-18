@@ -2667,7 +2667,64 @@ influenced the computation.</p>
   <a data-link-type="dfn" href="#subsumes">subsume</a> <var>dstInt</var>, then abort the
   remaining steps silently.</p>
          
-</ol></ol>
+</ol>
+       
+
+      <li data-md="">
+       <p>Perform the following step between step 9 and 10 in the
+ <a data-link-type="dfn" href="http://www.w3.org/TR/webmessaging/#dom-messageport-postmessage">MessagePort <code>postMessage()</code></a> method:</p>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p>Let <var>conf</var> be the current context’s <a data-link-type="dfn" href="#effective-confidentiality-label">effective
+  confidentiality label</a>, if <a data-link-type="dfn">confinement mode is
+  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>int</var> be the current context’s <a data-link-type="dfn" href="#effective-integrity-label">effective
+  integrity label</a>, if <a data-link-type="dfn">confinement mode is
+  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         
+
+
+
+        <li data-md="">
+         <p>Let <var>dstState</var> be the <a data-link-type="dfn" href="#cowl-state">COWL state</a>
+  associated with the <a data-link-type="dfn" href="http://www.w3.org/TR/webmessaging/#concept-port-owner">owner</a> of the <var>target
+  port</var> the <a data-link-type="dfn">Message Port </a>
+  <code>postMessage()</code> was called on.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>dstConf</var> be the <var>state</var> <a data-link-type="dfn" href="#effective-confidentiality-label">effective
+  confidentiality label</a>, if <a data-link-type="dfn">confinement mode is
+  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>dstInt</var> be the <var>state</var> <a data-link-type="dfn" href="#effective-integrity-label">effective
+  integrity label</a>, if <a data-link-type="dfn">confinement mode is
+  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         
+
+
+        <li data-md="">
+         <p>If <var>dstConf</var> does not <a data-link-type="dfn" href="#subsumes">subsume</a>
+  <var>conf</var> or if <var>int</var> does not
+  <a data-link-type="dfn" href="#subsumes">subsume</a> <var>dstInt</var>, then abort the
+  remaining steps.</p>
+         
+
+
+</ol>
+       
+</ol>
      
         
      <h4 class="heading settled" data-level="3.7.3" id="modifications-to-web-worker-messaging"><span class="secno">3.7.3. </span><span class="content">Modifications to Web Worker messaging</span><a class="self-link" href="#modifications-to-web-worker-messaging"></a></h4>
@@ -3343,6 +3400,8 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
     </ul>
    <li><a data-link-type="biblio" href="#biblio-webmessaging">[webmessaging]</a> defines the following terms:
     <ul>
+     <li><a href="http://www.w3.org/TR/webmessaging/#dom-messageport-postmessage">messageport postmessage()</a>
+     <li><a href="http://www.w3.org/TR/webmessaging/#concept-port-owner">owner</a>
      <li><a href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a>
      <li><a href="http://www.w3.org/TR/webmessaging/#posting-messages">posting messages</a>
     </ul>

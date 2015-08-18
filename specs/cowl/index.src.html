@@ -29,6 +29,7 @@ spec: WEBMESSAGING; urlPrefix: http://www.w3.org/TR/webmessaging/
     text: owner; url: concept-port-owner
     text: Message Port; url: messageport
     text: MessagePort postMessage(); url: dom-messageport-postmessage
+    text: cross-document messaging; url: web-messaging
 spec: WORKERS; urlPrefix: http://www.w3.org/TR/workers/
   type: dfn
     text: Worker
@@ -202,7 +203,7 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
   restrict how confidential data is disseminated, setting a correct
   CSP policy (as to confine code) is difficult and limited to
   content the author has control over. Indeed, sharing confidential
-  data in the existing model (e.g., via cross-document messaging)
+  data in the existing model (e.g., via <a>cross-document messaging</a>)
   implicitly requires the author to trust the receiver not to leak the
   data, accidentally or otherwise.  COWL provides a defense-in-depth
   option for protecting data confidentiality and integrity.  In
@@ -664,7 +665,7 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
     </li>
     <li>
       The <dfn>effective integrity label</dfn> is the label
-      returned by the <a>label downgrade</a> algorithm when invoked
+      returned by the <a>label upgrade</a> algorithm when invoked
       with the <a>current integrity label</a> and <a>current
       privilege</a>.
     </li>
@@ -1681,7 +1682,19 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
 
     <section>
       <h3 id="enforcement">Confinement Enforcement</h3>
-        <h4>Modifications to Fetch</a></h4>
+
+        <em>This sub-section is non-normative</em>
+
+        To enforce confinement, COWL ensures that code in a
+        <a>context</a> cannot send data (e.g., via <a>cross-document
+        messaging</a> or by performing a <a>fetch</a>) to contexts or
+        servers that do not preserve the confidentiality of the data.
+        Similarly, COWL ensures that a context cannot receive data from a
+        context or server that is less trustworthy.
+      
+      
+
+        <h4>Modifications to Fetch</h4>
 
           The Fetch specification should contain the following
           modifications in order to enable the rest of this
@@ -1694,8 +1707,9 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
                 COWL</a> returns <strong>blocked</strong>, set
                 <var>response</var> to a <a>network error</a>.
 
+          ISSUE: define how COWL blocks responses
 
-        <h4>Modifications to cross-document messaging</h4>
+          <h4>Modifications to Web Messaging</h4>
 
           The Web Messaging specification should contain the following
           modifications in order to enable the rest of this
@@ -1705,12 +1719,10 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
              <a>posting messages</a> algorithm:
 
              1. Let <var>conf</var> be the current context's <a>effective
-                confidentiality label</a>, if <a>confinement mode</code> is
-                enabled and the <a>empty label</a> otherwise.
+                confidentiality label</a>.
 
              2. Let <var>int</var> be the current context's <a>effective
-                integrity label</a>, if <a>confinement mode</code> is
-                enabled and the <a>empty label</a> otherwise.
+                integrity label</a>.
 
              3. Let <var>dstState</var> be the <a>COWL state</a>
                 associated with the
@@ -1718,15 +1730,25 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
                 <code><a spec="HTML5">Window</a></code> object on which the
                 method was invoked.
 
-             4. Let <var>dstConf</var> be the <var>state</var> <a>effective
-                confidentiality label</a>, if <a>confinement mode</code> is
-                enabled and the <a>empty label</a> otherwise.
+             4. If <a>confinement mode</a> for <var>dstState</var> is
+                enabled, let <var>dstConf</var> be the <var>dstState</var>
+                <a>effective confidentiality label</a>.
 
-             5. Let <var>dstInt</var> be the <var>state</var> <a>effective
-                integrity label</a>, if <a>confinement mode</code> is
-                enabled and the <a>empty label</a> otherwise.
+             5. Else, let <var>dstConf</var> be the <a intergrity>Label</a> returned by the <a>label
+                upgrade</a> algorithm when invoked with the
+                <var>dstState</var> <a>context confidentiality label</a>
+                and <a>context privilege</a>.
 
-             6. If <var>dstConf</var> does not <a>subsume</a>
+                Note, if the receiver has not enabled <a>confinement
+                mode</a>, COWL flexibly assumes that it can receive
+                data sensitive to its origin (in using the <a>label
+                upgrade</a>).
+
+             6. Let <var>dstInt</var> be the <var>dstState</var> <a>effective
+                integrity label</a>.
+
+
+             7. If <var>dstConf</var> does not <a>subsume</a>
                 <var>conf</var> or if <var>int</var> does not
                 <a>subsume</a> <var>dstInt</var>, then abort the
                 remaining steps silently.
@@ -1735,38 +1757,37 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
              <a>MessagePort <code>postMessage()</code></a> method:
 
              1. Let <var>conf</var> be the current context's <a>effective
-                confidentiality label</a>, if <a>confinement mode</code> is
-                enabled and the <a>empty label</a> otherwise.
+                confidentiality label</a>.
 
              2. Let <var>int</var> be the current context's <a>effective
-                integrity label</a>, if <a>confinement mode</code> is
-                enabled and the <a>empty label</a> otherwise.
-
+                integrity label</a>.
 
              3. Let <var>dstState</var> be the <a>COWL state</a>
                 associated with the <a>owner</a> of the <var>target
                 port</var> the <a>Message Port </a>
                 <code>postMessage()</code> was called on.
              
-             4. Let <var>dstConf</var> be the <var>state</var> <a>effective
-                confidentiality label</a>, if <a>confinement mode</code> is
-                enabled and the <a>empty label</a> otherwise.
+             4. If <a>confinement mode</a> for <var>dstState</var> is
+                enabled, let <var>dstConf</var> be the <var>dstState</var>
+                <a>effective confidentiality label</a>.
+
+             5. Else, let <var>dstConf</var> be the <a intergrity>Label</a> returned by the <a>label
+                upgrade</a> algorithm when invoked with the
+                <var>dstState</var> <a>context confidentiality label</a>
+                and <a>context privilege</a>.
+
+                Note, if the receiver has not enabled <a>confinement
+                mode</a>, COWL flexibly assumes that it can receive
+                data sensitive to its origin (in using the <a>label
+                upgrade</a>).
+
+             6. Let <var>dstInt</var> be the <var>state</var> <a>effective
+                integrity label</a>.
              
-             5. Let <var>dstInt</var> be the <var>state</var> <a>effective
-                integrity label</a>, if <a>confinement mode</code> is
-                enabled and the <a>empty label</a> otherwise.
-             
-             6. If <var>dstConf</var> does not <a>subsume</a>
+             7. If <var>dstConf</var> does not <a>subsume</a>
                 <var>conf</var> or if <var>int</var> does not
                 <a>subsume</a> <var>dstInt</var>, then abort the
                 remaining steps.
-
-
-
-
-        <h4>Modifications to Web Worker messaging</h4>
-        
-          ISSUE: describe modifications to Worker <code>postMessage()</code> and <code>parent.postMessage</code>
 
       ISSUE: should we restrict communication via more covert channels, e.g., height/width of iframe?
 
@@ -1846,12 +1867,26 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
 
   </section>
   <section>
-    <h3 id="label-reduce">Label Downgrade</h3>
-    The <dfn>label downgrade</dfn> algorithm takes a label,
-    <var>label</var> and a privilege<var>priv</var>, and returns
-    the least restricting label according to the following steps:
+    <h3 id="label-downgrade">Label Downgrade</h3>
+    The <dfn>label downgrade</dfn> algorithm takes a confidentiality
+    label, <var>label</var> and a privilege<var>priv</var>, and
+    returns the least restricting label according to the following
+    steps:
 
     ISSUE: describe downgrade
+
+  </section>
+  <section>
+    <h3 id="label-upgrade">Label Upgrade</h3>
+    The <dfn>label upgrade</dfn> algorithm takes an integrity
+    label, <var>label</var> and a privilege<var>priv</var>, and
+    returns the most permissive label according to the following
+    steps:
+
+    1. Let <var>privLabel</var> be the <a>internal privilege label</a>
+    of <var>priv</var>.
+    
+    2. Return <code><var>label</var>.<a>and(<var>privLabel</var>)</a></code>.
 
   </section>
   <section>
@@ -1980,7 +2015,7 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
 
     4. Let <var>conf</var> be the <var>state</var> <a>effective confidentiality label</a>.
 
-    6. Let <var>dstConf</var> be the <a>Label</a> created by invoking
+    6. Let <var>dstConf</var> be the <a integrity>Label</a> created by invoking
        the <a>Label(origin)</a> constructor with the
        <strong>url</strong> associated with the <var>request</var>.
 

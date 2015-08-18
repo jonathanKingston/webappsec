@@ -221,19 +221,19 @@ further.</p>
       <li><a href="#enforcement"><span class="secno">3.7</span> <span class="content">Confinement Enforcement</span></a>
        <ul class="toc">
         <li><a href="#modifications-to-fetch"><span class="secno">3.7.1</span> <span class="content">Modifications to Fetch</span></a>
-        <li><a href="#modifications-to-cross_document-messaging"><span class="secno">3.7.2</span> <span class="content">Modifications to cross-document messaging</span></a>
-        <li><a href="#modifications-to-web-worker-messaging"><span class="secno">3.7.3</span> <span class="content">Modifications to Web Worker messaging</span></a>
+        <li><a href="#modifications-to-web-messaging"><span class="secno">3.7.2</span> <span class="content">Modifications to Web Messaging</span></a>
        </ul>
      </ul>
     <li><a href="#algorithms"><span class="secno">4</span> <span class="content">Algorithms</span></a>
      <ul class="toc">
       <li><a href="#reduce-to-normal-form"><span class="secno">4.1</span> <span class="content">Label Normal Form Reduction</span></a>
       <li><a href="#subsumes-check"><span class="secno">4.2</span> <span class="content">Label Subsumption</span></a>
-      <li><a href="#label-reduce"><span class="secno">4.3</span> <span class="content">Label Downgrade</span></a>
-      <li><a href="#taint-context"><span class="secno">4.4</span> <span class="content">Context Tainting</span></a>
-      <li><a href="#write-check"><span class="secno">4.5</span> <span class="content">Write Check</span></a>
-      <li><a href="#structured-cloning"><span class="secno">4.6</span> <span class="content">Structured Cloning</span></a>
-      <li><a href="#should-block-fetch"><span class="secno">4.7</span> <span class="content">
+      <li><a href="#label-downgrade"><span class="secno">4.3</span> <span class="content">Label Downgrade</span></a>
+      <li><a href="#label-upgrade"><span class="secno">4.4</span> <span class="content">Label Upgrade</span></a>
+      <li><a href="#taint-context"><span class="secno">4.5</span> <span class="content">Context Tainting</span></a>
+      <li><a href="#write-check"><span class="secno">4.6</span> <span class="content">Write Check</span></a>
+      <li><a href="#structured-cloning"><span class="secno">4.7</span> <span class="content">Structured Cloning</span></a>
+      <li><a href="#should-block-fetch"><span class="secno">4.8</span> <span class="content">
       Should fetching <var>request</var> be blocked as COWL?
     </span></a>
      </ul>
@@ -352,7 +352,7 @@ further.</p>
   restrict how confidential data is disseminated, setting a correct
   CSP policy (as to confine code) is difficult and limited to
   content the author has control over. Indeed, sharing confidential
-  data in the existing model (e.g., via cross-document messaging)
+  data in the existing model (e.g., via <a data-link-type="dfn" href="http://www.w3.org/TR/webmessaging/#web-messaging">cross-document messaging</a>)
   implicitly requires the author to trust the receiver not to leak the
   data, accidentally or otherwise.  COWL provides a defense-in-depth
   option for protecting data confidentiality and integrity.  In
@@ -955,7 +955,7 @@ reflects the fact that the object (produced by
     
      <li>
       The <dfn data-dfn-type="dfn" data-noexport="" id="effective-confidentiality-label">effective confidentiality label<a class="self-link" href="#effective-confidentiality-label"></a></dfn> is the label
-      returned by the <a data-link-type="dfn" href="#label-downgrade">label downgrade</a> algorithm when invoked
+      returned by the <a data-link-type="dfn" href="#label-downgrade0">label downgrade</a> algorithm when invoked
       with the <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a> and <a data-link-type="dfn" href="#current-privilege">current
       privilege</a>.
     
@@ -963,7 +963,7 @@ reflects the fact that the object (produced by
     
      <li>
       The <dfn data-dfn-type="dfn" data-noexport="" id="effective-integrity-label">effective integrity label<a class="self-link" href="#effective-integrity-label"></a></dfn> is the label
-      returned by the <a data-link-type="dfn" href="#label-downgrade">label downgrade</a> algorithm when invoked
+      returned by the <a data-link-type="dfn" href="#label-upgrade0">label upgrade</a> algorithm when invoked
       with the <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a> and <a data-link-type="dfn" href="#current-privilege">current
       privilege</a>.
     
@@ -2577,6 +2577,22 @@ influenced the computation.</p>
       
      <h3 class="heading settled" data-level="3.7" id="enforcement"><span class="secno">3.7. </span><span class="content">Confinement Enforcement</span><a class="self-link" href="#enforcement"></a></h3>
      
+
+
+     <p><em>This sub-section is non-normative</em></p>
+     
+
+
+     <p>To enforce confinement, COWL ensures that code in a
+        <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">context</a> cannot send data (e.g., via <a data-link-type="dfn" href="http://www.w3.org/TR/webmessaging/#web-messaging">cross-document
+        messaging</a> or by performing a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetching">fetch</a>) to contexts or
+        servers that do not preserve the confidentiality of the data.
+        Similarly, COWL ensures that a context cannot receive data from a
+        context or server that is less trustworthy.</p>
+     
+
+
+
         
      <h4 class="heading settled" data-level="3.7.1" id="modifications-to-fetch"><span class="secno">3.7.1. </span><span class="content">Modifications to Fetch</span><a class="self-link" href="#modifications-to-fetch"></a></h4>
      
@@ -2601,12 +2617,14 @@ influenced the computation.</p>
   COWL</a> returns <strong>blocked</strong>, set
   <var>response</var> to a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error">network error</a>.</p>
          
-</ol>
-       
-</ol>
+</ol></ol>
      
-        
-     <h4 class="heading settled" data-level="3.7.2" id="modifications-to-cross_document-messaging"><span class="secno">3.7.2. </span><span class="content">Modifications to cross-document messaging</span><a class="self-link" href="#modifications-to-cross_document-messaging"></a></h4>
+
+     <p class="issue" id="issue-4e5fa682"><a class="self-link" href="#issue-4e5fa682"></a> define how COWL blocks responses</p>
+     
+
+          
+     <h4 class="heading settled" data-level="3.7.2" id="modifications-to-web-messaging"><span class="secno">3.7.2. </span><span class="content">Modifications to Web Messaging</span><a class="self-link" href="#modifications-to-web-messaging"></a></h4>
      
 
 
@@ -2626,15 +2644,13 @@ influenced the computation.</p>
        <ol>
         <li data-md="">
          <p>Let <var>conf</var> be the current context’s <a data-link-type="dfn" href="#effective-confidentiality-label">effective
-  confidentiality label</a>, if <a data-link-type="dfn">confinement mode is
-  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+  confidentiality label</a>.</p>
          
 
 
         <li data-md="">
          <p>Let <var>int</var> be the current context’s <a data-link-type="dfn" href="#effective-integrity-label">effective
-  integrity label</a>, if <a data-link-type="dfn">confinement mode is
-  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+  integrity label</a>.</p>
          
 
 
@@ -2648,17 +2664,32 @@ influenced the computation.</p>
 
 
         <li data-md="">
-         <p>Let <var>dstConf</var> be the <var>state</var> <a data-link-type="dfn" href="#effective-confidentiality-label">effective
-  confidentiality label</a>, if <a data-link-type="dfn">confinement mode is
-  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         <p>If <a data-link-type="dfn" href="#confinement-mode">confinement mode</a> for <var>dstState</var> is
+  enabled, let <var>dstConf</var> be the <var>dstState</var>
+  <a data-link-type="dfn" href="#effective-confidentiality-label">effective confidentiality label</a>.</p>
          
 
 
         <li data-md="">
-         <p>Let <var>dstInt</var> be the <var>state</var> <a data-link-type="dfn" href="#effective-integrity-label">effective
-  integrity label</a>, if <a data-link-type="dfn">confinement mode is
-  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         <p>Else, let <var>dstConf</var> be the <a data-link-type="dfn" href="#label" intergrity="">Label</a> returned by the <a data-link-type="dfn" href="#label-upgrade0">label
+  upgrade</a> algorithm when invoked with the
+  <var>dstState</var> <a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a>
+  and <a data-link-type="dfn" href="#context-privilege">context privilege</a>.</p>
          
+
+
+         <p class="note" role="note">Note, if the receiver has not enabled <a data-link-type="dfn" href="#confinement-mode">confinement
+  mode</a>, COWL flexibly assumes that it can receive
+  data sensitive to its origin (in using the <a data-link-type="dfn" href="#label-upgrade0">label
+  upgrade</a>).</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>dstInt</var> be the <var>dstState</var> <a data-link-type="dfn" href="#effective-integrity-label">effective
+  integrity label</a>.</p>
+         
+
 
 
         <li data-md="">
@@ -2679,17 +2710,14 @@ influenced the computation.</p>
        <ol>
         <li data-md="">
          <p>Let <var>conf</var> be the current context’s <a data-link-type="dfn" href="#effective-confidentiality-label">effective
-  confidentiality label</a>, if <a data-link-type="dfn">confinement mode is
-  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+  confidentiality label</a>.</p>
          
 
 
         <li data-md="">
          <p>Let <var>int</var> be the current context’s <a data-link-type="dfn" href="#effective-integrity-label">effective
-  integrity label</a>, if <a data-link-type="dfn">confinement mode is
-  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+  integrity label</a>.</p>
          
-
 
 
         <li data-md="">
@@ -2701,16 +2729,30 @@ influenced the computation.</p>
 
 
         <li data-md="">
-         <p>Let <var>dstConf</var> be the <var>state</var> <a data-link-type="dfn" href="#effective-confidentiality-label">effective
-  confidentiality label</a>, if <a data-link-type="dfn">confinement mode is
-  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         <p>If <a data-link-type="dfn" href="#confinement-mode">confinement mode</a> for <var>dstState</var> is
+  enabled, let <var>dstConf</var> be the <var>dstState</var>
+  <a data-link-type="dfn" href="#effective-confidentiality-label">effective confidentiality label</a>.</p>
+         
+
+
+        <li data-md="">
+         <p>Else, let <var>dstConf</var> be the <a data-link-type="dfn" href="#label" intergrity="">Label</a> returned by the <a data-link-type="dfn" href="#label-upgrade0">label
+  upgrade</a> algorithm when invoked with the
+  <var>dstState</var> <a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a>
+  and <a data-link-type="dfn" href="#context-privilege">context privilege</a>.</p>
+         
+
+
+         <p class="note" role="note">Note, if the receiver has not enabled <a data-link-type="dfn" href="#confinement-mode">confinement
+  mode</a>, COWL flexibly assumes that it can receive
+  data sensitive to its origin (in using the <a data-link-type="dfn" href="#label-upgrade0">label
+  upgrade</a>).</p>
          
 
 
         <li data-md="">
          <p>Let <var>dstInt</var> be the <var>state</var> <a data-link-type="dfn" href="#effective-integrity-label">effective
-  integrity label</a>, if <a data-link-type="dfn">confinement mode is
-  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+  integrity label</a>.</p>
          
 
 
@@ -2720,20 +2762,8 @@ influenced the computation.</p>
   <a data-link-type="dfn" href="#subsumes">subsume</a> <var>dstInt</var>, then abort the
   remaining steps.</p>
          
-
-
-</ol>
-       
-</ol>
+</ol></ol>
      
-        
-     <h4 class="heading settled" data-level="3.7.3" id="modifications-to-web-worker-messaging"><span class="secno">3.7.3. </span><span class="content">Modifications to Web Worker messaging</span><a class="self-link" href="#modifications-to-web-worker-messaging"></a></h4>
-     
-
-
-     <p class="issue" id="issue-0f5c5044"><a class="self-link" href="#issue-0f5c5044"></a> describe modifications to Worker <code>postMessage()</code> and <code>parent.postMessage</code></p>
-     
-
 
      <p class="issue" id="issue-142a18fc"><a class="self-link" href="#issue-142a18fc"></a> should we restrict communication via more covert channels, e.g., height/width of iframe?</p>
      
@@ -2871,11 +2901,12 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
   
     <section>
     
-     <h3 class="heading settled" data-level="4.3" id="label-reduce"><span class="secno">4.3. </span><span class="content">Label Downgrade</span><a class="self-link" href="#label-reduce"></a></h3>
+     <h3 class="heading settled" data-level="4.3" id="label-downgrade"><span class="secno">4.3. </span><span class="content">Label Downgrade</span><a class="self-link" href="#label-downgrade"></a></h3>
      
-    The <dfn data-dfn-type="dfn" data-noexport="" id="label-downgrade">label downgrade<a class="self-link" href="#label-downgrade"></a></dfn> algorithm takes a label,
-    <var>label</var> and a privilege<var>priv</var>, and returns
-    the least restricting label according to the following steps:
+    The <dfn data-dfn-type="dfn" data-noexport="" id="label-downgrade0">label downgrade<a class="self-link" href="#label-downgrade0"></a></dfn> algorithm takes a confidentiality
+    label, <var>label</var> and a privilege<var>priv</var>, and
+    returns the least restricting label according to the following
+    steps:
 
 
      <p class="issue" id="issue-c98f93fc"><a class="self-link" href="#issue-c98f93fc"></a> describe downgrade</p>
@@ -2886,7 +2917,32 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
   
     <section>
     
-     <h3 class="heading settled" data-level="4.4" id="taint-context"><span class="secno">4.4. </span><span class="content">Context Tainting</span><a class="self-link" href="#taint-context"></a></h3>
+     <h3 class="heading settled" data-level="4.4" id="label-upgrade"><span class="secno">4.4. </span><span class="content">Label Upgrade</span><a class="self-link" href="#label-upgrade"></a></h3>
+     
+    The <dfn data-dfn-type="dfn" data-noexport="" id="label-upgrade0">label upgrade<a class="self-link" href="#label-upgrade0"></a></dfn> algorithm takes an integrity
+    label, <var>label</var> and a privilege<var>priv</var>, and
+    returns the most permissive label according to the following
+    steps:
+
+
+     <ol>
+      <li data-md="">
+       <p>Let <var>privLabel</var> be the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a>
+of <var>priv</var>.</p>
+       
+
+
+      <li data-md="">
+       <p>Return <code><var>label</var>.<a data-link-type="functionish" href="#dom-label-andlabel-or-domstring-other">and(<var>privLabel</var>)</a></code>.</p>
+       
+</ol>
+     
+  
+    </section>
+  
+    <section>
+    
+     <h3 class="heading settled" data-level="4.5" id="taint-context"><span class="secno">4.5. </span><span class="content">Context Tainting</span><a class="self-link" href="#taint-context"></a></h3>
      
     The <dfn data-dfn-type="dfn" data-noexport="" id="context-tainting">context tainting<a class="self-link" href="#context-tainting"></a></dfn> algorithm takes a two labels,
     <var>confidentiality</var> and <var>integrity</var>, and updates
@@ -2910,7 +2966,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
 
       <li data-md="">
        <p>Set the <a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a> to the
- <a data-link-type="dfn" href="#label">Label</a> returned by the by the <a data-link-type="dfn" href="#label-downgrade">label downgrade</a>
+ <a data-link-type="dfn" href="#label">Label</a> returned by the by the <a data-link-type="dfn" href="#label-downgrade0">label downgrade</a>
  algorithm when invoked with
  <var>currentConf</var>.<a data-link-type="functionish" href="#dom-label-andlabel-or-domstring-other">and(<var>confidentiality</var>)</a>
  and <a data-link-type="dfn" href="#current-privilege">current privilege</a>.</p>
@@ -2919,7 +2975,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
 
       <li data-md="">
        <p>Set the <a data-link-type="dfn" href="#context-integrity-label">context integrity label</a> to the
- <a data-link-type="dfn" href="#label">Label</a> returned by the by the <a data-link-type="dfn" href="#label-downgrade">label downgrade</a>
+ <a data-link-type="dfn" href="#label">Label</a> returned by the by the <a data-link-type="dfn" href="#label-downgrade0">label downgrade</a>
  algorithm when invoked with
  <var>currentInt</var>.<a data-link-type="functionish" href="#dom-label-_orlabel-or-domstring-other">_or(<var>integrity</var>)</a>
  and <a data-link-type="dfn" href="#current-privilege">current privilege</a>.</p>
@@ -2932,7 +2988,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
   
     <section>
     
-     <h3 class="heading settled" data-level="4.5" id="write-check"><span class="secno">4.5. </span><span class="content">Write Check</span><a class="self-link" href="#write-check"></a></h3>
+     <h3 class="heading settled" data-level="4.6" id="write-check"><span class="secno">4.6. </span><span class="content">Write Check</span><a class="self-link" href="#write-check"></a></h3>
      
     The <dfn data-dfn-type="dfn" data-noexport="" id="write-check0">write check<a class="self-link" href="#write-check0"></a></dfn> algorithm takes two labels,
     <var>objConf</var> and <var>objInt</var>, and returns
@@ -2979,7 +3035,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
   
     <section>
     
-     <h3 class="heading settled" data-level="4.6" id="structured-cloning"><span class="secno">4.6. </span><span class="content">Structured Cloning</span><a class="self-link" href="#structured-cloning"></a></h3>
+     <h3 class="heading settled" data-level="4.7" id="structured-cloning"><span class="secno">4.7. </span><span class="content">Structured Cloning</span><a class="self-link" href="#structured-cloning"></a></h3>
      
     When a user agent is required to obtain a <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structured clone</a>
     of an object whose type is defined in this document, it MUST use
@@ -3039,7 +3095,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
   
     <section>
     
-     <h3 class="heading settled" data-level="4.7" id="should-block-fetch"><span class="secno">4.7. </span><span class="content">
+     <h3 class="heading settled" data-level="4.8" id="should-block-fetch"><span class="secno">4.8. </span><span class="content">
       Should fetching <var>request</var> be blocked as COWL?
     </span><a class="self-link" href="#should-block-fetch"></a></h3>
      
@@ -3096,7 +3152,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
 
 
       <li data-md="">
-       <p>Let <var>dstConf</var> be the <a data-link-type="dfn" href="#label">Label</a> created by invoking
+       <p>Let <var>dstConf</var> be the <a data-link-type="dfn" href="#label" integrity="">Label</a> created by invoking
  the <a data-link-type="functionish" href="#dom-label-label">Label(origin)</a> constructor with the
  <strong>url</strong> associated with the <var>request</var>.</p>
        
@@ -3242,7 +3298,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
    <li>context integrity label, <a href="#context-integrity-label">3.3</a>
    <li>context labels, <a href="#context-labels0">3.3</a>
    <li>context privilege, <a href="#context-privilege">3.3</a>
-   <li>context tainting, <a href="#context-tainting">4.4</a>
+   <li>context tainting, <a href="#context-tainting">4.5</a>
    <li>COWL, <a href="#cowl">3.3</a>
    <li>COWL state
     <ul>
@@ -3298,7 +3354,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
      <li>argument for Privilege/delegate(label), <a href="#dom-privilege-delegatelabel-label">3.2</a>
     </ul>
    <li>Label, <a href="#label1">3.1</a>
-   <li>label downgrade, <a href="#label-downgrade">4.3</a>
+   <li>label downgrade, <a href="#label-downgrade0">4.3</a>
    <li>Labeled context metadata, <a href="#labeled-context-metadata">3.5</a>
    <li>Labeled data metadata, <a href="#labeled-data-metadata">3.5</a>
    <li>LabeledObject, <a href="#labeledobject">3.4</a>
@@ -3315,6 +3371,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
    <li>label set, <a href="#label-set">3.1</a>
    <li>label-set, <a href="#label_set">3.5</a>
    <li>label subsumption, <a href="#label-subsumption">4.2</a>
+   <li>label upgrade, <a href="#label-upgrade0">4.4</a>
    <li>lobj, <a href="#dom-xmlhttprequest-sendlobj-lobj">3.6.1</a>
    <li>normal form, <a href="#normal-form">2.1</a>
    <li>obj
@@ -3357,7 +3414,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
    <li>tainted, <a href="#tainted">2.1</a>
    <li>toJSON(), <a href="#dom-label-tojson">3.1</a>
    <li>unprivileged, <a href="#unprivileged">3.2</a>
-   <li>write check, <a href="#write-check0">4.5</a></ul>
+   <li>write check, <a href="#write-check0">4.6</a></ul>
   <h3 class="no-num heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="indexlist">
    <li><a data-link-type="biblio" href="#biblio-cors">[cors]</a> defines the following terms:
@@ -3371,6 +3428,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
    <li><a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> defines the following terms:
     <ul>
      <li><a href="https://fetch.spec.whatwg.org/#concept-request-context-frame-type">context frame type</a>
+     <li><a href="https://fetch.spec.whatwg.org/#fetching">fetching</a>
      <li><a href="https://fetch.spec.whatwg.org/#main-fetch">main fetch</a>
      <li><a href="https://fetch.spec.whatwg.org/#navigation-request">navigation request</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-network-error">network error</a>
@@ -3400,6 +3458,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
     </ul>
    <li><a data-link-type="biblio" href="#biblio-webmessaging">[webmessaging]</a> defines the following terms:
     <ul>
+     <li><a href="http://www.w3.org/TR/webmessaging/#web-messaging">cross-document messaging</a>
      <li><a href="http://www.w3.org/TR/webmessaging/#dom-messageport-postmessage">messageport postmessage()</a>
      <li><a href="http://www.w3.org/TR/webmessaging/#concept-port-owner">owner</a>
      <li><a href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a>
@@ -3527,7 +3586,7 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> describe how labeled headers and new XHR labeled-json interact<a href="#issue-6810ed35"> ↵ </a></div>
    <div class="issue"> describe how XHR response is different when labeled-json
       is used<a href="#issue-ede42c82"> ↵ </a></div>
-   <div class="issue"> describe modifications to Worker <code>postMessage()</code> and <code>parent.postMessage</code><a href="#issue-0f5c5044"> ↵ </a></div>
+   <div class="issue"> define how COWL blocks responses<a href="#issue-4e5fa682"> ↵ </a></div>
    <div class="issue"> should we restrict communication via more covert channels, e.g., height/width of iframe?<a href="#issue-142a18fc"> ↵ </a></div>
    <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div>
    <div class="issue"> We can simply disallow leaks via top-level

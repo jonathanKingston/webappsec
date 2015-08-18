@@ -24,6 +24,8 @@ spec: CORS; urlPrefix: http://www.w3.org/TR/cors/
 spec: WEBMESSAGING; urlPrefix: http://www.w3.org/TR/webmessaging/
   type: method
     text: postMessage(); url: dom-window-postmessage
+  type: dfn
+    text: posting messages; url: posting-messages
 spec: WORKERS; urlPrefix: http://www.w3.org/TR/workers/
   type: dfn
     text: Worker
@@ -1692,7 +1694,39 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
 
         <h4>Modifications to cross-document messaging</h4>
 
-          ISSUE: describe modifications to <a>postMessage()</a>
+          The Web Messaging specification should contain the following
+          modifications in order to enable the rest of this
+          specification's work [[WEBMESSAGING]]:
+
+          1. Perform the following step between step 9 and 10 in the 
+             <a>posting messages</a> algorithm:
+
+             1. Let <var>conf</var> be the current context's <a>effective
+                confidentiality label</a>, if <a>confinement mode</code> is
+                enabled and the <a>empty label</a> otherwise.
+
+             2. Let <var>int</var> be the current context's <a>effective
+                integrity label</a>, if <a>confinement mode</code> is
+                enabled and the <a>empty label</a> otherwise.
+
+             3. Let <var>dstState</var> be the <a>COWL state</a>
+                associated with the
+                <code><a spec="HTML5">Document</a></code> of the
+                <code><a spec="HTML5">Window</a></code> object on which the
+                method was invoked.
+
+             4. Let <var>dstConf</var> be the <var>state</var> <a>effective
+                confidentiality label</a>, if <a>confinement mode</code> is
+                enabled and the <a>empty label</a> otherwise.
+
+             5. Let <var>dstInt</var> be the <var>state</var> <a>effective
+                integrity label</a>, if <a>confinement mode</code> is
+                enabled and the <a>empty label</a> otherwise.
+
+             6. If <var>dstConf</var> does not <a>subsume</a>
+                <var>conf</var> or if <var>int</var> does not
+                <a>subsume</a> <var>dstInt</var>, then abort the
+                remaining steps silently.
 
         <h4>Modifications to Web Worker messaging</h4>
         
@@ -1908,17 +1942,14 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
        enabled, return <strong>allowed</strong> and terminated this
        algorithm.
 
-    4. Let <var>conf</var> be the <var>state</var> <a>context confidentiality label</a>.
+    4. Let <var>conf</var> be the <var>state</var> <a>effective confidentiality label</a>.
 
-    5. Let <var>priv</var> be the <var>state</var> <a>context privilege</a>.
-
-    6. Let <var>newConf</var> be the <a>Label</a> created by invoking
+    6. Let <var>dstConf</var> be the <a>Label</a> created by invoking
        the <a>Label(origin)</a> constructor with the
        <strong>url</strong> associated with the <var>request</var>.
 
-    7. If <code><var>newConf</var>.<a>subsumes(<var>conf</var>,
-        <var>priv</var>)</a></code> returns <code>true</code>, return
-        <strong>allowed</strong>.
+    7. If <var>dstConf</var> <a>subsumes</a> <var>conf</var>, return
+       <strong>allowed</strong>.
 
     8. Else:
 

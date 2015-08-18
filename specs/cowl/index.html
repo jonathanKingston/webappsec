@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-17">17 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-18">18 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -2610,9 +2610,65 @@ influenced the computation.</p>
      
 
 
-     <p class="issue" id="issue-4cd4a1e3"><a class="self-link" href="#issue-4cd4a1e3"></a> describe modifications to <a data-link-type="functionish" href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a></p>
+     <p>The Web Messaging specification should contain the following
+          modifications in order to enable the rest of this
+          specification’s work <a data-link-type="biblio" href="#biblio-webmessaging">[WEBMESSAGING]</a>:</p>
      
 
+
+     <ol>
+      <li data-md="">
+       <p>Perform the following step between step 9 and 10 in the
+ <a data-link-type="dfn" href="http://www.w3.org/TR/webmessaging/#posting-messages">posting messages</a> algorithm:</p>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p>Let <var>conf</var> be the current context’s <a data-link-type="dfn" href="#effective-confidentiality-label">effective
+  confidentiality label</a>, if <a data-link-type="dfn">confinement mode is
+  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>int</var> be the current context’s <a data-link-type="dfn" href="#effective-integrity-label">effective
+  integrity label</a>, if <a data-link-type="dfn">confinement mode is
+  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>dstState</var> be the <a data-link-type="dfn" href="#cowl-state">COWL state</a>
+  associated with the
+  <code><a data-link-type="dfn">Document</a></code> of the
+  <code><a data-link-type="dfn">Window</a></code> object on which the
+  method was invoked.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>dstConf</var> be the <var>state</var> <a data-link-type="dfn" href="#effective-confidentiality-label">effective
+  confidentiality label</a>, if <a data-link-type="dfn">confinement mode is
+  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>dstInt</var> be the <var>state</var> <a data-link-type="dfn" href="#effective-integrity-label">effective
+  integrity label</a>, if <a data-link-type="dfn">confinement mode is
+  enabled and the </a><a data-link-type="dfn" href="#empty-label">empty label</a> otherwise.</p>
+         
+
+
+        <li data-md="">
+         <p>If <var>dstConf</var> does not <a data-link-type="dfn" href="#subsumes">subsume</a>
+  <var>conf</var> or if <var>int</var> does not
+  <a data-link-type="dfn" href="#subsumes">subsume</a> <var>dstInt</var>, then abort the
+  remaining steps silently.</p>
+         
+</ol></ol>
+     
         
      <h4 class="heading settled" data-level="3.7.3" id="modifications-to-web-worker-messaging"><span class="secno">3.7.3. </span><span class="content">Modifications to Web Worker messaging</span><a class="self-link" href="#modifications-to-web-worker-messaging"></a></h4>
      
@@ -2978,26 +3034,20 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
 
 </a>
       <li data-md="">
-       <p><a data-link-type="dfn">Let <var>conf</var> be the <var>state</var> </a><a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a>.</p>
+       <p><a data-link-type="dfn">Let <var>conf</var> be the <var>state</var> </a><a data-link-type="dfn" href="#effective-confidentiality-label">effective confidentiality label</a>.</p>
        
 
 
       <li data-md="">
-       <p>Let <var>priv</var> be the <var>state</var> <a data-link-type="dfn" href="#context-privilege">context privilege</a>.</p>
-       
-
-
-      <li data-md="">
-       <p>Let <var>newConf</var> be the <a data-link-type="dfn" href="#label">Label</a> created by invoking
+       <p>Let <var>dstConf</var> be the <a data-link-type="dfn" href="#label">Label</a> created by invoking
  the <a data-link-type="functionish" href="#dom-label-label">Label(origin)</a> constructor with the
  <strong>url</strong> associated with the <var>request</var>.</p>
        
 
 
       <li data-md="">
-       <p>If <code><var>newConf</var>.<a data-link-type="dfn">subsumes(<var>conf</var>,
-  <var>priv</var>)</a></code> returns <code>true</code>, return
-  <strong>allowed</strong>.</p>
+       <p>If <var>dstConf</var> <a data-link-type="dfn" href="#subsumes">subsumes</a> <var>conf</var>, return
+ <strong>allowed</strong>.</p>
        
 
 
@@ -3294,6 +3344,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
    <li><a data-link-type="biblio" href="#biblio-webmessaging">[webmessaging]</a> defines the following terms:
     <ul>
      <li><a href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a>
+     <li><a href="http://www.w3.org/TR/webmessaging/#posting-messages">posting messages</a>
     </ul>
    <li><a data-link-type="biblio" href="#biblio-workers">[workers]</a> defines the following terms:
     <ul>
@@ -3417,7 +3468,6 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> describe how labeled headers and new XHR labeled-json interact<a href="#issue-6810ed35"> ↵ </a></div>
    <div class="issue"> describe how XHR response is different when labeled-json
       is used<a href="#issue-ede42c82"> ↵ </a></div>
-   <div class="issue"> describe modifications to <a data-link-type="functionish" href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a><a href="#issue-4cd4a1e3"> ↵ </a></div>
    <div class="issue"> describe modifications to Worker <code>postMessage()</code> and <code>parent.postMessage</code><a href="#issue-0f5c5044"> ↵ </a></div>
    <div class="issue"> should we restrict communication via more covert channels, e.g., height/width of iframe?<a href="#issue-142a18fc"> ↵ </a></div>
    <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div>

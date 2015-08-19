@@ -1492,7 +1492,7 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
 
     <h4>Examples</h4>
 
-    ISSUE: add examples showing how LabeledObjects are used
+    ISSUE: Add examples showing how <a interface>LabeledObject</a>s are used.
 
   </section>
 
@@ -1541,7 +1541,7 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
       <dfn>source-expression</dfn>   = "'self'" / "'unique'" / <a>host-source</a>
     </pre>
 
-    ISSUE: define parsing algorithms for directives used in the Sec-COWL headers
+    ISSUE: Define parsing algorithms for directives used in the Sec-COWL headers.
 
     <section>
       <h4 id="request-header">The <code>Sec-COWL</code> HTTP Request Header Field</h4>
@@ -1789,7 +1789,10 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
                 <a>subsume</a> <var>dstInt</var>, then abort the
                 remaining steps.
 
-      ISSUE: should we restrict communication via more covert channels, e.g., height/width of iframe?
+      ISSUE: Should we restrict communication via more covert
+      channels, e.g., height/width of an iframe? Maybe at least as
+      optional modifications to HTML. Feedback and thoughts on this
+      would be welcome.
 
     </section>
 
@@ -1869,11 +1872,29 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
   <section>
     <h3 id="label-downgrade">Label Downgrade</h3>
     The <dfn>label downgrade</dfn> algorithm takes a confidentiality
-    label, <var>label</var> and a privilege<var>priv</var>, and
+    label <var>label</var> and a privilege <var>priv</var>, and
     returns the least restricting label according to the following
     steps:
 
-    ISSUE: describe downgrade
+    1. Let <var>privLabel</var> be the <a>internal privilege label</a>
+    of <var>priv</var>.
+
+    2. Let <var>lset</var> be the <a>label set</a> of an <a>empty label</a>.
+
+    2. For each <a>disjunction set</a> <var>dset</var> in the
+       <a>label set</a> of <var>label</var>:
+
+       1. Let <var>cur</var> be a newly create <a interface>Label</a>
+          whose <a>label set</a> is <var>dset</var>.
+
+       2. If <var>privLabel</var> does not <a>subsume</a>
+          <var>cur</var>, add <var>dset</var> to <var>lset</var>.
+
+    3. Return a newly created <a>Label</a> whose <a>label set</a> is <var>lset</var>.
+
+    Note, <a>label downgrade</a> removes every disjunction set
+    permitted by <var>priv</var>, i.e., it can be used to safely
+    declassify data labeled <var>label</var>.
 
   </section>
   <section>
@@ -1887,6 +1908,10 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
     of <var>priv</var>.
     
     2. Return <code><var>label</var>.<a>and(<var>privLabel</var>)</a></code>.
+
+    Note, <a>label upgrade</a> is the dual of <a>label downgrade</a>,
+    i.e., it can be used to safely endorse data labeled (and
+    thus potentially endorsed) <var>label</var>.
 
   </section>
   <section>

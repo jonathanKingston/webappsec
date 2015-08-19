@@ -2287,7 +2287,7 @@ influenced the computation.</p>
      
 
 
-     <p class="issue" id="issue-beccefce"><a class="self-link" href="#issue-beccefce"></a> add examples showing how LabeledObjects are used</p>
+     <p class="issue" id="issue-15735816"><a class="self-link" href="#issue-15735816"></a> Add examples showing how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used.</p>
      
 
   
@@ -2368,7 +2368,7 @@ influenced the computation.</p>
      
 
 
-     <p class="issue" id="issue-af1257c6"><a class="self-link" href="#issue-af1257c6"></a> define parsing algorithms for directives used in the Sec-COWL headers</p>
+     <p class="issue" id="issue-96a5c3f4"><a class="self-link" href="#issue-96a5c3f4"></a> Define parsing algorithms for directives used in the Sec-COWL headers.</p>
      
 
     
@@ -2765,7 +2765,10 @@ influenced the computation.</p>
 </ol></ol>
      
 
-     <p class="issue" id="issue-142a18fc"><a class="self-link" href="#issue-142a18fc"></a> should we restrict communication via more covert channels, e.g., height/width of iframe?</p>
+     <p class="issue" id="issue-ae32071d"><a class="self-link" href="#issue-ae32071d"></a> Should we restrict communication via more covert
+      channels, e.g., height/width of an iframe? Maybe at least as
+      optional modifications to HTML. Feedback and thoughts on this
+      would be welcome.</p>
      
 
     
@@ -2904,12 +2907,52 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
      <h3 class="heading settled" data-level="4.3" id="label-downgrade"><span class="secno">4.3. </span><span class="content">Label Downgrade</span><a class="self-link" href="#label-downgrade"></a></h3>
      
     The <dfn data-dfn-type="dfn" data-noexport="" id="label-downgrade0">label downgrade<a class="self-link" href="#label-downgrade0"></a></dfn> algorithm takes a confidentiality
-    label, <var>label</var> and a privilege<var>priv</var>, and
+    label <var>label</var> and a privilege <var>priv</var>, and
     returns the least restricting label according to the following
     steps:
 
 
-     <p class="issue" id="issue-c98f93fc"><a class="self-link" href="#issue-c98f93fc"></a> describe downgrade</p>
+     <ol>
+      <li data-md="">
+       <p>Let <var>privLabel</var> be the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a>
+of <var>priv</var>.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>lset</var> be the <a data-link-type="dfn" href="#label-set">label set</a> of an <a data-link-type="dfn" href="#empty-label">empty label</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>For each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> <var>dset</var> in the
+ <a data-link-type="dfn" href="#label-set">label set</a> of <var>label</var>:</p>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p>Let <var>cur</var> be a newly create <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
+  whose <a data-link-type="dfn" href="#label-set">label set</a> is <var>dset</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>If <var>privLabel</var> does not <a data-link-type="dfn" href="#subsumes">subsume</a>
+  <var>cur</var>, add <var>dset</var> to <var>lset</var>.</p>
+         
+</ol>
+       
+
+      <li data-md="">
+       <p>Return a newly created <a data-link-type="dfn" href="#label">Label</a> whose <a data-link-type="dfn" href="#label-set">label set</a> is <var>lset</var>.</p>
+       
+</ol>
+     
+
+     <p class="note" role="note">Note, <a data-link-type="dfn" href="#label-downgrade0">label downgrade</a> removes every disjunction set
+    permitted by <var>priv</var>, i.e., it can be used to safely
+    declassify data labeled <var>label</var>.</p>
      
 
   
@@ -2937,6 +2980,12 @@ of <var>priv</var>.</p>
        
 </ol>
      
+
+     <p class="note" role="note">Note, <a data-link-type="dfn" href="#label-upgrade0">label upgrade</a> is the dual of <a data-link-type="dfn" href="#label-downgrade0">label downgrade</a>,
+    i.e., it can be used to safely endorse data labeled (and
+    thus potentially endorsed) <var>label</var>.</p>
+     
+
   
     </section>
   
@@ -3580,15 +3629,17 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
     and how we actually do this<a href="#issue-7adbb59d"> ↵ </a></div>
    <div class="issue"> Add some examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>
     object. And to provide some intuition for the semantics.<a href="#issue-0c285526"> ↵ </a></div>
-   <div class="issue"> add examples showing how LabeledObjects are used<a href="#issue-beccefce"> ↵ </a></div>
-   <div class="issue"> define parsing algorithms for directives used in the Sec-COWL headers<a href="#issue-af1257c6"> ↵ </a></div>
+   <div class="issue"> Add examples showing how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used.<a href="#issue-15735816"> ↵ </a></div>
+   <div class="issue"> Define parsing algorithms for directives used in the Sec-COWL headers.<a href="#issue-96a5c3f4"> ↵ </a></div>
    <div class="issue"> describe how response header is processes<a href="#issue-f4bc3b24"> ↵ </a></div>
    <div class="issue"> describe how labeled headers and new XHR labeled-json interact<a href="#issue-6810ed35"> ↵ </a></div>
    <div class="issue"> describe how XHR response is different when labeled-json
       is used<a href="#issue-ede42c82"> ↵ </a></div>
    <div class="issue"> define how COWL blocks responses<a href="#issue-4e5fa682"> ↵ </a></div>
-   <div class="issue"> should we restrict communication via more covert channels, e.g., height/width of iframe?<a href="#issue-142a18fc"> ↵ </a></div>
-   <div class="issue"> describe downgrade<a href="#issue-c98f93fc"> ↵ </a></div>
+   <div class="issue"> Should we restrict communication via more covert
+      channels, e.g., height/width of an iframe? Maybe at least as
+      optional modifications to HTML. Feedback and thoughts on this
+      would be welcome.<a href="#issue-ae32071d"> ↵ </a></div>
    <div class="issue"> We can simply disallow leaks via top-level
  navigation at the cost of potentially forcing users to
  navigate away by closing tabs or inputing another URL via

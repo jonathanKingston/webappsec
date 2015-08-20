@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-18">18 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-19">19 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -213,7 +213,7 @@ further.</p>
         <li><a href="#request-header"><span class="secno">3.5.1</span> <span class="content">The <code>Sec-COWL</code> HTTP Request Header Field</span></a>
         <li><a href="#response-header"><span class="secno">3.5.2</span> <span class="content">The <code>Sec-COWL</code> HTTP Response Header Field</span></a>
        </ul>
-      <li><a href="#extension-xhr"><span class="secno">3.6</span> <span class="content">Extensions to <span>XMLHttpRequest</span></span></a>
+      <li><a href="#extension-xhr"><span class="secno">3.6</span> <span class="content">Extensions to XMLHttpRequest</span></a>
        <ul class="toc">
         <li><a href="#sending-labeled-objects"><span class="secno">3.6.1</span> <span class="content">Sending <span>labeled objects</span></span></a>
         <li><a href="#receiving-labeled-objects"><span class="secno">3.6.2</span> <span class="content"><span>Receiving </span><span>labeled objects</span></span></a>
@@ -2496,19 +2496,26 @@ influenced the computation.</p>
   
     <section>
     
-     <h3 class="heading settled" data-level="3.6" id="extension-xhr"><span class="secno">3.6. </span><span class="content">Extensions to <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a></span><a class="self-link" href="#extension-xhr"></a></h3>
+     <h3 class="heading settled" data-level="3.6" id="extension-xhr"><span class="secno">3.6. </span><span class="content">Extensions to XMLHttpRequest</span><a class="self-link" href="#extension-xhr"></a></h3>
+     
+
+
+     <p>The XMLHttpRequest specification SHOULD contain the
+    modifications described below to enable the rest of this
+    specification’s work <a data-link-type="biblio" href="#biblio-xhr">[XHR]</a>.</p>
      
 
     
      <h4 class="heading settled" data-level="3.6.1" id="sending-labeled-objects"><span class="secno">3.6.1. </span><span class="content">Sending <a data-link-type="dfn" href="#labeled-objects">labeled objects</a></span><a class="self-link" href="#sending-labeled-objects"></a></h4>
      
-      This specification extends the
-      <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#interface-xmlhttprequest">XMLHttpRequest</a> interface with and overloaded
-      <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
-      method:
+    To allow authors to send <a data-link-type="dfn" href="#labeled-objects">labeled objects</a> to a remote
+    server, this specification extends the
+    <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> interface with an overloaded
+    <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+    method:
 
       
-     <pre class="idl">partial interface <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#interface-xmlhttprequest">XMLHttpRequest</a> {
+     <pre class="idl">partial interface <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> {
   void <a class="idl-code" data-link-type="method" href="#dom-xmlhttprequest-sendlobj">send</a>(<a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <dfn class="idl-code" data-dfn-for="XMLHttpRequest/send(lobj)" data-dfn-type="argument" data-export="" id="dom-xmlhttprequest-sendlobj-lobj">lobj<a class="self-link" href="#dom-xmlhttprequest-sendlobj-lobj"></a></dfn>);
 };
 </pre>
@@ -2553,22 +2560,137 @@ influenced the computation.</p>
     </a>
      <h4 class="heading settled" data-level="3.6.2" id="receiving-labeled-objects"><span class="secno">3.6.2. </span><span class="content"><a data-link-type="dfn">Receiving </a><a data-link-type="dfn" href="#labeled-objects">labeled objects</a></span><a class="self-link" href="#receiving-labeled-objects"></a></h4>
      
-      This specification extends the
-      <code><a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a></code> with a new
-      response type:
-      
-     <pre class="idl">enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a> {
-  // ... existing response types ...,
+    To allow authors to receive <a data-link-type="dfn" href="#labeled-objects">labeled objects</a> from remote
+    servers, the XMLHttpRequest specification SHOULD contain the
+    following modifications <a data-link-type="biblio" href="#biblio-xhr">[XHR]</a>:
+
+
+     <ol>
+      <li data-md="">
+       <p>The <code><a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a></code>
+ enumeration is extended with a new response type:</p>
+       
+
+         
+       <pre class="idl">enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a> {
+  // ... existing response types ...
   "labeled-json"
 };
 </pre>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p>The <a href="https://xhr.spec.whatwg.org/#response-body">Response
+ body</a> section of the specification is extended as follows:</p>
+         
+
+
+         <ol>
+          <li data-md="">
+           <p>An <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> has associated
+  <dfn data-dfn-type="dfn" data-noexport="" id="response-labeledobject-object">response <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>
+  object<a class="self-link" href="#response-labeledobject-object"></a></dfn>. Its shared initial value is null.</p>
+           
+
+
+          <li data-md="">
+           <p>A <dfn data-dfn-type="dfn" data-noexport="" id="labeled-json-response">labeled JSON response<a class="self-link" href="#labeled-json-response"></a></dfn> is the return value
+ of these steps:</p>
+           
+
+
+           <ol>
+            <li data-md="">
+             <p>If <a data-link-type="dfn">response </a><a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>
+  object is non-null, return it.</p>
+             
+
+
+            <li data-md="">
+             <p>If <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a> is not <code>"labeled-json"</code>, return null.</p>
+             
+
+
+            <li data-md="">
+             <p>If the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn">header list</a> has no
+  <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a> is
+  <code>Sec-COWL</code>, return null.</p>
+             
+
+
+            <li data-md="">
+             <p>Let <var>conf</var> and <var>int</var> be the
+  results of <a data-link-type="dfn">parsing labeled data metadata</a> from
+  the <em>first</em> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
+  is <code>Sec-COWL</code> in the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn">header list</a>.</p>
+             
+
+
+             <p class="issue" id="issue-fca4c0ec"><a class="self-link" href="#issue-fca4c0ec"></a> define the <a data-link-type="dfn">parsing labeled data metadata</a> algorithm.</p>
+             
+
+
+            <li data-md="">
+             <p>If either <var>conf</var> or <var>int</var> are failure, return null.</p>
+             
+
+
+            <li data-md="">
+             <p>Let <var>bytes</var> be the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-body">body</a>.</p>
+             
+
+
+            <li data-md="">
+             <p>If <var>bytes</var> is null, return null.</p>
+             
+
+
+            <li data-md="">
+             <p>Let <var>JSON text</var> be the result of running
+  <a data-link-type="dfn" href="https://encoding.spec.whatwg.org/#utf-8-decode">utf-8 decode</a> on byte stream <var>bytes</var>.</p>
+             
+
+
+            <li data-md="">
+             <p>Let <var>JSON object</var> be the result of invoking the initial
+  value of the <code>parse</code> property of the
+  <code>JSON</code> object, with
+  <var>JSON text</var> as its only argument. If that threw an
+  exception, return null. <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a></p>
+             
+
+
+            <li data-md="">
+             <p>Set the <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a> to a newly
+  created <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> whose
+  <a data-link-type="dfn" href="#protected-object">protected object</a> is <var>JSON object</var>,
+  confidentiality label is <var>conf</var>, and
+  integrity label is <var>int</var>.</p>
+             
+
+
+            <li data-md="">
+             <p>Return the <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a>.</p>
+             
+</ol>
+           
+
+          <li data-md="">
+           <p>Modify the <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">response</a> attribute by
+ adding the following clause to step 2 of the
+ <strong>↪ Otherwise</strong> clause:</p>
+           
+
+
+           <p><strong>↪ If <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a> is</strong> <code>"labeled-json"</code></p>
+           
+ 
+           <p style="text-indent: 2.5em">Return the <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a>.</p>
+           
+</ol></ol></ol>
      
-
-
-     <p class="issue" id="issue-ede42c82"><a class="self-link" href="#issue-ede42c82"></a> describe how XHR response is different when labeled-json
-      is used</p>
-     
-
     
     </section>
 
@@ -2621,6 +2743,10 @@ influenced the computation.</p>
      
 
      <p class="issue" id="issue-4e5fa682"><a class="self-link" href="#issue-4e5fa682"></a> define how COWL blocks responses</p>
+     
+
+
+     <p class="issue" id="issue-980d9024"><a class="self-link" href="#issue-980d9024"></a> define how labeled-json responses do not block</p>
      
 
           
@@ -3406,6 +3532,7 @@ of <var>priv</var>.</p>
    <li>label downgrade, <a href="#label-downgrade0">4.3</a>
    <li>Labeled context metadata, <a href="#labeled-context-metadata">3.5</a>
    <li>Labeled data metadata, <a href="#labeled-data-metadata">3.5</a>
+   <li>labeled JSON response, <a href="#labeled-json-response">3.6.2</a>
    <li>LabeledObject, <a href="#labeledobject">3.4</a>
    <li>LabeledObject(obj, labels), <a href="#dom-labeledobject-labeledobjectobj-labels">3.4.1</a>
    <li>labeled objects, <a href="#labeled-objects">2.1</a>
@@ -3453,6 +3580,8 @@ of <var>priv</var>.</p>
    <li>protectedObject, <a href="#dom-labeledobject-protectedobject">3.4.2</a>
    <li>protected
       object, <a href="#protected-object">3.4</a>
+   <li>response LabeledObject
+  object, <a href="#response-labeledobject-object">3.6.2</a>
    <li>restricting, <a href="#restricting">2.1</a>
    <li>send(lobj), <a href="#dom-xmlhttprequest-sendlobj">3.6.1</a>
    <li>serialized labels, <a href="#serialized-labels">3.5</a>
@@ -3474,14 +3603,22 @@ of <var>priv</var>.</p>
     <ul>
      <li><a href="https://www.w3.org/TR/CSP2/#source-list-syntax">host-source</a>
     </ul>
+   <li><span>[ENCONDING]</span> defines the following terms:
+    <ul>
+     <li><a href="https://encoding.spec.whatwg.org/#utf-8-decode">utf-8 decode</a>
+    </ul>
    <li><a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> defines the following terms:
     <ul>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-response-body">body</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-request-context-frame-type">context frame type</a>
      <li><a href="https://fetch.spec.whatwg.org/#fetching">fetching</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-header">header</a>
      <li><a href="https://fetch.spec.whatwg.org/#main-fetch">main fetch</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
      <li><a href="https://fetch.spec.whatwg.org/#navigation-request">navigation request</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-network-error">network error</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-request">request</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-response">response</a>
     </ul>
    <li><a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
     <ul>
@@ -3520,8 +3657,10 @@ of <var>priv</var>.</p>
     </ul>
    <li><a data-link-type="biblio" href="#biblio-xhr">[XHR]</a> defines the following terms:
     <ul>
-     <li><a href="https://xhr.spec.whatwg.org/#interface-xmlhttprequest">XMLHttpRequest</a>
+     <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a>
+     <li><a href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">response</a>
+     <li><a href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequest">xmlhttprequest</a>
     </ul>
    <li><a data-link-type="biblio" href="#biblio-dom-ls">[dom-ls]</a> defines the following terms:
@@ -3608,12 +3747,12 @@ interface <a href="#labeledobject">LabeledObject</a> {
   [Throws] <a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a class="idl-code" data-link-type="method" href="#dom-labeledobject-clonelabels">clone</a>(<a data-link-type="idl-name" href="#dictdef-cilabel">CILabel</a> <a href="#dom-labeledobject-clonelabels-labels">labels</a>);
 };
 
-partial interface <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#interface-xmlhttprequest">XMLHttpRequest</a> {
+partial interface <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> {
   void <a class="idl-code" data-link-type="method" href="#dom-xmlhttprequest-sendlobj">send</a>(<a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a>);
 };
 
 enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a> {
-  // ... existing response types ...,
+  // ... existing response types ...
   "labeled-json"
 };
 
@@ -3633,9 +3772,9 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> Define parsing algorithms for directives used in the Sec-COWL headers.<a href="#issue-96a5c3f4"> ↵ </a></div>
    <div class="issue"> describe how response header is processes<a href="#issue-f4bc3b24"> ↵ </a></div>
    <div class="issue"> describe how labeled headers and new XHR labeled-json interact<a href="#issue-6810ed35"> ↵ </a></div>
-   <div class="issue"> describe how XHR response is different when labeled-json
-      is used<a href="#issue-ede42c82"> ↵ </a></div>
+   <div class="issue"> define the <a data-link-type="dfn">parsing labeled data metadata</a> algorithm.<a href="#issue-fca4c0ec"> ↵ </a></div>
    <div class="issue"> define how COWL blocks responses<a href="#issue-4e5fa682"> ↵ </a></div>
+   <div class="issue"> define how labeled-json responses do not block<a href="#issue-980d9024"> ↵ </a></div>
    <div class="issue"> Should we restrict communication via more covert
       channels, e.g., height/width of an iframe? Maybe at least as
       optional modifications to HTML. Feedback and thoughts on this

@@ -79,8 +79,11 @@ spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
 spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   type: dfn
     text: XMLHttpRequest
+  type: attribute
+    text: responseType; url: dom-xmlhttprequest-responsetype
+    text: response; url: dom-xmlhttprequest-responsetype
   type: interface
-    text: XMLHttpRequest; url: interface-xmlhttprequest
+    text: XMLHttpRequest; url: xmlhttprequest
   type: enum
     text: XMLHttpRequestResponseType; url: xmlhttprequestresponsetype
   type: method
@@ -91,9 +94,17 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
     text: main fetch; url: main-fetch
     text: request; url: concept-request
     text: response; url: concept-response
+    text: body; url: concept-response-body
+    text: header; url: concept-header
+    text: name; url: concept-header-name
+    text: value; url: concept-header-value
+    text: header-list; url: concept-header-list
     text: network error; url: concept-network-error
     text: navigation request; url: navigation-request
     text: context frame type; url: concept-request-context-frame-type
+spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
+  type: dfn
+    text: utf-8 decode; url: utf-8-decode
 </pre>
 
 <!-- BIBLIOGRAPHY -->
@@ -1626,13 +1637,18 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
   </section>
 
   <section>
-    <h3 id="extension-xhr">Extensions to <a>XMLHttpRequest</a></h3>
+    <h3 id="extension-xhr">Extensions to XMLHttpRequest</h3>
+
+    The XMLHttpRequest specification SHOULD contain the
+    modifications described below to enable the rest of this
+    specification's work [[XHR]].
 
     <h4>Sending <a>labeled objects</a></h4>
-      This specification extends the
-      <a interface>XMLHttpRequest</a> interface with and overloaded
-      <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
-      method:
+    To allow authors to send <a>labeled objects</a> to a remote
+    server, this specification extends the
+    <a interface>XMLHttpRequest</a> interface with an overloaded
+    <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+    method:
 
       <pre class="idl">
         partial interface XMLHttpRequest {
@@ -1665,19 +1681,76 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
          serialized at the time of creating <a interface>LabeledObject<a>s.
       
     <h4>Receiving <a>labeled objects</a></h4>
-      This specification extends the
-      <code><a enum>XMLHttpRequestResponseType</a></code></h5> with a new
-      response type:
-      <pre class="idl">
-        enum <a href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a> {
-          // ... existing response types ...,
-          "labeled-json"
-        };
-      </pre>
+    To allow authors to receive <a>labeled objects</a> from remote
+    servers, the XMLHttpRequest specification SHOULD contain the
+    following modifications [[XHR]]:
 
-      ISSUE: describe how XHR response is different when labeled-json
-      is used
+      1. The <code><a enum>XMLHttpRequestResponseType</a></code></h5>
+         enumeration is extended with a new response type:
 
+         <pre class="idl">
+           enum <a href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a> {
+             // ... existing response types ...
+             "labeled-json"
+           };
+         </pre>
+
+         2. The <a href="https://xhr.spec.whatwg.org/#response-body">Response
+           body</a> section of the specification is extended as follows:
+
+            1.  An <a interface>XMLHttpRequest</a> has associated
+                <dfn>response <a interface>LabeledObject</a>
+                object</dfn>. Its shared initial value is null.
+
+            2. A <dfn>labeled JSON response</dfn> is the return value
+               of these steps:
+
+               1. If <a>response <a interface>LabeledObject</a>
+                  object</a> is non-null, return it.
+
+               2. If <a attribute>responseType</a> is not <code>"labeled-json"</code>, return null.
+
+               3. If the <a>response</a>'s <a>header list</a> has no
+                  <a>header</a> whose <a>name</a> is
+                  <code>Sec-COWL</code>, return null.
+
+               4. Let <var>conf</var> and <var>int</var> be the
+                  results of <a>parsing labeled data metadata</a> from
+                  the <em>first</em> <a>header</a> whose <a>name</a>
+                  is <code>Sec-COWL</code> in the <a>response</a>'s <a>header list</a>.
+
+                  ISSUE: define the <a>parsing labeled data metadata</a> algorithm.
+
+               5. If either <var>conf</var> or <var>int</var> are failure, return null.
+
+               3. Let <var>bytes</var> be the <a>response</a>'s <a>body</a>.
+
+               3. If <var>bytes</var> is null, return null.
+
+               4. Let <var>JSON text</var> be the result of running
+                  <a>utf-8 decode</a> on byte stream <var>bytes</var>.
+
+               5. Let <var>JSON object</var> be the result of invoking the initial
+                  value of the <code>parse</code> property of the
+                  <code>JSON</code> object, with
+                  <var>JSON text</var> as its only argument. If that threw an
+                  exception, return null. [[!ECMA-262]]
+               
+               6. Set the <a>labeled JSON response</a> to a newly
+                  created <a interface>LabeledObject</a> whose
+                  <a>protected object</a> is <var>JSON object</var>,
+                  confidentiality label is <var>conf</var>, and
+                  integrity label is <var>int</var>.
+
+               7. Return the <a>labeled JSON response</a>.
+
+            3. Modify the <a attribute>response</a> attribute by
+               adding the following clause to step 2 of the
+               <strong>↪ Otherwise</strong> clause:
+
+               <strong>↪ If <a attribute>responseType</a> is</strong> <code>"labeled-json"</code>
+               <p style="text-indent: 2.5em">Return the <a>labeled JSON response</a>.</p>
+                
     </section>
 
     <section>
@@ -1708,6 +1781,8 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
                 <var>response</var> to a <a>network error</a>.
 
           ISSUE: define how COWL blocks responses
+
+          ISSUE: define how labeled-json responses do not block
 
           <h4>Modifications to Web Messaging</h4>
 

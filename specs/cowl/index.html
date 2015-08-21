@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-20">20 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-21">21 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -241,6 +241,16 @@ further.</p>
       Process <var>response</var> to <var>request</var> as COWL
     </span></a>
      </ul>
+    <li><a href="#iana-considerations"><span class="secno">5</span> <span class="content">IANA Considerations</span></a>
+     <ul class="toc">
+      <li><a href="#iana-https"><span class="secno">5.1</span> <span class="content">
+    The <code>Sec-COWL</code> HTTP Header Field
+  </span></a>
+      <li><a href="#iana-mime"><span class="secno">5.2</span> <span class="content">
+    The <code>application/labeled-json</code> MIME media type
+  </span></a>
+     </ul>
+    <li><a href="#acknowledgements"><span class="secno">6</span> <span class="content">Acknowledgements</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ul class="toc">
       <li><a href="#conventions"><span class="secno"></span> <span class="content">Document conventions</span></a>
@@ -2341,10 +2351,9 @@ influenced the computation.</p>
 
 
      <p><dfn data-dfn-type="dfn" data-noexport="" id="labeled-data-metadata">Labeled data metadata<a class="self-link" href="#labeled-data-metadata"></a></dfn> is used to convey the
-    confidentiality and integrity labels of an HTTP request (by
-    <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>) or HTTP response, using the
-    <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a> directive and <a data-link-type="dfn" href="#data_integrity">data-integrity</a>
-    directive directives.  Its ABNF is:</p>
+    confidentiality and integrity labels of an HTTP response, using
+    the <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a> directive and
+    <a data-link-type="dfn" href="#data_integrity">data-integrity</a> directive directives.  Its ABNF is:</p>
      
 
     
@@ -2380,7 +2389,7 @@ influenced the computation.</p>
       
 
       
-      <pre>"Sec-COWL:" ( <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a> [ 1*<a data-link-type="dfn">WSP</a> <a data-link-type="dfn" href="#data_metadata">data-metadata</a> ] ) / ( <a data-link-type="dfn" href="#data_metadata">data-metadata</a> 1*<a data-link-type="dfn">WSP</a> <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a> )
+      <pre>"Sec-COWL:" <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a>
 </pre>
       
 
@@ -2394,11 +2403,6 @@ influenced the computation.</p>
       label</a>, and <a data-link-type="dfn" href="#context-privilege">context privileges</a>.</p>
       
 
-
-
-      <p class="note" role="note">Note, as described in <a href="#extension-xhr">§3.6 Extensions to XMLHttpRequest</a>, when sending <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s, <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> additionally
-      adds the <a data-link-type="dfn" href="#labeled-data-metadata">labeled data metadata</a> to the header value.</p>
-      
 
       
       <div class="example" id="example-89644cdc"><a class="self-link" href="#example-89644cdc"></a>
@@ -2414,18 +2418,15 @@ influenced the computation.</p>
       </div>
       
       
-      <div class="example" id="example-4b4bb868"><a class="self-link" href="#example-4b4bb868"></a>
-        <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> request (of a <a data-link-type="dfn" href="#labeled-objects">labeled object</a>
-        confidential to <code>https://university.edu</code>) sent from
-        a public, untrustworthy <code>http://university.edu</code>
-        context that <a data-link-type="dfn" href="#owns">owns</a> a <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a>.
+      <div class="example" id="example-e16ec7d6"><a class="self-link" href="#example-e16ec7d6"></a>
+        A request sent from a public, untrustworthy
+        <code>http://university.edu</code> context that <a data-link-type="dfn" href="#owns">owns</a> a
+        <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a>.
 
         
        <pre><code>Sec-COWL: <a data-link-type="dfn" href="#ctx_confidentiality">ctx-confidentiality</a> [ [] ];
           <a data-link-type="dfn" href="#ctx_integrity">ctx-integrity</a> [ [] ];
           <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a> [ ['http://university.edu', 'cowl://user1'] ];
-          <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a> [ ['http://university.edu'] ];
-          <a data-link-type="dfn" href="#data_integrity">data-integrity</a> [ [] ];
 </code></pre>
        
       
@@ -2530,13 +2531,38 @@ influenced the computation.</p>
 
 
       <li data-md="">
-       <p>Append a header named <code>Sec-COWL</code> to the
- <a href="https://xhr.spec.whatwg.org/#author-request-headers">author
-   request headers</a> associated with the object this
- methods was called on.  The value of the
- <code>Sec-COWL</code> header MUST be <a data-link-type="dfn" href="#labeled-data-metadata">labeled data
-   metadata</a> containing the confidentiality and integrity
- labels of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
+       <p>Let <var>conf</var> be the confidentiality label of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>int</var> be the integrity label of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>json</var> be a new <a data-link-type="dfn">JSON</a> object with the
+ following entries:</p>
+       
+
+
+       <ul>
+        <li data-md="">
+         <p><code>"confidentiality"</code> set to <var>conf</var>.<a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a>.</p>
+         
+
+        <li data-md="">
+         <p><code>"integrity"</code> set to <var>int</var>.<a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a>.</p>
+         
+
+        <li data-md="">
+         <p><code>"object"</code> set to <var>obj</var>.</p>
+         
+</ul>
+       
+
+      <li data-md="">
+       <p>Set the <code>Content-Type</code> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> to <code>`application/labeled-json`</code>.</p>
        
 
 
@@ -2544,7 +2570,7 @@ influenced the computation.</p>
        <p>Invoke the
  <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
  method on the object this method was called on with 
- <var>obj</var> as an argument.</p>
+ <var>json</var> as an argument.</p>
        
 
 
@@ -2586,8 +2612,9 @@ influenced the computation.</p>
          <ol>
           <li data-md="">
            <p>An <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> has associated
-  <dfn data-dfn-type="dfn" data-noexport="" id="response-labeledobject-object">response <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>
-  object<a class="self-link" href="#response-labeledobject-object"></a></dfn>. Its shared initial value is null.</p>
+  <dfn data-dfn-type="dfn" data-noexport="" id="response-labeledobject-object">response <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> object<a class="self-link" href="#response-labeledobject-object"></a></dfn>.
+  Its initial value must be set to null in step 10 of
+  the <a data-link-type="functionish" href="https://xhr.spec.whatwg.org/#the-open()-method">open()</a> method.</p>
            
 
 
@@ -2599,35 +2626,15 @@ influenced the computation.</p>
 
            <ol>
             <li data-md="">
-             <p>If <a data-link-type="dfn">response </a><a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>
-  object is non-null, return it.</p>
+             <p>If <a data-link-type="dfn" href="#response-labeledobject-object">response LabeledObject object</a>
+  is non-null, return it.</p>
              
 
 
             <li data-md="">
              <p>If <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a> is not
- <code>"labeled-json"</code> or the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#final-mime-type">final MIME
- type</a> is not <code>application/labeled-json</code>, return null.</p>
-             
-
-
-            <li data-md="">
-             <p>If the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a> has no
-  <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a> is
-  <code>Sec-COWL</code>, return null.</p>
-             
-
-
-            <li data-md="">
-             <p>Let <var>conf</var> and <var>int</var> be the
-  results of <a data-link-type="dfn">parsing labeled data metadata</a> from
-  the <em>first</em> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
-  is <code>Sec-COWL</code> in the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a>.</p>
-             
-
-
-            <li data-md="">
-             <p>If either <var>conf</var> or <var>int</var> are failure, return null.</p>
+  <code>"labeled-json"</code> or the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#final-mime-type">final MIME
+  type</a> is not <code>application/labeled-json</code>, return null.</p>
              
 
 
@@ -2657,11 +2664,65 @@ influenced the computation.</p>
 
 
             <li data-md="">
+             <p>If the <var>JSON object</var> is missing any of
+  the three entries: <code>"object"</code>,
+  <code>"confidentiality"</code>, or
+  <code>"integrity"</code> return null.</p>
+             
+
+
+            <li data-md="">
+             <p>Let <var>protected object</var> be the value of the <code>"object"</code> entry.</p>
+             
+
+
+            <li data-md="">
+             <p>Let <var>conf</var> be the <a data-link-type="dfn" href="#label">label</a>
+  returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
+  <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a> function with the
+  <code>"confidentiality"</code> entry of the
+  <var>JSON object</var>. If the function threw an
+  exception, return null.</p>
+             
+
+
+            <li data-md="">
+             <p>Let <var>int</var> be the <a data-link-type="dfn" href="#label">label</a>
+  returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
+  <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a> function with the
+  <code>"integrity"</code> entry of the
+  <var>JSON object</var>. If the function threw an
+  exception, return null.</p>
+             
+
+
+            <li data-md="">
+             <p>Let <var>responseInt</var> be the <a data-link-type="dfn" href="#label">label</a>
+   returned by the <a data-link-type="functionish" href="#dom-label-label">Label(origin)</a> constructor
+   called with the
+   <a href="https://fetch.spec.whatwg.org/#concept-response-url">url</a>
+   associated with the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>.</p>
+             
+
+
+            <li data-md="">
+             <p>If <var>responseInt</var> does not subsume
+   <var>int</var>, return null.</p>
+             
+
+
+             <p class="issue" id="issue-8d289ef7"><a class="self-link" href="#issue-8d289ef7"></a> Should the user agent warn the user if the
+   server provided an integrity label that it is not
+   allowed to provide?</p>
+             
+
+
+            <li data-md="">
              <p>Set the <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a> to a newly
-  created <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> whose
-  <a data-link-type="dfn" href="#protected-object">protected object</a> is <var>JSON object</var>,
-  confidentiality label is <var>conf</var>, and
-  integrity label is <var>int</var>.</p>
+   created <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> whose
+   <a data-link-type="dfn" href="#protected-object">protected object</a> is <var>protected object</var>,
+   confidentiality label is <var>conf</var>, and
+   integrity label is <var>int</var>.</p>
              
 
 
@@ -3558,29 +3619,6 @@ of <var>priv</var>.</p>
 
        <ol>
         <li data-md="">
-         <p>If <var>type</var> is the empty string,
-  <var>MIMEType</var> is <code>application/labeled-json</code>,
-  and <var>destination</var> is <code>"subresource"</code>,
-  and <var>initiator</var> is <code>""</code>,
-  return <strong>allowed</strong> and terminate this algorithm.</p>
-         
-
-
-         <p class="note" role="note">Note, the user agent MUST only return
-  <strong>allowed</strong> if the response is a
-  <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> request that produces a <a data-link-type="dfn" href="#labeled-json-response">labeled
-  JSON response</a>.</p>
-         
-
-
-         <p class="issue" id="issue-746d294a"><a class="self-link" href="#issue-746d294a"></a> An alternative approach to this step is associate a
-  labeled-json flag with every <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request">request</a>, which is set
-  by the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> constructor and check that
-  flag here. Feedback on this would be welcome.</p>
-         
-
-
-        <li data-md="">
          <p>Let <var>conf</var> and <var>int</var> be the
   results of <a data-link-type="dfn">parsing labeled data metadata</a> from
   the <em>first</em> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
@@ -3620,8 +3658,158 @@ of <var>priv</var>.</p>
      
   
     </section>
+</section>
+
+
+
+   <section>
+  
+    <h2 class="heading settled" data-level="5" id="iana-considerations"><span class="secno">5. </span><span class="content">IANA Considerations</span><a class="self-link" href="#iana-considerations"></a></h2>
+
+  
+    <h3 class="heading settled" data-level="5.1" id="iana-https"><span class="secno">5.1. </span><span class="content">
+    The <code>Sec-COWL</code> HTTP Header Field
+  </span><a class="self-link" href="#iana-https"></a></h3>
+  The permanent message header field registry should be updated with the
+  following registration <a data-link-type="biblio" href="#biblio-rfc3864">[RFC3864]</a>:
+
+  
+    <dl>
+    
+     <dt>Header field name
+     
+    
+     <dd>Sec-COWL
+     
+
+    
+     <dt>Applicable protocol
+     
+    
+     <dd>http
+     
+
+    
+     <dt>Status
+     
+    
+     <dd>standard
+     
+
+    
+     <dt>Author/Change controller
+     
+    
+     <dd>W3C
+     
+
+    
+     <dt>Specification document
+     
+    
+     <dd>This specification (See <a href="#header">§3.5 The Sec-COWL HTTP Headers</a>)
+     
+  
+    </dl>
+
+  
+    <h3 class="heading settled" data-level="5.2" id="iana-mime"><span class="secno">5.2. </span><span class="content">
+    The <code>application/labeled-json</code> MIME media type
+  </span><a class="self-link" href="#iana-mime"></a></h3>
+
+  
+    <dl>
+    
+     <dt>Type name
+     
+    
+     <dd>application
+     
+
+    
+     <dt>Subtype name
+     
+    
+     <dd>labeled-json
+     
+
+    
+     <dt>Required parameters
+     
+    
+     <dd>Same as for <code>application/json</code>. <a data-link-type="biblio" href="#biblio-json">[JSON]</a>
+     
+
+    
+     <dt>Optional parameters
+     
+    
+     <dd>Same as for <code>application/json</code>. <a data-link-type="biblio" href="#biblio-json">[JSON]</a>
+     
+
+    
+     <dt>Encoding considerations
+     
+    
+     <dd>Same as for <code>application/json</code>. <a data-link-type="biblio" href="#biblio-json">[JSON]</a>
+     
+
+    
+     <dt>Security considerations
+     
+    
+     <dd>Same as for <code>application/json</code>. <a data-link-type="biblio" href="#biblio-json">[JSON]</a>
+     
+
+    
+     <dt>Interoperability considerations
+     
+    
+     <dd>Same as for <code>application/json</code>. <a data-link-type="biblio" href="#biblio-json">[JSON]</a>
+     
+
+    
+     <dt>Published specification
+     
+    
+     <dd>
+    Labeling a resource with the <code>application/labeled-json</code>
+    asserts that the resource is a JSON text that consists of an
+    object with a single entry called <code>"confidentiality"</code>
+    consisting of an array of entries, each of which consists of an
+    array of strings, a single entry called <code>"integrity"</code>
+    consisting of an array of entries, each of which consists of an
+    array of strings, and a single entry called <code>"object"</code>
+    consisting of a JSON object.  The relevant specifications are the
+    JSON specification and this specification. <a data-link-type="biblio" href="#biblio-json">[JSON]</a>
+    
+     
+
+    
+     <dt>Author/Change controller
+     
+    
+     <dd>W3C
+     
+  
+    </dl>
+
 
 </section>
+
+
+
+   <section>
+  
+    <h2 class="heading settled" data-level="6" id="acknowledgements"><span class="secno">6. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acknowledgements"></a></h2>
+
+
+    <p>Thanks to David Mazières, Brad Karp, Alejandro Russo, Petr
+  Marchenko, Devon Rifkin, Dan Boneh, Dave Herman, Bobby Holley,
+  Brendan Eich, and Brian Smith for influencing (directly or
+  otherwise) the initial design of COWL <a data-link-type="biblio" href="#biblio-cowl-osdi">[COWL-OSDI]</a>.</p>
+</section>
+
 
 </main>
 
@@ -3824,8 +4012,7 @@ of <var>priv</var>.</p>
    <li>protectedObject, <a href="#dom-labeledobject-protectedobject">3.4.2</a>
    <li>protected
       object, <a href="#protected-object">3.4</a>
-   <li>response LabeledObject
-  object, <a href="#response-labeledobject-object">3.6.2</a>
+   <li>response LabeledObject object, <a href="#response-labeledobject-object">3.6.2</a>
    <li>restricting, <a href="#restricting">2.1</a>
    <li>send(lobj), <a href="#dom-xmlhttprequest-sendlobj">3.6.1</a>
    <li>serialized labels, <a href="#serialized-labels">3.5</a>
@@ -3908,6 +4095,7 @@ of <var>priv</var>.</p>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a>
      <li><a href="https://xhr.spec.whatwg.org/#final-mime-type">final mime type</a>
+     <li><a href="https://xhr.spec.whatwg.org/#the-open()-method">open()</a>
      <li><a href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">response</a>
      <li><a href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequest">xmlhttprequest</a>
@@ -3925,6 +4113,8 @@ of <var>priv</var>.</p>
    <dd>Allen Wirfs-Brock. <a href="http://www.ecma-international.org/ecma-262/6.0/">ECMA-262 6th Edition, The ECMAScript 2015 Language Specification</a>. June 2015. Standard. URL: <a href="http://www.ecma-international.org/ecma-262/6.0/">http://www.ecma-international.org/ecma-262/6.0/</a>
    <dt id="biblio-fetch"><a class="self-link" href="#biblio-fetch"></a>[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-rfc3864"><a class="self-link" href="#biblio-rfc3864"></a>[RFC3864]
+   <dd>Graham Klyne; Mark Nottingham; Jeffrey C. Mogul. <a href="http://www.ietf.org/rfc/rfc3864.txt">Registration Procedures for Message Header Fields</a>. RFC. URL: <a href="http://www.ietf.org/rfc/rfc3864.txt">http://www.ietf.org/rfc/rfc3864.txt</a>
    <dt id="biblio-rfc6454"><a class="self-link" href="#biblio-rfc6454"></a>[RFC6454]
    <dd>Adam Barth. <a href="http://www.ietf.org/rfc/rfc6454.txt">The Web Origin Concept</a>. RFC. URL: <a href="http://www.ietf.org/rfc/rfc6454.txt">http://www.ietf.org/rfc/rfc6454.txt</a>
    <dt id="biblio-url"><a class="self-link" href="#biblio-url"></a>[URL]
@@ -3948,7 +4138,9 @@ of <var>priv</var>.</p>
    <dt id="biblio-cowl-osdi"><a class="self-link" href="#biblio-cowl-osdi"></a>[COWL-OSDI]
    <dd>Deian Stefan; et al. <a href="https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-stefan.pdf">Protecting Users by Confining JavaScript with COWL</a>. URL: <a href="https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-stefan.pdf">https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-stefan.pdf</a>
    <dt id="biblio-dclabels"><a class="self-link" href="#biblio-dclabels"></a>[DCLabels]
-   <dd>Deian Stefan; et al. <a href="http://www.scs.stanford.edu/~deian/pubs/stefan:2011:dclabels.pdf">Disjunction Category Labels</a>. URL: <a href="http://www.scs.stanford.edu/~deian/pubs/stefan:2011:dclabels.pdf">http://www.scs.stanford.edu/~deian/pubs/stefan:2011:dclabels.pdf</a></dl>
+   <dd>Deian Stefan; et al. <a href="http://www.scs.stanford.edu/~deian/pubs/stefan:2011:dclabels.pdf">Disjunction Category Labels</a>. URL: <a href="http://www.scs.stanford.edu/~deian/pubs/stefan:2011:dclabels.pdf">http://www.scs.stanford.edu/~deian/pubs/stefan:2011:dclabels.pdf</a>
+   <dt id="biblio-json"><a class="self-link" href="#biblio-json"></a>[JSON]
+   <dd>D. Crockford. <a href="https://tools.ietf.org/html/rfc4627">The application/json Media Type for JavaScript Object Notation (JSON)</a>. July 2006. Informational. URL: <a href="https://tools.ietf.org/html/rfc4627">https://tools.ietf.org/html/rfc4627</a></dl>
   <h2 class="no-num heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
   <pre class="idl">[<a class="idl-code" data-link-type="constructor" href="#dom-label-label">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-label-labelorigin">Constructor</a>(DOMString <a href="#dom-label-labelorigin-origin">origin</a>), Exposed=Window, Worker]
 interface <a href="#label1">Label</a> {
@@ -4016,6 +4208,9 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
     object. And to provide some intuition for the semantics.<a href="#issue-0c285526"> ↵ </a></div>
    <div class="issue"> Add examples showing how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used.<a href="#issue-15735816"> ↵ </a></div>
    <div class="issue"> Define parsing algorithms for directives used in the Sec-COWL headers.<a href="#issue-96a5c3f4"> ↵ </a></div>
+   <div class="issue"> Should the user agent warn the user if the
+   server provided an integrity label that it is not
+   allowed to provide?<a href="#issue-8d289ef7"> ↵ </a></div>
    <div class="issue"> Add examples showing how to use <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s
       with <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>.<a href="#issue-fd7f06a8"> ↵ </a></div>
    <div class="issue"> Should we restrict communication via more covert
@@ -4031,9 +4226,5 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
  allowed to provide?<a href="#issue-41cd6952"> ↵ </a></div>
    <div class="issue"> Should the user agent warn the user if the
  server provided a privilege that it is not allowed to
- provide?<a href="#issue-b7f61fa8"> ↵ </a></div>
-   <div class="issue"> An alternative approach to this step is associate a
-  labeled-json flag with every <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request">request</a>, which is set
-  by the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> constructor and check that
-  flag here. Feedback on this would be welcome.<a href="#issue-746d294a"> ↵ </a></div></div></body>
+ provide?<a href="#issue-b7f61fa8"> ↵ </a></div></div></body>
 </html>

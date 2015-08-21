@@ -89,6 +89,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
     text: XMLHttpRequestResponseType; url: xmlhttprequestresponsetype
   type: method
     text: send(); url: the-send()-method
+    text: open(); url: the-open()-method
 spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: fetching
@@ -1533,10 +1534,9 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
     </pre>
 
     <dfn>Labeled data metadata</dfn> is used to convey the
-    confidentiality and integrity labels of an HTTP request (by
-    <a>XMLHttpRequest</a>) or HTTP response, using the
-    <a>data-confidentiality</a> directive and <a>data-integrity</a>
-    directive directives.  Its ABNF is:
+    confidentiality and integrity labels of an HTTP response, using
+    the <a>data-confidentiality</a> directive and
+    <a>data-integrity</a> directive directives.  Its ABNF is:
 
     <pre>
       <dfn>data-metadata</dfn>       = <a>data-directive</a> *( ";" [ <a>data-directive</a> ] )
@@ -1560,7 +1560,7 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
       The ABNF for the <code>Sec-COWL</code> HTTP request header is:
 
       <pre>
-        "Sec-COWL:" ( <a>ctx-metadata</a> [ 1*<a>WSP</a> <a>data-metadata</a> ] ) / ( <a>data-metadata</a> 1*<a>WSP</a> <a>ctx-metadata</a> )
+        "Sec-COWL:" <a>ctx-metadata</a>
       </pre>
 
       The user agent MUST send a header field named <code>Sec-COWL</code>
@@ -1572,10 +1572,6 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
       label</a>, and <a>context privileges</a>.
 
 
-      Note, as described in [[#extension-xhr]], when sending <a
-      interface>LabeledObject</a>s, <a>XMLHttpRequest</a> additionally
-      adds the <a>labeled data metadata</a> to the header value.
-
       <div class="example">
         Request header from an <code>http://a.com</code> page that has
         read data sensitive to <code>http://b.com</code>.
@@ -1586,17 +1582,14 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
         </code></pre>
       </div>
       <div class="example">
-        <a>XMLHttpRequest</a> request (of a <a>labeled object</a>
-        confidential to <code>https://university.edu</code>) sent from
-        a public, untrustworthy <code>http://university.edu</code>
-        context that <a>owns</a> a <a>delegated privilege</a>.
+        A request sent from a public, untrustworthy
+        <code>http://university.edu</code> context that <a>owns</a> a
+        <a>delegated privilege</a>.
 
         <pre><code>
         Sec-COWL: <a>ctx-confidentiality</a> [ [] ];
                   <a>ctx-integrity</a> [ [] ];
                   <a>ctx-privilege</a> [ ['http://university.edu', 'cowl://user1'] ];
-                  <a>data-confidentiality</a> [ ['http://university.edu'] ];
-                  <a>data-integrity</a> [ [] ];
         </code></pre>
       </div>
     </section>
@@ -1662,18 +1655,25 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
       1. Let <var>obj</var> be the <a>protected object</a> of the 
          <a argument for="XMLHttpRequest/send(lobj)">lobj</a> argument.
 
-      2. Append a header named <code>Sec-COWL</code> to the
-         <a href="https://xhr.spec.whatwg.org/#author-request-headers">author
-           request headers</a> associated with the object this
-         methods was called on.  The value of the
-         <code>Sec-COWL</code> header MUST be <a>labeled data
-           metadata</a> containing the confidentiality and integrity
-         labels of the <a argument for="XMLHttpRequest/send(lobj)">lobj</a> argument.
+      2. Let <var>conf</var> be the confidentiality label of the <a
+         argument for="XMLHttpRequest/send(lobj)">lobj</a> argument.
+
+      2. Let <var>int</var> be the integrity label of the <a
+         argument for="XMLHttpRequest/send(lobj)">lobj</a> argument.
+
+      2. Let <var>json</var> be a new <a>JSON</a> object with the
+         following entries:
+
+         * <code>"confidentiality"</code> set to <var>conf</var>.<a>toJSON()</a>.
+         * <code>"integrity"</code> set to <var>int</var>.<a>toJSON()</a></code>.
+         * <code>"object"</code> set to <var>obj</var>.
+
+      3. Set the <code>Content-Type</code> <a>header</a> to <code>`application/labeled-json`</code>.
 
       3. Invoke the
          <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
          method on the object this method was called on with 
-         <var>obj</var> as an argument.
+         <var>json</var> as an argument.
          
          Note, that <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
          throws an exception in step 4 if <var>obj</var> cannot be <a>serialized</a>.
@@ -1699,29 +1699,19 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
            body</a> section of the specification is extended as follows:
 
             1.  An <a interface>XMLHttpRequest</a> has associated
-                <dfn>response <a interface>LabeledObject</a>
-                object</dfn>. Its shared initial value is null.
+                <dfn>response <a interface>LabeledObject</a> object</dfn>.
+                Its initial value must be set to null in step 10 of
+                the <a>open()</a> method.
 
             2. A <dfn>labeled JSON response</dfn> is the return value
                of these steps:
 
-               1. If <a>response <a interface>LabeledObject</a>
-                  object</a> is non-null, return it.
+               1. If <a>response LabeledObject object</a>
+                  is non-null, return it.
 
                2. If <a attribute>responseType</a> is not
-               <code>"labeled-json"</code> or the <a>final MIME
-                 type</a> is not <code>application/labeled-json</code>, return null.
-
-               3. If the <a>response</a>'s <a>header list</a> has no
-                  <a>header</a> whose <a>name</a> is
-                  <code>Sec-COWL</code>, return null.
-
-               4. Let <var>conf</var> and <var>int</var> be the
-                  results of <a>parsing labeled data metadata</a> from
-                  the <em>first</em> <a>header</a> whose <a>name</a>
-                  is <code>Sec-COWL</code> in the <a>response</a>'s <a>header list</a>.
-
-               5. If either <var>conf</var> or <var>int</var> are failure, return null.
+                  <code>"labeled-json"</code> or the <a>final MIME
+                  type</a> is not <code>application/labeled-json</code>, return null.
 
                3. Let <var>bytes</var> be the <a>response</a>'s <a>body</a>.
 
@@ -1735,14 +1725,48 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
                   <code>JSON</code> object, with
                   <var>JSON text</var> as its only argument. If that threw an
                   exception, return null. [[!ECMA-262]]
-               
-               6. Set the <a>labeled JSON response</a> to a newly
-                  created <a interface>LabeledObject</a> whose
-                  <a>protected object</a> is <var>JSON object</var>,
-                  confidentiality label is <var>conf</var>, and
-                  integrity label is <var>int</var>.
 
-               7. Return the <a>labeled JSON response</a>.
+               6. If the <var>JSON object</var> is missing any of
+                  the three entries: <code>"object"</code>,
+                  <code>"confidentiality"</code>, or
+                  <code>"integrity"</code> return null.
+
+               7. Let <var>protected object</var> be the value of the <code>"object"</code> entry.
+
+               8. Let <var>conf</var> be the <a>label</a>
+                  returned by calling the <a interface>Label</a>
+                  <a>fromJSON()</a> function with the
+                  <code>"confidentiality"</code> entry of the
+                  <var>JSON object</var>. If the function threw an
+                  exception, return null.
+
+               9. Let <var>int</var> be the <a>label</a>
+                  returned by calling the <a interface>Label</a>
+                  <a>fromJSON()</a> function with the
+                  <code>"integrity"</code> entry of the
+                  <var>JSON object</var>. If the function threw an
+                  exception, return null.
+
+               10. Let <var>responseInt</var> be the <a>label</a>
+                   returned by the <a>Label(origin)</a> constructor
+                   called with the
+                   <a href="https://fetch.spec.whatwg.org/#concept-response-url">url</a>
+                   associated with the <a>response</a>.
+
+               11. If <var>responseInt</var> does not subsume
+                   <var>int</var>, return null.
+
+                   ISSUE: Should the user agent warn the user if the
+                   server provided an integrity label that it is not
+                   allowed to provide?
+               
+               12. Set the <a>labeled JSON response</a> to a newly
+                   created <a interface>LabeledObject</a> whose
+                   <a>protected object</a> is <var>protected object</var>,
+                   confidentiality label is <var>conf</var>, and
+                   integrity label is <var>int</var>.
+
+               13. Return the <a>labeled JSON response</a>.
 
             3. Modify the <a attribute>response</a> attribute by
                adding the following clause to step 2 of the
@@ -2248,36 +2272,20 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
 
     9. Else:
 
-         1. If <var>type</var> is the empty string,
-            <var>MIMEType</var> is <code>application/labeled-json</code>,
-            and <var>destination</var> is <code>"subresource"</code>,
-            and <var>initiator</var> is <code>""</code>,
-            return <strong>allowed</strong> and terminate this algorithm.
-
-            Note, the user agent MUST only return
-            <strong>allowed</strong> if the response is a
-            <a>XMLHttpRequest</a> request that produces a <a>labeled
-            JSON response</a>.
-
-            ISSUE: An alternative approach to this step is associate a
-            labeled-json flag with every <a>request</a>, which is set
-            by the <a>XMLHttpRequest</a> constructor and check that
-            flag here. Feedback on this would be welcome.
-
-         2. Let <var>conf</var> and <var>int</var> be the
+         1. Let <var>conf</var> and <var>int</var> be the
             results of <a>parsing labeled data metadata</a> from
             the <em>first</em> <a>header</a> whose <a>name</a>
             is <code>Sec-COWL</code> in the <a>response</a>'s <a>header list</a>.
 
-         3. If either <var>conf</var> or <var>int</var> are failure,
+         2. If either <var>conf</var> or <var>int</var> are failure,
             return <strong>blocked</strong> and terminate this algorithm.
 
-         4. If the <var>state</var> <a>effective confidentiality
+         3. If the <var>state</var> <a>effective confidentiality
             label</a> subsumes <var>conf</var> and <var>int</var>
             subsumes the <var>state</var> <a>effective integrity
             label</a>, return <strong>allowed</strong>.
 
-         5. Else, return <strong>blocked</strong>.
+         4. Else, return <strong>blocked</strong>.
 
             Note, COWL conservatively blocks a response that is
             potentially more confidential or less trustworthy than the
@@ -2288,5 +2296,88 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
 
 
   </section>
+</section>
+
+<!-- Big Text: iana -->
+<section>
+  <h2 id="iana-considerations">IANA Considerations</h2>
+
+  <h3 id="iana-https">
+    The <code>Sec-COWL</code> HTTP Header Field
+  </h3>
+  The permanent message header field registry should be updated with the
+  following registration [[!RFC3864]]:
+
+  <dl>
+    <dt>Header field name</dt>
+    <dd>Sec-COWL</dd>
+
+    <dt>Applicable protocol</dt>
+    <dd>http</dd>
+
+    <dt>Status</dt>
+    <dd>standard</dd>
+
+    <dt>Author/Change controller</dt>
+    <dd>W3C</dd>
+
+    <dt>Specification document</dt>
+    <dd>This specification (See [[#header]])</dd>
+  </dl>
+
+  <h3 id="iana-mime">
+    The <code>application/labeled-json</code> MIME media type
+  </h3>
+
+  <dl>
+    <dt>Type name</dt>
+    <dd>application</dd>
+
+    <dt>Subtype name</dt>
+    <dd>labeled-json</dd>
+
+    <dt>Required parameters</dt>
+    <dd>Same as for <code>application/json</code>. [[JSON]]</dd>
+
+    <dt>Optional parameters</dt>
+    <dd>Same as for <code>application/json</code>. [[JSON]]</dd>
+
+    <dt>Encoding considerations</dt>
+    <dd>Same as for <code>application/json</code>. [[JSON]]</dd>
+
+    <dt>Security considerations</dt>
+    <dd>Same as for <code>application/json</code>. [[JSON]]</dd>
+
+    <dt>Interoperability considerations</dt>
+    <dd>Same as for <code>application/json</code>. [[JSON]]</dd>
+
+    <dt>Published specification</dt>
+    <dd>
+    Labeling a resource with the <code>application/labeled-json</code>
+    asserts that the resource is a JSON text that consists of an
+    object with a single entry called <code>"confidentiality"</code>
+    consisting of an array of entries, each of which consists of an
+    array of strings, a single entry called <code>"integrity"</code>
+    consisting of an array of entries, each of which consists of an
+    array of strings, and a single entry called <code>"object"</code>
+    consisting of a JSON object.  The relevant specifications are the
+    JSON specification and this specification. [[JSON]]
+    </dd>
+
+    <dt>Author/Change controller</dt>
+    <dd>W3C</dd>
+  </dl>
+
 
 </section>
+
+<!-- Big Text: thanks -->
+<section>
+  <h2 id="acknowledgements">Acknowledgements</h2>
+
+  Thanks to David Mazières, Brad Karp, Alejandro Russo, Petr
+  Marchenko, Devon Rifkin, Dan Boneh, Dave Herman, Bobby Holley,
+  Brendan Eich, and Brian Smith for influencing (directly or
+  otherwise) the initial design of COWL [[COWL-OSDI]].
+</section>
+

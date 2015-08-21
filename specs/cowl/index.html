@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-19">19 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-20">20 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -216,11 +216,12 @@ further.</p>
       <li><a href="#extension-xhr"><span class="secno">3.6</span> <span class="content">Extensions to XMLHttpRequest</span></a>
        <ul class="toc">
         <li><a href="#sending-labeled-objects"><span class="secno">3.6.1</span> <span class="content">Sending <span>labeled objects</span></span></a>
-        <li><a href="#receiving-labeled-objects"><span class="secno">3.6.2</span> <span class="content"><span>Receiving </span><span>labeled objects</span></span></a>
+        <li><a href="#receive-labeled-object"><span class="secno">3.6.2</span> <span class="content"><span>Receiving </span><span>labeled objects</span></span></a>
+        <li><a href="#examples4"><span class="secno">3.6.3</span> <span class="content">Examples</span></a>
        </ul>
       <li><a href="#enforcement"><span class="secno">3.7</span> <span class="content">Confinement Enforcement</span></a>
        <ul class="toc">
-        <li><a href="#modifications-to-fetch"><span class="secno">3.7.1</span> <span class="content">Modifications to Fetch</span></a>
+        <li><a href="#modifications-fetch"><span class="secno">3.7.1</span> <span class="content">Modifications to Fetch</span></a>
         <li><a href="#modifications-to-web-messaging"><span class="secno">3.7.2</span> <span class="content">Modifications to Web Messaging</span></a>
        </ul>
      </ul>
@@ -235,6 +236,9 @@ further.</p>
       <li><a href="#structured-cloning"><span class="secno">4.7</span> <span class="content">Structured Cloning</span></a>
       <li><a href="#should-block-fetch"><span class="secno">4.8</span> <span class="content">
       Should fetching <var>request</var> be blocked as COWL?
+    </span></a>
+      <li><a href="#process-response"><span class="secno">4.9</span> <span class="content">
+      Process <var>response</var> to <var>request</var> as COWL
     </span></a>
      </ul>
     <li><a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
@@ -1268,7 +1272,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
      
 
 
-     <p class="issue" id="issue-620ca5f0"><a class="self-link" href="#issue-620ca5f0"></a> describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a></p>
+     <p class="issue" id="issue-c9029dd8"><a class="self-link" href="#issue-c9029dd8"></a> Describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a> methods.</p>
      
 
     
@@ -1979,12 +1983,6 @@ and set the <a data-link-type="dfn" href="#current-privilege">current privilege<
      </dl>
      
 
-
-     <p class="issue" id="issue-7adbb59d"><a class="self-link" href="#issue-7adbb59d"></a> once enforcement mode is enabled, we should be using the
-    current state info to enforce confinement; make a note of it here
-    and how we actually do this</p>
-     
-
     
      <h4 class="heading settled" data-level="3.3.3" id="examples2"><span class="secno">3.3.3. </span><span class="content">Examples</span><a class="self-link" href="#examples2"></a></h4>
      
@@ -2452,11 +2450,9 @@ influenced the computation.</p>
       
 
 
-      <p class="issue" id="issue-f4bc3b24"><a class="self-link" href="#issue-f4bc3b24"></a> describe how response header is processes</p>
-      
-
-
-      <p class="issue" id="issue-6810ed35"><a class="self-link" href="#issue-6810ed35"></a> describe how labeled headers and new XHR labeled-json interact</p>
+      <p>To process this header, the user agent MUST use the
+      <a href="#process-response">Process <var>response</var> to <var>request</var> as COWL</a>
+      algorithm when performing a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetching">fetch</a>, as described in <a href="#modifications-fetch">§3.7.1 Modifications to Fetch</a>.</p>
       
 
       
@@ -2558,7 +2554,7 @@ influenced the computation.</p>
  serialized at the time of creating <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a><a data-link-type="dfn">s.</a></p><a data-link-type="dfn">
 </a></ol><a data-link-type="dfn">
     </a>
-     <h4 class="heading settled" data-level="3.6.2" id="receiving-labeled-objects"><span class="secno">3.6.2. </span><span class="content"><a data-link-type="dfn">Receiving </a><a data-link-type="dfn" href="#labeled-objects">labeled objects</a></span><a class="self-link" href="#receiving-labeled-objects"></a></h4>
+     <h4 class="heading settled" data-level="3.6.2" id="receive-labeled-object"><span class="secno">3.6.2. </span><span class="content"><a data-link-type="dfn">Receiving </a><a data-link-type="dfn" href="#labeled-objects">labeled objects</a></span><a class="self-link" href="#receive-labeled-object"></a></h4>
      
     To allow authors to receive <a data-link-type="dfn" href="#labeled-objects">labeled objects</a> from remote
     servers, the XMLHttpRequest specification SHOULD contain the
@@ -2609,12 +2605,14 @@ influenced the computation.</p>
 
 
             <li data-md="">
-             <p>If <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a> is not <code>"labeled-json"</code>, return null.</p>
+             <p>If <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a> is not
+ <code>"labeled-json"</code> or the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#final-mime-type">final MIME
+ type</a> is not <code>application/labeled-json</code>, return null.</p>
              
 
 
             <li data-md="">
-             <p>If the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn">header list</a> has no
+             <p>If the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a> has no
   <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a> is
   <code>Sec-COWL</code>, return null.</p>
              
@@ -2624,11 +2622,7 @@ influenced the computation.</p>
              <p>Let <var>conf</var> and <var>int</var> be the
   results of <a data-link-type="dfn">parsing labeled data metadata</a> from
   the <em>first</em> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
-  is <code>Sec-COWL</code> in the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn">header list</a>.</p>
-             
-
-
-             <p class="issue" id="issue-fca4c0ec"><a class="self-link" href="#issue-fca4c0ec"></a> define the <a data-link-type="dfn">parsing labeled data metadata</a> algorithm.</p>
+  is <code>Sec-COWL</code> in the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a>.</p>
              
 
 
@@ -2691,6 +2685,15 @@ influenced the computation.</p>
            
 </ol></ol></ol>
      
+      
+     <h4 class="heading settled" data-level="3.6.3" id="examples4"><span class="secno">3.6.3. </span><span class="content">Examples</span><a class="self-link" href="#examples4"></a></h4>
+     
+
+
+     <p class="issue" id="issue-fd7f06a8"><a class="self-link" href="#issue-fd7f06a8"></a> Add examples showing how to use <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s
+      with <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>.</p>
+     
+
     
     </section>
 
@@ -2716,7 +2719,7 @@ influenced the computation.</p>
 
 
         
-     <h4 class="heading settled" data-level="3.7.1" id="modifications-to-fetch"><span class="secno">3.7.1. </span><span class="content">Modifications to Fetch</span><a class="self-link" href="#modifications-to-fetch"></a></h4>
+     <h4 class="heading settled" data-level="3.7.1" id="modifications-fetch"><span class="secno">3.7.1. </span><span class="content">Modifications to Fetch</span><a class="self-link" href="#modifications-fetch"></a></h4>
      
 
 
@@ -2739,16 +2742,24 @@ influenced the computation.</p>
   COWL</a> returns <strong>blocked</strong>, set
   <var>response</var> to a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error">network error</a>.</p>
          
+</ol>
+       
+
+      <li data-md="">
+       <p>Perform the following step between step 12 and 13 in the
+ "<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#main-fetch">main fetch</a>" algorithm:</p>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p>If <a href="#process-response">process
+ <var>response</var> to <var>request</var> as COWL</a>
+ returns <strong>blocked</strong>, set <var>response</var>
+ to a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error">network error</a>.</p>
+         
 </ol></ol>
      
-
-     <p class="issue" id="issue-4e5fa682"><a class="self-link" href="#issue-4e5fa682"></a> define how COWL blocks responses</p>
-     
-
-
-     <p class="issue" id="issue-980d9024"><a class="self-link" href="#issue-980d9024"></a> define how labeled-json responses do not block</p>
-     
-
           
      <h4 class="heading settled" data-level="3.7.2" id="modifications-to-web-messaging"><span class="secno">3.7.2. </span><span class="content">Modifications to Web Messaging</span><a class="self-link" href="#modifications-to-web-messaging"></a></h4>
      
@@ -3374,9 +3385,242 @@ of <var>priv</var>.</p>
     used in this algorithm since, conceptually, the integrity label of
     a server is the <a data-link-type="dfn" href="#empty-label">empty label</a> and, thus, always subsumed.</p>
      
-
   
     </section>
+
+  
+    <section>
+    
+     <h3 class="heading settled" data-level="4.9" id="process-response"><span class="secno">4.9. </span><span class="content">
+      Process <var>response</var> to <var>request</var> as COWL
+    </span><a class="self-link" href="#process-response"></a></h3>
+     
+    
+     <div class="note" role="note">
+      Note: <a data-link-type="dfn" id="#should-block-fetch">If a request proceeds</a>, we
+      still might want to block the response based on the <a data-link-type="dfn" href="#label">label</a>
+      of the response. For example, if the <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality
+        label</a> does not <a data-link-type="dfn" href="#subsumes">subsumes</a> the confidentiality label
+      of the response, the user agent MUST block the response since it
+      could otherwise violate the confidentiality of the data. This
+      algorithm is used to make the determination of whether or not a
+      response is blocked.
+
+
+      <p>This algorithm is also used to set the <a data-link-type="dfn" href="#cowl-state">COWL state</a> for
+      new documents and Workers according to server-supplied the
+      <a data-link-type="dfn">labeled context metada</a>.</p>
+      
+    
+     </div>
+     
+
+
+     <p>Given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request">Request</a> <var>request</var> and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">Response</a>
+    <var>response</var>, a user agent determines
+    whether the response should be returned via the following algorithm:</p>
+     
+
+
+     <ol>
+      <li data-md="">
+       <p>If the <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a> has no
+ <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a> is
+ <code>Sec-COWL</code>, return <strong>allowed</strong> and
+ terminate this algorithm.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>destination</var> be the <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination">destination</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>type</var> be the <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-type">type</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>MIMEType</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-extract-mime-type">extracting a MIME
+ type</a> from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>context</var> be the <strong>client</strong>
+ associated with the <var>request</var>.</p>
+       
+
+
+      <li data-md="">
+       <p>If <var>context</var> is null, let <var>context</var> be the
+ <a data-link-type="dfn" href="http://www.w3.org/TR/html5/webappapis.html#incumbent-settings-object">incumbent settings object</a>.</p>
+       
+
+
+       <p class="note" role="note">Note, the <strong>client</strong> associated with the
+ <var>request</var> is null when <a data-link-type="dfn">navigating</a>, so we use
+ the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/webappapis.html#incumbent-settings-object">incumbent settings object</a> to get or set the <a data-link-type="dfn" href="#cowl-state">COWL
+ state</a> of the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">context</a> that initiated the request.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>state</var> be the <a data-link-type="dfn" href="#cowl-state">COWL state</a> retrieved via the
+ <a data-link-type="dfn" href="http://www.w3.org/TR/html5/webappapis.html#settings-object">environment settings object</a> <var>context</var>.</p>
+       
+
+
+      <li data-md="">
+       <p>If <var>destination</var> is <code>"document"</code>,
+ <code>"worker"</code> or <code>"serviceworker"</code>:</p>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p>Let <var>conf</var>, <var>int</var>, <var>priv</var> be the
+  results of <a data-link-type="dfn">parsing labeled context metadata</a> from
+  the <em>first</em> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
+  is <code>Sec-COWL</code> in the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a>.</p>
+         
+
+
+        <li data-md="">
+         <p>If either <var>conf</var>, <var>int</var>, or
+  <var>priv</var> are failure, return <strong>blocked</strong>.</p>
+         
+
+
+        <li data-md="">
+         <p>Else:</p>
+         
+
+
+         <ol>
+          <li data-md="">
+           <p>Set the <var>state</var> <a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a>
+ to <var>conf</var>.</p>
+           
+
+
+          <li data-md="">
+           <p>Set the <var>state</var> <a data-link-type="dfn" href="#context-integrity-label">context integrity label</a>
+ to <var>int</var>, if the <var>state</var>
+ <a data-link-type="dfn" href="#effective-integrity-label">effective integrity label</a> subsumes <var>int</var>.</p>
+           
+
+
+           <p class="note" role="note">Note, by performing the <a data-link-type="dfn">subsumption</a> check before
+ setting the <a data-link-type="dfn" href="#context-privilege">context privilege</a> (next step), the
+ <a data-link-type="dfn" href="#context-integrity-label">context integrity label</a> can be upgraded from
+ the <a data-link-type="dfn" href="#empty-label">empty label</a>, but the <a data-link-type="dfn" href="#context-privilege">context
+ privilege</a> can be dropped.</p>
+           
+
+
+           <p class="issue" id="issue-41cd6952"><a class="self-link" href="#issue-41cd6952"></a> Should the user agent warn the user if the
+ server provided an integrity label that it is not
+ allowed to provide?</p>
+           
+
+
+          <li data-md="">
+           <p>Set the <var>state</var> <a data-link-type="dfn" href="#context-privilege">context privilege</a>
+ to <var>priv</var>, if <var>priv</var>
+ is a <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a> of the <var>state</var>
+ <a data-link-type="dfn" href="#context-privilege">context privilege</a>.</p>
+           
+
+
+           <p class="issue" id="issue-b7f61fa8"><a class="self-link" href="#issue-b7f61fa8"></a> Should the user agent warn the user if the
+ server provided a privilege that it is not allowed to
+ provide?</p>
+           
+
+
+          <li data-md="">
+           <p>Enable <a data-link-type="dfn" href="#confinement-mode">confinement mode</a> for <var>state</var>.</p>
+           
+
+
+          <li data-md="">
+           <p>Return <strong>allowed</strong>.</p>
+           
+</ol></ol>
+       
+
+      <li data-md="">
+       <p>Else:</p>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p>If <var>type</var> is the empty string,
+  <var>MIMEType</var> is <code>application/labeled-json</code>,
+  and <var>destination</var> is <code>"subresource"</code>,
+  and <var>initiator</var> is <code>""</code>,
+  return <strong>allowed</strong> and terminate this algorithm.</p>
+         
+
+
+         <p class="note" role="note">Note, the user agent MUST only return
+  <strong>allowed</strong> if the response is a
+  <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> request that produces a <a data-link-type="dfn" href="#labeled-json-response">labeled
+  JSON response</a>.</p>
+         
+
+
+         <p class="issue" id="issue-746d294a"><a class="self-link" href="#issue-746d294a"></a> An alternative approach to this step is associate a
+  labeled-json flag with every <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request">request</a>, which is set
+  by the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> constructor and check that
+  flag here. Feedback on this would be welcome.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>conf</var> and <var>int</var> be the
+  results of <a data-link-type="dfn">parsing labeled data metadata</a> from
+  the <em>first</em> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
+  is <code>Sec-COWL</code> in the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a>.</p>
+         
+
+
+        <li data-md="">
+         <p>If either <var>conf</var> or <var>int</var> are failure,
+  return <strong>blocked</strong> and terminate this algorithm.</p>
+         
+
+
+        <li data-md="">
+         <p>If the <var>state</var> <a data-link-type="dfn" href="#effective-confidentiality-label">effective confidentiality
+  label</a> subsumes <var>conf</var> and <var>int</var>
+  subsumes the <var>state</var> <a data-link-type="dfn" href="#effective-integrity-label">effective integrity
+  label</a>, return <strong>allowed</strong>.</p>
+         
+
+
+        <li data-md="">
+         <p>Else, return <strong>blocked</strong>.</p>
+         
+
+
+         <p class="note" role="note">Note, COWL conservatively blocks a response that is
+  potentially more confidential or less trustworthy than the
+  context making the request. In future versions of COWL, 
+  certain responses (e.g., images) which are only not as
+  trustworthy as the <a data-link-type="dfn" href="#context-integrity-label">context integrity label</a>
+  may be allowed by the user agent.</p>
+         
+</ol>
+       
+</ol>
+     
+  
+    </section>
+
 </section>
 
 </main>
@@ -3611,14 +3855,18 @@ of <var>priv</var>.</p>
     <ul>
      <li><a href="https://fetch.spec.whatwg.org/#concept-response-body">body</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-request-context-frame-type">context frame type</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-request-destination">destination</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-header-extract-mime-type">extracting a mime type</a>
      <li><a href="https://fetch.spec.whatwg.org/#fetching">fetching</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-header">header</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a>
      <li><a href="https://fetch.spec.whatwg.org/#main-fetch">main fetch</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
      <li><a href="https://fetch.spec.whatwg.org/#navigation-request">navigation request</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-network-error">network error</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-request">request</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-response">response</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-request-type">type</a>
     </ul>
    <li><a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
     <ul>
@@ -3659,6 +3907,7 @@ of <var>priv</var>.</p>
     <ul>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a>
+     <li><a href="https://xhr.spec.whatwg.org/#final-mime-type">final mime type</a>
      <li><a href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">response</a>
      <li><a href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequest">xmlhttprequest</a>
@@ -3762,19 +4011,13 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> Current WebIDL implementation requires an underscore for
     certain identifiers. Can we rename <code>_or</code> to
     <code>or</code>?<a href="#issue-afa876b4"> ↵ </a></div>
-   <div class="issue"> describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a><a href="#issue-620ca5f0"> ↵ </a></div>
-   <div class="issue"> once enforcement mode is enabled, we should be using the
-    current state info to enforce confinement; make a note of it here
-    and how we actually do this<a href="#issue-7adbb59d"> ↵ </a></div>
+   <div class="issue"> Describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a> methods.<a href="#issue-c9029dd8"> ↵ </a></div>
    <div class="issue"> Add some examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>
     object. And to provide some intuition for the semantics.<a href="#issue-0c285526"> ↵ </a></div>
    <div class="issue"> Add examples showing how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used.<a href="#issue-15735816"> ↵ </a></div>
    <div class="issue"> Define parsing algorithms for directives used in the Sec-COWL headers.<a href="#issue-96a5c3f4"> ↵ </a></div>
-   <div class="issue"> describe how response header is processes<a href="#issue-f4bc3b24"> ↵ </a></div>
-   <div class="issue"> describe how labeled headers and new XHR labeled-json interact<a href="#issue-6810ed35"> ↵ </a></div>
-   <div class="issue"> define the <a data-link-type="dfn">parsing labeled data metadata</a> algorithm.<a href="#issue-fca4c0ec"> ↵ </a></div>
-   <div class="issue"> define how COWL blocks responses<a href="#issue-4e5fa682"> ↵ </a></div>
-   <div class="issue"> define how labeled-json responses do not block<a href="#issue-980d9024"> ↵ </a></div>
+   <div class="issue"> Add examples showing how to use <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s
+      with <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>.<a href="#issue-fd7f06a8"> ↵ </a></div>
    <div class="issue"> Should we restrict communication via more covert
       channels, e.g., height/width of an iframe? Maybe at least as
       optional modifications to HTML. Feedback and thoughts on this
@@ -3782,5 +4025,15 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> We can simply disallow leaks via top-level
  navigation at the cost of potentially forcing users to
  navigate away by closing tabs or inputing another URL via
- the address bar.  Feedback on this would be welcome.<a href="#issue-70e3bdc0"> ↵ </a></div></div></body>
+ the address bar.  Feedback on this would be welcome.<a href="#issue-70e3bdc0"> ↵ </a></div>
+   <div class="issue"> Should the user agent warn the user if the
+ server provided an integrity label that it is not
+ allowed to provide?<a href="#issue-41cd6952"> ↵ </a></div>
+   <div class="issue"> Should the user agent warn the user if the
+ server provided a privilege that it is not allowed to
+ provide?<a href="#issue-b7f61fa8"> ↵ </a></div>
+   <div class="issue"> An alternative approach to this step is associate a
+  labeled-json flag with every <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request">request</a>, which is set
+  by the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> constructor and check that
+  flag here. Feedback on this would be welcome.<a href="#issue-746d294a"> ↵ </a></div></div></body>
 </html>

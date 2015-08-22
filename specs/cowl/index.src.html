@@ -74,7 +74,9 @@ spec: URL; urlPrefix: http://www.w3.org/TR/url/
     text: scheme; for: URL; url: concept-url-scheme
 spec: RFC7159; urlPrefix: https://tools.ietf.org/html/rfc4627
   type: dfn
-    text: JSON object; url: section-2
+    text: JSON; url: section-2
+    text: JSON object; url: section-2.2
+    text: JSON array; url: section-2.3
     text: JSON stringification; url: section-2
 spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   type: dfn
@@ -860,9 +862,68 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
         each <a>disjunction set</a> of the <a>label set</a> of the
         <a interface>Label</a> on which the method was called.
       </dd>
-    </dl>
+      <dt><dfn method title="toJSON()">toJSON()</dfn></dt>
+      <dd>
+        The user agent MUST use an algorithm equivalent to the following:
 
-    ISSUE: Describe the <a>toJSON()</a> and <a>fromJSON()</a> methods.
+        1. Let <var>JSON lset</var> be a new <a>JSON array</a>.
+
+        2. For each <a>disjunction set</a> <var>dset</var> in the
+           <a>label set</a> of the <a>label</a> this method was invoked on:
+
+             1. Let <var>JSON dset</var> be a JSON array of strings,
+                each corresponding an origin in <var>dset</var>.
+
+             2. Append <var>JSON dset</var> to the <var>JSON lset</var> array.
+
+        3. Return <var>JSON lset</var>.
+      </dd>
+      <dt><dfn method title="fromJSON(object obj, optional DOMString self)">fromJSON(obj, self)</dfn></dt>
+      <dd>
+        The user agent MUST use an algorithm equivalent to the following:
+
+        1. If <a argument for="Label/fromJSON(obj, self)">obj</a> is not
+           a <a>JSON array</a> of entries, each of which is a <a>JSON
+           array</a> of strings, throw a <code>TypeError</code>
+           exception [[!ECMA-262]] and terminate this algorithm.
+
+        2. Let <var>self</var> be null.
+
+        3. If the <a argument for="Label/fromJSON(obj, self)">self</a>
+           argument is provided: 
+           
+           1. If the argument is not a <a>URL</a>, the function
+              MUST throw <code>TypeError</code> exception [[!ECMA-262]] and
+              terminate this algorithm.
+
+           2. Else, set <var>self</var> to the <a argument for="Label/fromJSON(obj, self)">self</a> argument.
+
+        4. Let <var>lab</var> be a new <a>empty label</a>.
+
+        5. For each array element <var>dset</var> of <a argument for="Label/fromJSON(obj, self)">obj</a>:
+
+           1. Let <var>dset label</var> be a new empty label.
+
+           2. For each string <var>str</var> of <var>dset</var>:
+
+              1. If <var>str</var> is a <code>"unique"</code>,
+                 let <var>origin</var> be a <a>globally unique identifier</a>.
+
+              2. Else, if <var>str</var> is <code>"self"</code> and <var>self</var> is not null,
+                 let <var>origin</var> be <var>self</var>.
+
+              3. Else, if <var>str</var> is a <a>URL</a>,
+                 let <var>origin</var> be <var>str</var>.
+
+              4. Else, throw a <code>TypeError</code> exception [[!ECMA-262]] and
+                 terminate this algorithm.
+
+              5. Let <var>dset label</var> be <code><var>dset label</var>.<a>or(<var>origin</var>)</a></code>
+
+           3. Let <var>lab</var> be <code><var>lab</var>.<a>and(<var>dset label</var>)</a></code>
+
+      </dd>
+    </dl>
 
     <h4>Examples</h4>
 

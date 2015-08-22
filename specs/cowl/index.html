@@ -1082,8 +1082,8 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lab
   <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="and(other)" id="dom-label-andother">and<a class="self-link" href="#dom-label-andother"></a></dfn>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <dfn class="idl-code" data-dfn-for="Label/and(other)" data-dfn-type="argument" data-export="" id="dom-label-andother-other">other<a class="self-link" href="#dom-label-andother-other"></a></dfn>);
   <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="_or(other)" id="dom-label-_orother">_or<a class="self-link" href="#dom-label-_orother"></a></dfn>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <dfn class="idl-code" data-dfn-for="Label/_or(other)" data-dfn-type="argument" data-export="" id="dom-label-_orother-other">other<a class="self-link" href="#dom-label-_orother-other"></a></dfn>);
 
-  object <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="toJSON()" id="dom-label-tojson">toJSON<a class="self-link" href="#dom-label-tojson"></a></dfn>();
-  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="fromJSON(obj, self)|fromJSON(obj)" id="dom-label-fromjsonobj-self">fromJSON<a class="self-link" href="#dom-label-fromjsonobj-self"></a></dfn>(object <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj, self)" data-dfn-type="argument" data-export="" id="dom-label-fromjsonobj-self-obj">obj<a class="self-link" href="#dom-label-fromjsonobj-self-obj"></a></dfn>, optional DOMString <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj, self)" data-dfn-type="argument" data-export="" id="dom-label-fromjsonobj-self-self">self<a class="self-link" href="#dom-label-fromjsonobj-self-self"></a></dfn>);
+  object <a class="idl-code" data-link-type="method" href="#dom-label-tojson">toJSON</a>();
+  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="method" href="#dom-label-fromjsonobj-self">fromJSON</a>(object <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj, self)" data-dfn-type="argument" data-export="" id="dom-label-fromjsonobj-self-obj">obj<a class="self-link" href="#dom-label-fromjsonobj-self-obj"></a></dfn>, optional DOMString <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj, self)" data-dfn-type="argument" data-export="" id="dom-label-fromjsonobj-self-self">self<a class="self-link" href="#dom-label-fromjsonobj-self-self"></a></dfn>);
 };
 </pre>
      
@@ -1277,12 +1277,148 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
 </ol>
              
       
+      
+      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" id="dom-label-tojson" title="toJSON()">toJSON()<a class="self-link" href="#dom-label-tojson"></a></dfn>
+      
+      
+      <dd>
+        The user agent MUST use an algorithm equivalent to the following:
+
+
+       <ol>
+        <li data-md="">
+         <p>Let <var>JSON lset</var> be a new <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc4627#section-2.3">JSON array</a>.</p>
+         
+
+
+        <li data-md="">
+         <p>For each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> <var>dset</var> in the
+ <a data-link-type="dfn" href="#label-set">label set</a> of the <a data-link-type="dfn" href="#label">label</a> this method was invoked on:</p>
+         
+
+
+         <ol>
+          <li data-md="">
+           <p>Let <var>JSON dset</var> be a JSON array of strings,
+  each corresponding an origin in <var>dset</var>.</p>
+           
+
+
+          <li data-md="">
+           <p>Append <var>JSON dset</var> to the <var>JSON lset</var> array.</p>
+           
+</ol>
+         
+
+        <li data-md="">
+         <p>Return <var>JSON lset</var>.</p>
+         
+</ol>
+             
+      
+      
+      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="fromJSON(obj, self)|fromJSON(obj)" id="dom-label-fromjsonobj-self" title="fromJSON(object obj, optional DOMString self)">fromJSON(obj, self)<a class="self-link" href="#dom-label-fromjsonobj-self"></a></dfn>
+      
+      
+      <dd>
+        The user agent MUST use an algorithm equivalent to the following:
+
+
+       <ol>
+        <li data-md="">
+         <p>If <a class="idl-code" data-link-type="argument" href="#dom-label-fromjsonobj-self-obj">obj</a> is not
+ a <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc4627#section-2.3">JSON array</a> of entries, each of which is a <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc4627#section-2.3">JSON
+ array</a> of strings, throw a <code>TypeError</code>
+ exception <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> and terminate this algorithm.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>self</var> be null.</p>
+         
+
+
+        <li data-md="">
+         <p>If the <a class="idl-code" data-link-type="argument" href="#dom-label-fromjsonobj-self-self">self</a>
+ argument is provided:</p>
+         
+
+
+         <ol>
+          <li data-md="">
+           <p>If the argument is not a <a data-link-type="dfn" href="http://dom.spec.whatwg.org/#concept-document-url">URL</a>, the function
+  MUST throw <code>TypeError</code> exception <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> and
+  terminate this algorithm.</p>
+           
+
+
+          <li data-md="">
+           <p>Else, set <var>self</var> to the <a class="idl-code" data-link-type="argument" href="#dom-label-fromjsonobj-self-self">self</a> argument.</p>
+           
+</ol>
+         
+
+        <li data-md="">
+         <p>Let <var>lab</var> be a new <a data-link-type="dfn" href="#empty-label">empty label</a>.</p>
+         
+
+
+        <li data-md="">
+         <p>For each array element <var>dset</var> of <a class="idl-code" data-link-type="argument" href="#dom-label-fromjsonobj-self-obj">obj</a>:</p>
+         
+
+
+         <ol>
+          <li data-md="">
+           <p>Let <var>dset label</var> be a new empty label.</p>
+           
+
+
+          <li data-md="">
+           <p>For each string <var>str</var> of <var>dset</var>:</p>
+           
+
+
+           <ol>
+            <li data-md="">
+             <p>If <var>str</var> is a <code>"unique"</code>,
+ let <var>origin</var> be a <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-2.3">globally unique identifier</a>.</p>
+             
+
+
+            <li data-md="">
+             <p>Else, if <var>str</var> is <code>"self"</code> and <var>self</var> is not null,
+ let <var>origin</var> be <var>self</var>.</p>
+             
+
+
+            <li data-md="">
+             <p>Else, if <var>str</var> is a <a data-link-type="dfn" href="http://dom.spec.whatwg.org/#concept-document-url">URL</a>,
+ let <var>origin</var> be <var>str</var>.</p>
+             
+
+
+            <li data-md="">
+             <p>Else, throw a <code>TypeError</code> exception <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> and
+ terminate this algorithm.</p>
+             
+
+
+            <li data-md="">
+             <p>Let <var>dset label</var> be <code><var>dset label</var>.<a data-link-type="functionish">or(<var>origin</var>)</a></code></p>
+             
+</ol>
+           
+
+          <li data-md="">
+           <p>Let <var>lab</var> be <code><var>lab</var>.<a data-link-type="functionish" href="#dom-label-andlabel-or-domstring-other">and(<var>dset label</var>)</a></code></p>
+           
+</ol></ol>
+       
+      
+      
     
      </dl>
-     
-
-
-     <p class="issue" id="issue-c9029dd8"><a class="self-link" href="#issue-c9029dd8"></a> Describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> methods.</p>
      
 
     
@@ -2543,7 +2679,7 @@ influenced the computation.</p>
 
 
       <li data-md="">
-       <p>Let <var>json</var> be a new <a data-link-type="dfn">JSON</a> object with the
+       <p>Let <var>json</var> be a new <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc4627#section-2">JSON</a> object with the
  following entries:</p>
        
 
@@ -3960,8 +4096,8 @@ of <var>priv</var>.</p>
    <li>equals(other), <a href="#dom-label-equalsother">3.1.2</a>
    <li>equivalent, <a href="#equivalent">2.1</a>
    <li>FreshPrivilege(), <a href="#dom-privilege-freshprivilege">3.2.1</a>
-   <li>fromJSON(obj), <a href="#dom-label-fromjsonobj-self">3.1</a>
-   <li>fromJSON(obj, self), <a href="#dom-label-fromjsonobj-self">3.1</a>
+   <li>fromJSON(obj), <a href="#dom-label-fromjsonobj-self">3.1.2</a>
+   <li>fromJSON(obj, self), <a href="#dom-label-fromjsonobj-self">3.1.2</a>
    <li>integrity
     <ul>
      <li>attribute for COWL, <a href="#dom-cowl-integrity">3.3.1</a>
@@ -4039,7 +4175,7 @@ of <var>priv</var>.</p>
    <li>subsumes(other), <a href="#dom-label-subsumesother-priv">3.1.2</a>
    <li>subsumes(other, priv), <a href="#dom-label-subsumesother-priv">3.1.2</a>
    <li>tainted, <a href="#tainted">2.1</a>
-   <li>toJSON(), <a href="#dom-label-tojson">3.1</a>
+   <li>toJSON(), <a href="#dom-label-tojson">3.1.2</a>
    <li>unprivileged, <a href="#unprivileged">3.2</a>
    <li>write check, <a href="#write-check0">4.6</a></ul>
   <h3 class="no-num heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
@@ -4090,6 +4226,11 @@ of <var>priv</var>.</p>
     <ul>
      <li><a href="https://tools.ietf.org/html/rfc6454#section-2.3">globally unique identifier</a>
      <li><a href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a>
+    </ul>
+   <li><a data-link-type="biblio" href="#biblio-rfc7159">[rfc7159]</a> defines the following terms:
+    <ul>
+     <li><a href="https://tools.ietf.org/html/rfc4627#section-2">json</a>
+     <li><a href="https://tools.ietf.org/html/rfc4627#section-2.3">json array</a>
     </ul>
    <li><a data-link-type="biblio" href="#biblio-url">[URL]</a> defines the following terms:
     <ul>
@@ -4147,6 +4288,8 @@ of <var>priv</var>.</p>
    <dd>Ian Hickson; et al. <a href="http://www.w3.org/TR/html5/">HTML5</a>. 28 October 2014. REC. URL: <a href="http://www.w3.org/TR/html5/">http://www.w3.org/TR/html5/</a>
    <dt id="biblio-rfc2119"><a class="self-link" href="#biblio-rfc2119"></a>[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
+   <dt id="biblio-rfc7159"><a class="self-link" href="#biblio-rfc7159"></a>[RFC7159]
+   <dd>T. Bray, Ed.. <a href="https://tools.ietf.org/html/rfc7159">The JavaScript Object Notation (JSON) Data Interchange Format</a>. March 2014. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7159">https://tools.ietf.org/html/rfc7159</a>
    <dt id="biblio-webmessaging"><a class="self-link" href="#biblio-webmessaging"></a>[WEBMESSAGING]
    <dd>Ian Hickson. <a href="http://www.w3.org/TR/webmessaging/">HTML5 Web Messaging</a>. 19 May 2015. REC. URL: <a href="http://www.w3.org/TR/webmessaging/">http://www.w3.org/TR/webmessaging/</a>
    <dt id="biblio-workers"><a class="self-link" href="#biblio-workers"></a>[WORKERS]
@@ -4168,8 +4311,8 @@ interface <a href="#label1">Label</a> {
   <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-andother">and</a>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <a href="#dom-label-andother-other">other</a>);
   <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-_orother">_or</a>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <a href="#dom-label-_orother-other">other</a>);
 
-  object <a href="#dom-label-tojson">toJSON</a>();
-  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-fromjsonobj-self">fromJSON</a>(object <a href="#dom-label-fromjsonobj-self-obj">obj</a>, optional DOMString <a href="#dom-label-fromjsonobj-self-self">self</a>);
+  object <a class="idl-code" data-link-type="method" href="#dom-label-tojson">toJSON</a>();
+  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="method" href="#dom-label-fromjsonobj-self">fromJSON</a>(object <a href="#dom-label-fromjsonobj-self-obj">obj</a>, optional DOMString <a href="#dom-label-fromjsonobj-self-self">self</a>);
 };
 
 [<a class="idl-code" data-link-type="constructor" href="#dom-privilege-privilege">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-privilege-freshprivilege">NamedConstructor</a>=<a data-link-type="idl-name">FreshPrivilege</a>, Exposed=Window, Worker]
@@ -4221,7 +4364,6 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> Current WebIDL implementation requires an underscore for
     certain identifiers. Can we rename <code>_or</code> to
     <code>or</code>?<a href="#issue-afa876b4"> ↵ </a></div>
-   <div class="issue"> Describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> methods.<a href="#issue-c9029dd8"> ↵ </a></div>
    <div class="issue"> Add some examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>
     object. And to provide some intuition for the semantics.<a href="#issue-0c285526"> ↵ </a></div>
    <div class="issue"> Add examples showing how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used.<a href="#issue-15735816"> ↵ </a></div>

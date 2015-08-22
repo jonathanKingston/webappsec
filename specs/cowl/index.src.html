@@ -756,7 +756,7 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
         Label _or((Label or DOMString) other);
 
         object toJSON();
-        [Throws] static Label fromJSON(object obj);
+        [Throws] static Label fromJSON(object obj, optional DOMString self);
       };
     </pre>
 
@@ -941,11 +941,13 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
       </code></pre>
       Converting from JSON:
       <pre><code>
-      <a interface>Label</a>.fromJSON([[]]).equals(empty);
-      <a interface>Label</a>.fromJSON([["https://a.com"]]).equals(a);
-      <a interface>Label</a>.fromJSON([["https://a.com"], ["https://b.com"]]).equals(aANDb);
-      <a interface>Label</a>.fromJSON([["https://a.com", "https://b.com"]]).equals(aORb);
-      <a interface>Label</a>.fromJSON([["https://a.com", "https://b.com"], ["https://c.com"]]).equals(aORbANDc);
+      <a interface>Label</a>.fromJSON([[]]).equals(empty) === true;
+      <a interface>Label</a>.fromJSON([["https://a.com"]]).equals(a) === true;
+      <a interface>Label</a>.fromJSON([["https://a.com"], ["https://b.com"]]).equals(aANDb) === true;
+      <a interface>Label</a>.fromJSON([["https://a.com", "https://b.com"]]).equals(aORb) === true;
+      <a interface>Label</a>.fromJSON([["https://a.com", "https://b.com"], ["https://c.com"]]).equals(aORbANDc) === true;
+      <a interface>Label</a>.fromJSON([["self"]], "https://a.com").equals(a) === true;
+      <a interface>Label</a>.fromJSON([["unique"]]).equals(<a interface>Label</a>.fromJSON([["unique"]])) === false;
       </code></pre>
     </div>
   </section>
@@ -1695,85 +1697,90 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
            };
          </pre>
 
-         2. The <a href="https://xhr.spec.whatwg.org/#response-body">Response
-           body</a> section of the specification is extended as follows:
+      2. The <a href="https://xhr.spec.whatwg.org/#response-body">Response
+        body</a> section of the specification is modified to add:
 
-            1.  An <a interface>XMLHttpRequest</a> has associated
-                <dfn>response <a interface>LabeledObject</a> object</dfn>.
-                Its initial value must be set to null in step 10 of
-                the <a>open()</a> method.
+         1.  An <a interface>XMLHttpRequest</a> has associated
+             <dfn>response <a interface>LabeledObject</a> object</dfn>.
 
-            2. A <dfn>labeled JSON response</dfn> is the return value
-               of these steps:
+         2. A <dfn>labeled JSON response</dfn> is the return value
+            of these steps:
 
-               1. If <a>response LabeledObject object</a>
-                  is non-null, return it.
+            1. If <a>response LabeledObject object</a>
+               is non-null, return it.
 
-               2. If <a attribute>responseType</a> is not
-                  <code>"labeled-json"</code> or the <a>final MIME
-                  type</a> is not <code>application/labeled-json</code>, return null.
+            2. If <a attribute>responseType</a> is not
+               <code>"labeled-json"</code> or the <a>final MIME
+               type</a> is not <code>application/labeled-json</code>, return null.
 
-               3. Let <var>bytes</var> be the <a>response</a>'s <a>body</a>.
+            3. Let <var>bytes</var> be the <a>response</a>'s <a>body</a>.
 
-               3. If <var>bytes</var> is null, return null.
+            3. If <var>bytes</var> is null, return null.
 
-               4. Let <var>JSON text</var> be the result of running
-                  <a>utf-8 decode</a> on byte stream <var>bytes</var>.
+            4. Let <var>JSON text</var> be the result of running
+               <a>utf-8 decode</a> on byte stream <var>bytes</var>.
 
-               5. Let <var>JSON object</var> be the result of invoking the initial
-                  value of the <code>parse</code> property of the
-                  <code>JSON</code> object, with
-                  <var>JSON text</var> as its only argument. If that threw an
-                  exception, return null. [[!ECMA-262]]
+            5. Let <var>JSON object</var> be the result of invoking the initial
+               value of the <code>parse</code> property of the
+               <code>JSON</code> object, with
+               <var>JSON text</var> as its only argument. If that threw an
+               exception, return null. [[!ECMA-262]]
 
-               6. If the <var>JSON object</var> is missing any of
-                  the three entries: <code>"object"</code>,
-                  <code>"confidentiality"</code>, or
-                  <code>"integrity"</code> return null.
+            6. If the <var>JSON object</var> is missing any of
+               the three entries: <code>"object"</code>,
+               <code>"confidentiality"</code>, or
+               <code>"integrity"</code> return null.
 
-               7. Let <var>protected object</var> be the value of the <code>"object"</code> entry.
+            7. Let <var>protected object</var> be the value of the <code>"object"</code> entry.
 
-               8. Let <var>conf</var> be the <a>label</a>
-                  returned by calling the <a interface>Label</a>
-                  <a>fromJSON()</a> function with the
-                  <code>"confidentiality"</code> entry of the
-                  <var>JSON object</var>. If the function threw an
-                  exception, return null.
+            8. Let <var>self</var> be the
+                <a href="https://fetch.spec.whatwg.org/#concept-response-url">url</a>
+                associated with the <a>response</a>.
 
-               9. Let <var>int</var> be the <a>label</a>
-                  returned by calling the <a interface>Label</a>
-                  <a>fromJSON()</a> function with the
-                  <code>"integrity"</code> entry of the
-                  <var>JSON object</var>. If the function threw an
-                  exception, return null.
+            9. Let <var>conf</var> be the <a>label</a>
+               returned by calling the <a interface>Label</a>
+               <a>fromJSON()</a> function with the
+               <code>"confidentiality"</code> entry of the
+               <var>JSON object</var> and <var>self</var>.
+               If the function threw an exception, return null.
 
-               10. Let <var>responseInt</var> be the <a>label</a>
-                   returned by the <a>Label(origin)</a> constructor
-                   called with the
-                   <a href="https://fetch.spec.whatwg.org/#concept-response-url">url</a>
-                   associated with the <a>response</a>.
+            10. Let <var>int</var> be the <a>label</a>
+                returned by calling the <a interface>Label</a>
+                <a>fromJSON()</a> function with the
+                <code>"integrity"</code> entry of the
+                <var>JSON object</var> and <var>self</var>.
+                If the function threw an exception, return null.
 
-               11. If <var>responseInt</var> does not subsume
-                   <var>int</var>, return null.
+            11. Let <var>responseInt</var> be the <a>label</a>
+                returned by the <a>Label(origin)</a> constructor
+                called with <var>self</var>.
 
-                   ISSUE: Should the user agent warn the user if the
-                   server provided an integrity label that it is not
-                   allowed to provide?
-               
-               12. Set the <a>labeled JSON response</a> to a newly
-                   created <a interface>LabeledObject</a> whose
-                   <a>protected object</a> is <var>protected object</var>,
-                   confidentiality label is <var>conf</var>, and
-                   integrity label is <var>int</var>.
+            12. If <var>responseInt</var> does not subsume
+                <var>int</var>, return null.
 
-               13. Return the <a>labeled JSON response</a>.
+                ISSUE: Should the user agent warn the user if the
+                server provided an integrity label that it is not
+                allowed to provide?
 
-            3. Modify the <a attribute>response</a> attribute by
-               adding the following clause to step 2 of the
-               <strong>↪ Otherwise</strong> clause:
+            13. Set the <a>labeled JSON response</a> to a newly
+                created <a interface>LabeledObject</a> whose
+                <a>protected object</a> is <var>protected object</var>,
+                confidentiality label is <var>conf</var>, and
+                integrity label is <var>int</var>.
 
-               <strong>↪ If <a attribute>responseType</a> is</strong> <code>"labeled-json"</code>
-               <p style="text-indent: 2.5em">Return the <a>labeled JSON response</a>.</p>
+            14. Return the <a>labeled JSON response</a>.
+
+      3. Modify the <a attribute>response</a> attribute by
+         adding the following clause to step 2 of the
+         <strong>↪ Otherwise</strong> clause:
+
+         <strong>↪ If <a attribute>responseType</a> is</strong> <code>"labeled-json"</code>
+         <p style="text-indent: 2.5em">Return the <a>labeled JSON response</a>.</p>
+
+      4. Modify step 12 of the <a>open()</a> method by adding the
+         following sub-step:
+
+         * Set <a>response LabeledObject object</a> to null.
 
       <h4>Examples</h4>
 

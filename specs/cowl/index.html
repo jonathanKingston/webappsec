@@ -1083,7 +1083,7 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lab
   <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="_or(other)" id="dom-label-_orother">_or<a class="self-link" href="#dom-label-_orother"></a></dfn>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <dfn class="idl-code" data-dfn-for="Label/_or(other)" data-dfn-type="argument" data-export="" id="dom-label-_orother-other">other<a class="self-link" href="#dom-label-_orother-other"></a></dfn>);
 
   object <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="toJSON()" id="dom-label-tojson">toJSON<a class="self-link" href="#dom-label-tojson"></a></dfn>();
-  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="fromJSON(obj)" id="dom-label-fromjsonobj">fromJSON<a class="self-link" href="#dom-label-fromjsonobj"></a></dfn>(object <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj)" data-dfn-type="argument" data-export="" id="dom-label-fromjsonobj-obj">obj<a class="self-link" href="#dom-label-fromjsonobj-obj"></a></dfn>);
+  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="fromJSON(obj, self)|fromJSON(obj)" id="dom-label-fromjsonobj-self">fromJSON<a class="self-link" href="#dom-label-fromjsonobj-self"></a></dfn>(object <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj, self)" data-dfn-type="argument" data-export="" id="dom-label-fromjsonobj-self-obj">obj<a class="self-link" href="#dom-label-fromjsonobj-self-obj"></a></dfn>, optional DOMString <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj, self)" data-dfn-type="argument" data-export="" id="dom-label-fromjsonobj-self-self">self<a class="self-link" href="#dom-label-fromjsonobj-self-self"></a></dfn>);
 };
 </pre>
      
@@ -1282,7 +1282,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
      
 
 
-     <p class="issue" id="issue-c9029dd8"><a class="self-link" href="#issue-c9029dd8"></a> Describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a> methods.</p>
+     <p class="issue" id="issue-c9029dd8"><a class="self-link" href="#issue-c9029dd8"></a> Describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> methods.</p>
      
 
     
@@ -1354,7 +1354,7 @@ b.subsumes(aOrb) === true;
      
 
     
-     <div class="example" id="example-f4449548"><a class="self-link" href="#example-f4449548"></a>
+     <div class="example" id="example-f25565c9"><a class="self-link" href="#example-f25565c9"></a>
       Using the labels defined in the above example, this example
       shows how labels are serialized/deserialized. We only define an
       additional label:
@@ -1378,11 +1378,13 @@ JSON.stringify(aORbANDc) === '[["https://a.com", "https://b.com"], ["https://c.c
       <p>Converting from JSON:</p>
       
       
-      <pre><code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([[]]).equals(empty);
-<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com"]]).equals(a);
-<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com"], ["https://b.com"]]).equals(aANDb);
-<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com", "https://b.com"]]).equals(aORb);
-<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com", "https://b.com"], ["https://c.com"]]).equals(aORbANDc);
+      <pre><code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([[]]).equals(empty) === true;
+<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com"]]).equals(a) === true;
+<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com"], ["https://b.com"]]).equals(aANDb) === true;
+<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com", "https://b.com"]]).equals(aORb) === true;
+<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["https://a.com", "https://b.com"], ["https://c.com"]]).equals(aORbANDc) === true;
+<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["self"]], "https://a.com").equals(a) === true;
+<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["unique"]]).equals(<a class="idl-code" data-link-type="interface" href="#label1">Label</a>.fromJSON([["unique"]])) === false;
 </code></pre>
       
     
@@ -2602,149 +2604,163 @@ influenced the computation.</p>
        
 
 
+      <li data-md="">
+       <p>The <a href="https://xhr.spec.whatwg.org/#response-body">Response
+body</a> section of the specification is modified to add:</p>
+       
+
+
        <ol>
         <li data-md="">
-         <p>The <a href="https://xhr.spec.whatwg.org/#response-body">Response
- body</a> section of the specification is extended as follows:</p>
+         <p>An <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> has associated
+   <dfn data-dfn-type="dfn" data-noexport="" id="response-labeledobject-object">response <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> object<a class="self-link" href="#response-labeledobject-object"></a></dfn>.</p>
+         
+
+
+        <li data-md="">
+         <p>A <dfn data-dfn-type="dfn" data-noexport="" id="labeled-json-response">labeled JSON response<a class="self-link" href="#labeled-json-response"></a></dfn> is the return value
+  of these steps:</p>
          
 
 
          <ol>
           <li data-md="">
-           <p>An <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> has associated
-  <dfn data-dfn-type="dfn" data-noexport="" id="response-labeledobject-object">response <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> object<a class="self-link" href="#response-labeledobject-object"></a></dfn>.
-  Its initial value must be set to null in step 10 of
-  the <a data-link-type="functionish" href="https://xhr.spec.whatwg.org/#the-open()-method">open()</a> method.</p>
+           <p>If <a data-link-type="dfn" href="#response-labeledobject-object">response LabeledObject object</a>
+ is non-null, return it.</p>
            
 
 
           <li data-md="">
-           <p>A <dfn data-dfn-type="dfn" data-noexport="" id="labeled-json-response">labeled JSON response<a class="self-link" href="#labeled-json-response"></a></dfn> is the return value
- of these steps:</p>
+           <p>If <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a> is not
+ <code>"labeled-json"</code> or the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#final-mime-type">final MIME
+ type</a> is not <code>application/labeled-json</code>, return null.</p>
            
 
 
-           <ol>
-            <li data-md="">
-             <p>If <a data-link-type="dfn" href="#response-labeledobject-object">response LabeledObject object</a>
-  is non-null, return it.</p>
-             
+          <li data-md="">
+           <p>Let <var>bytes</var> be the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-body">body</a>.</p>
+           
 
 
-            <li data-md="">
-             <p>If <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a> is not
-  <code>"labeled-json"</code> or the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#final-mime-type">final MIME
-  type</a> is not <code>application/labeled-json</code>, return null.</p>
-             
+          <li data-md="">
+           <p>If <var>bytes</var> is null, return null.</p>
+           
 
 
-            <li data-md="">
-             <p>Let <var>bytes</var> be the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-body">body</a>.</p>
-             
+          <li data-md="">
+           <p>Let <var>JSON text</var> be the result of running
+ <a data-link-type="dfn" href="https://encoding.spec.whatwg.org/#utf-8-decode">utf-8 decode</a> on byte stream <var>bytes</var>.</p>
+           
 
 
-            <li data-md="">
-             <p>If <var>bytes</var> is null, return null.</p>
-             
+          <li data-md="">
+           <p>Let <var>JSON object</var> be the result of invoking the initial
+ value of the <code>parse</code> property of the
+ <code>JSON</code> object, with
+ <var>JSON text</var> as its only argument. If that threw an
+ exception, return null. <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a></p>
+           
 
 
-            <li data-md="">
-             <p>Let <var>JSON text</var> be the result of running
-  <a data-link-type="dfn" href="https://encoding.spec.whatwg.org/#utf-8-decode">utf-8 decode</a> on byte stream <var>bytes</var>.</p>
-             
+          <li data-md="">
+           <p>If the <var>JSON object</var> is missing any of
+ the three entries: <code>"object"</code>,
+ <code>"confidentiality"</code>, or
+ <code>"integrity"</code> return null.</p>
+           
 
 
-            <li data-md="">
-             <p>Let <var>JSON object</var> be the result of invoking the initial
-  value of the <code>parse</code> property of the
-  <code>JSON</code> object, with
-  <var>JSON text</var> as its only argument. If that threw an
-  exception, return null. <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a></p>
-             
+          <li data-md="">
+           <p>Let <var>protected object</var> be the value of the <code>"object"</code> entry.</p>
+           
 
 
-            <li data-md="">
-             <p>If the <var>JSON object</var> is missing any of
-  the three entries: <code>"object"</code>,
-  <code>"confidentiality"</code>, or
-  <code>"integrity"</code> return null.</p>
-             
+          <li data-md="">
+           <p>Let <var>self</var> be the
+  <a href="https://fetch.spec.whatwg.org/#concept-response-url">url</a>
+  associated with the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>.</p>
+           
 
 
-            <li data-md="">
-             <p>Let <var>protected object</var> be the value of the <code>"object"</code> entry.</p>
-             
+          <li data-md="">
+           <p>Let <var>conf</var> be the <a data-link-type="dfn" href="#label">label</a>
+ returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
+ <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the
+ <code>"confidentiality"</code> entry of the
+ <var>JSON object</var> and <var>self</var>.
+ If the function threw an exception, return null.</p>
+           
 
 
-            <li data-md="">
-             <p>Let <var>conf</var> be the <a data-link-type="dfn" href="#label">label</a>
+          <li data-md="">
+           <p>Let <var>int</var> be the <a data-link-type="dfn" href="#label">label</a>
   returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
-  <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a> function with the
-  <code>"confidentiality"</code> entry of the
-  <var>JSON object</var>. If the function threw an
-  exception, return null.</p>
-             
-
-
-            <li data-md="">
-             <p>Let <var>int</var> be the <a data-link-type="dfn" href="#label">label</a>
-  returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
-  <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a> function with the
+  <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the
   <code>"integrity"</code> entry of the
-  <var>JSON object</var>. If the function threw an
-  exception, return null.</p>
-             
-
-
-            <li data-md="">
-             <p>Let <var>responseInt</var> be the <a data-link-type="dfn" href="#label">label</a>
-   returned by the <a data-link-type="functionish" href="#dom-label-label">Label(origin)</a> constructor
-   called with the
-   <a href="https://fetch.spec.whatwg.org/#concept-response-url">url</a>
-   associated with the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>.</p>
-             
-
-
-            <li data-md="">
-             <p>If <var>responseInt</var> does not subsume
-   <var>int</var>, return null.</p>
-             
-
-
-             <p class="issue" id="issue-8d289ef7"><a class="self-link" href="#issue-8d289ef7"></a> Should the user agent warn the user if the
-   server provided an integrity label that it is not
-   allowed to provide?</p>
-             
-
-
-            <li data-md="">
-             <p>Set the <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a> to a newly
-   created <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> whose
-   <a data-link-type="dfn" href="#protected-object">protected object</a> is <var>protected object</var>,
-   confidentiality label is <var>conf</var>, and
-   integrity label is <var>int</var>.</p>
-             
-
-
-            <li data-md="">
-             <p>Return the <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a>.</p>
-             
-</ol>
+  <var>JSON object</var> and <var>self</var>.
+  If the function threw an exception, return null.</p>
            
 
+
           <li data-md="">
-           <p>Modify the <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">response</a> attribute by
+           <p>Let <var>responseInt</var> be the <a data-link-type="dfn" href="#label">label</a>
+  returned by the <a data-link-type="functionish" href="#dom-label-label">Label(origin)</a> constructor
+  called with <var>self</var>.</p>
+           
+
+
+          <li data-md="">
+           <p>If <var>responseInt</var> does not subsume
+  <var>int</var>, return null.</p>
+           
+
+
+           <p class="issue" id="issue-1b65ed95"><a class="self-link" href="#issue-1b65ed95"></a> Should the user agent warn the user if the
+  server provided an integrity label that it is not
+  allowed to provide?</p>
+           
+
+
+          <li data-md="">
+           <p>Set the <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a> to a newly
+  created <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> whose
+  <a data-link-type="dfn" href="#protected-object">protected object</a> is <var>protected object</var>,
+  confidentiality label is <var>conf</var>, and
+  integrity label is <var>int</var>.</p>
+           
+
+
+          <li data-md="">
+           <p>Return the <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a>.</p>
+           
+</ol></ol>
+       
+
+      <li data-md="">
+       <p>Modify the <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">response</a> attribute by
  adding the following clause to step 2 of the
  <strong>↪ Otherwise</strong> clause:</p>
-           
+       
 
 
-           <p><strong>↪ If <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a> is</strong> <code>"labeled-json"</code></p>
-           
+       <p><strong>↪ If <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a> is</strong> <code>"labeled-json"</code></p>
+       
  
-           <p style="text-indent: 2.5em">Return the <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a>.</p>
-           
-</ol></ol></ol>
+       <p style="text-indent: 2.5em">Return the <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>Modify step 12 of the <a data-link-type="functionish" href="https://xhr.spec.whatwg.org/#the-open()-method">open()</a> method by adding the
+ following sub-step:</p>
+       
+
+
+       <ul>
+        <li data-md="">
+         <p>Set <a data-link-type="dfn" href="#response-labeledobject-object">response LabeledObject object</a> to null.</p>
+         
+</ul></ol>
      
       
      <h4 class="heading settled" data-level="3.6.3" id="examples4"><span class="secno">3.6.3. </span><span class="content">Examples</span><a class="self-link" href="#examples4"></a></h4>
@@ -3944,7 +3960,8 @@ of <var>priv</var>.</p>
    <li>equals(other), <a href="#dom-label-equalsother">3.1.2</a>
    <li>equivalent, <a href="#equivalent">2.1</a>
    <li>FreshPrivilege(), <a href="#dom-privilege-freshprivilege">3.2.1</a>
-   <li>fromJSON(obj), <a href="#dom-label-fromjsonobj">3.1</a>
+   <li>fromJSON(obj), <a href="#dom-label-fromjsonobj-self">3.1</a>
+   <li>fromJSON(obj, self), <a href="#dom-label-fromjsonobj-self">3.1</a>
    <li>integrity
     <ul>
      <li>attribute for COWL, <a href="#dom-cowl-integrity">3.3.1</a>
@@ -3984,7 +4001,7 @@ of <var>priv</var>.</p>
    <li>normal form, <a href="#normal-form">2.1</a>
    <li>obj
     <ul>
-     <li>argument for Label/fromJSON(obj), <a href="#dom-label-fromjsonobj-obj">3.1</a>
+     <li>argument for Label/fromJSON(obj, self), <a href="#dom-label-fromjsonobj-self-obj">3.1</a>
      <li>argument for LabeledObject/LabeledObject(obj, labels), <a href="#dom-labeledobject-labeledobjectobj-labels-obj">3.4</a>
     </ul>
    <li>origin, <a href="#dom-label-labelorigin-origin">3.1</a>
@@ -4014,6 +4031,7 @@ of <var>priv</var>.</p>
       object, <a href="#protected-object">3.4</a>
    <li>response LabeledObject object, <a href="#response-labeledobject-object">3.6.2</a>
    <li>restricting, <a href="#restricting">2.1</a>
+   <li>self, <a href="#dom-label-fromjsonobj-self-self">3.1</a>
    <li>send(lobj), <a href="#dom-xmlhttprequest-sendlobj">3.6.1</a>
    <li>serialized labels, <a href="#serialized-labels">3.5</a>
    <li>source-expression, <a href="#source_expression">3.5</a>
@@ -4151,7 +4169,7 @@ interface <a href="#label1">Label</a> {
   <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-_orother">_or</a>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <a href="#dom-label-_orother-other">other</a>);
 
   object <a href="#dom-label-tojson">toJSON</a>();
-  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-fromjsonobj">fromJSON</a>(object <a href="#dom-label-fromjsonobj-obj">obj</a>);
+  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-fromjsonobj-self">fromJSON</a>(object <a href="#dom-label-fromjsonobj-self-obj">obj</a>, optional DOMString <a href="#dom-label-fromjsonobj-self-self">self</a>);
 };
 
 [<a class="idl-code" data-link-type="constructor" href="#dom-privilege-privilege">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-privilege-freshprivilege">NamedConstructor</a>=<a data-link-type="idl-name">FreshPrivilege</a>, Exposed=Window, Worker]
@@ -4203,14 +4221,14 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> Current WebIDL implementation requires an underscore for
     certain identifiers. Can we rename <code>_or</code> to
     <code>or</code>?<a href="#issue-afa876b4"> ↵ </a></div>
-   <div class="issue"> Describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj">fromJSON()</a> methods.<a href="#issue-c9029dd8"> ↵ </a></div>
+   <div class="issue"> Describe the <a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> and <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> methods.<a href="#issue-c9029dd8"> ↵ </a></div>
    <div class="issue"> Add some examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>
     object. And to provide some intuition for the semantics.<a href="#issue-0c285526"> ↵ </a></div>
    <div class="issue"> Add examples showing how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used.<a href="#issue-15735816"> ↵ </a></div>
    <div class="issue"> Define parsing algorithms for directives used in the Sec-COWL headers.<a href="#issue-96a5c3f4"> ↵ </a></div>
    <div class="issue"> Should the user agent warn the user if the
-   server provided an integrity label that it is not
-   allowed to provide?<a href="#issue-8d289ef7"> ↵ </a></div>
+  server provided an integrity label that it is not
+  allowed to provide?<a href="#issue-1b65ed95"> ↵ </a></div>
    <div class="issue"> Add examples showing how to use <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s
       with <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>.<a href="#issue-fd7f06a8"> ↵ </a></div>
    <div class="issue"> Should we restrict communication via more covert

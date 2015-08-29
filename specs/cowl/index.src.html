@@ -1721,19 +1721,36 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
       2. Let <var>conf</var> be the confidentiality label of the <a
          argument for="XMLHttpRequest/send(lobj)">lobj</a> argument.
 
-      2. Let <var>int</var> be the integrity label of the <a
+      3. Let <var>int</var> be the integrity label of the <a
          argument for="XMLHttpRequest/send(lobj)">lobj</a> argument.
 
-      2. Let <var>json</var> be a new <a>JSON</a> object with the
+      4. Let <var>privs</var> be the current <a>context privileges</a>.
+
+      5. Let <var>remoteConf</var> be the <a>label</a>
+         returned by the <a>Label(origin)</a> constructor
+         called with the
+         <a href="https://fetch.spec.whatwg.org/#concept-request-url">url</a>
+         associated with the <a>request</a>.
+
+      6. If <code><var>responseConf</var>.<a>subsume(<var>conf</var>,
+         <var>privs</var>)</a></code> returns <code>false</code>, throw
+         a <a spec="HTML5">SecurityError</a> and terminate this algorithm.
+
+         <div class="note">
+           The user agent SHOULD warn the user that the script
+           attempted to leak data to a remote server.
+         </div>
+
+      7. Let <var>json</var> be a new <a>JSON</a> object with the
          following entries:
 
          * <code>"confidentiality"</code> set to <var>conf</var>.<a>toJSON()</a>.
          * <code>"integrity"</code> set to <var>int</var>.<a>toJSON()</a></code>.
          * <code>"object"</code> set to <var>obj</var>.
 
-      3. Set the <code>Content-Type</code> <a>header</a> to <code>`application/labeled-json`</code>.
+      8. Set the <code>Content-Type</code> <a>header</a> to <code>`application/labeled-json`</code>.
 
-      3. Invoke the
+      9. Invoke the
          <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
          method on the object this method was called on with 
          <var>json</var> as an argument.

@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-21">21 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-29">29 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -2675,6 +2675,34 @@ influenced the computation.</p>
 
       <li data-md="">
        <p>Let <var>int</var> be the integrity label of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>privs</var> be the current <a data-link-type="dfn" href="#context-privilege">context privileges</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>remoteConf</var> be the <a data-link-type="dfn" href="#label">label</a>
+ returned by the <a data-link-type="functionish" href="#dom-label-label">Label(origin)</a> constructor
+ called with the
+ <a href="https://fetch.spec.whatwg.org/#concept-request-url">url</a>
+ associated with the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request">request</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>If <code><var>responseConf</var>.<a data-link-type="dfn">subsume(<var>conf</var>,
+ <var>privs</var>)</a></code> returns <code>false</code>, throw
+ a <a data-link-type="dfn">SecurityError</a> and terminate this algorithm.</p>
+       
+
+ 
+       <div class="note" role="note">
+   The user agent SHOULD warn the user that the script
+   attempted to leak data to a remote server.
+ </div>
        
 
 

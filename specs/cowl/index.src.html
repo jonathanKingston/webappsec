@@ -2400,7 +2400,7 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
     <h3 id="parse-labeled-metadata-data">
       Parse labeled data metadata
     </h3>
-    To <dfn>parse labeled data metadata</dfn> <var>metadata</var> for
+    To <dfn>parse <a>labeled data metadata</a></dfn> <var>metadata</var> for
     origin <var>self</var>, the user agent MUST use an algorithm
     equivalent to the following:
 
@@ -2444,12 +2444,17 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
           the next token.
 
     4. Return <var>conf</var> and <var>int</var>.
+
+    <div class="note">
+      To make it easier for developers to debug applications, user
+      agents SHOULD report the directives that were ignored.
+    </div>
   </section>
   <section>
     <h3 id="parse-labeled-metadata-ctx">
       Parse labeled context metadata
     </h3>
-    To <dfn>parse labeled context metadata</dfn> <var>metadata</var> for
+    To <dfn>parse <a>labeled context metadata</a></dfn> <var>metadata</var> for
     origin <var>self</var>, the user agent MUST use an algorithm
     equivalent to the following:
 
@@ -2500,6 +2505,11 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
           the next token.
 
     4. Return <var>conf</var>, <var>int</var>, and <var>priv</var>.
+
+    <div class="note">
+      To make it easier for developers to debug applications, user
+      agents SHOULD report the directives that were ignored.
+    </div>
   </section>
 </section>
 

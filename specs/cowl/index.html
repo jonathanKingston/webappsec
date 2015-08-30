@@ -240,6 +240,12 @@ further.</p>
       <li><a href="#process-response"><span class="secno">4.9</span> <span class="content">
       Process <var>response</var> to <var>request</var> as COWL
     </span></a>
+      <li><a href="#parse-labeled-metadata-data"><span class="secno">4.10</span> <span class="content">
+      Parse labeled data metadata
+    </span></a>
+      <li><a href="#parse-labeled-metadata-ctx"><span class="secno">4.11</span> <span class="content">
+      Parse labeled context metadata
+    </span></a>
      </ul>
     <li><a href="#iana-considerations"><span class="secno">5</span> <span class="content">IANA Considerations</span></a>
      <ul class="toc">
@@ -2513,7 +2519,12 @@ influenced the computation.</p>
      
 
 
-     <p class="issue" id="issue-96a5c3f4"><a class="self-link" href="#issue-96a5c3f4"></a> Define parsing algorithms for directives used in the Sec-COWL headers.</p>
+     <p>The parsing algorithms for <a data-link-type="dfn" href="#label-metadata">label metadata</a> are given in
+    <a href="#parse-labeled-metadata-data">§4.10 
+      Parse labeled data metadata
+    </a> and <a href="#parse-labeled-metadata-ctx">§4.11 
+      Parse labeled context metadata
+    </a>.</p>
      
 
     
@@ -3543,7 +3554,7 @@ of <var>priv</var>.</p>
 
      <ol>
       <li data-md="">
-       <p>Let <var>context</var> be the <strong>client</strong>
+       <p>Let <var>context</var> be the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client">client</a>
  associated with the <var>request</var>.</p>
        
 
@@ -3554,7 +3565,7 @@ of <var>priv</var>.</p>
        
 
 
-       <p class="note" role="note">Note, the <strong>client</strong> associated with the
+       <p class="note" role="note">Note, the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client">client</a> associated with the
  <var>request</var> is null when <a data-link-type="dfn">navigating</a>, so we use
  the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/webappapis.html#incumbent-settings-object">incumbent settings object</a> to get the <a data-link-type="dfn" href="#cowl-state">COWL
  state</a> of the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">context</a> that initiated the request.</p>
@@ -3581,7 +3592,8 @@ of <var>priv</var>.</p>
       <li data-md="">
        <p>Let <var>dstConf</var> be the <a data-link-type="dfn" href="#label" integrity="">Label</a> created by invoking
  the <a data-link-type="functionish" href="#dom-label-label">Label(origin)</a> constructor with the
- <strong>url</strong> associated with the <var>request</var>.</p>
+ <a href="https://fetch.spec.whatwg.org/#concept-request-url">url</a>
+ associated with the <var>request</var>.</p>
        
 
 
@@ -3689,7 +3701,7 @@ of <var>priv</var>.</p>
 
 
       <li data-md="">
-       <p>Let <var>context</var> be the <strong>client</strong>
+       <p>Let <var>context</var> be the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client">client</a>
  associated with the <var>request</var>.</p>
        
 
@@ -3700,7 +3712,7 @@ of <var>priv</var>.</p>
        
 
 
-       <p class="note" role="note">Note, the <strong>client</strong> associated with the
+       <p class="note" role="note">Note, the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client">client</a> associated with the
  <var>request</var> is null when <a data-link-type="dfn">navigating</a>, so we use
  the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/webappapis.html#incumbent-settings-object">incumbent settings object</a> to get or set the <a data-link-type="dfn" href="#cowl-state">COWL
  state</a> of the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">context</a> that initiated the request.</p>
@@ -3714,6 +3726,13 @@ of <var>priv</var>.</p>
 
 
       <li data-md="">
+       <p>Let <var>metadata</var> be
+ the <em>first</em> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
+ is <code>Sec-COWL</code> in the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a>.</p>
+       
+
+
+      <li data-md="">
        <p>If <var>destination</var> is <code>"document"</code>,
  <code>"worker"</code> or <code>"serviceworker"</code>:</p>
        
@@ -3721,16 +3740,22 @@ of <var>priv</var>.</p>
 
        <ol>
         <li data-md="">
+         <p>Let <var>self</var> be the serialization of the
+  <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a> retrieved via the
+  <a data-link-type="dfn" href="http://www.w3.org/TR/html5/webappapis.html#settings-object">environment settings object</a> <var>context</var>.</p>
+         
+
+
+        <li data-md="">
          <p>Let <var>conf</var>, <var>int</var>, <var>priv</var> be the
-  results of <a data-link-type="dfn">parsing labeled context metadata</a> from
-  the <em>first</em> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
-  is <code>Sec-COWL</code> in the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a>.</p>
+  result of calling the <a data-link-type="dfn" href="#parse-labeled-context-metadata">parse labeled context
+  metadata</a> algorithm with <var>metadata</var> and <var>self</var>.</p>
          
 
 
         <li data-md="">
          <p>If either <var>conf</var>, <var>int</var>, or
-  <var>priv</var> are failure, return <strong>blocked</strong>.</p>
+  <var>priv</var> are null, return <strong>blocked</strong>.</p>
          
 
 
@@ -3799,15 +3824,21 @@ of <var>priv</var>.</p>
 
        <ol>
         <li data-md="">
-         <p>Let <var>conf</var> and <var>int</var> be the
-  results of <a data-link-type="dfn">parsing labeled data metadata</a> from
-  the <em>first</em> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header">header</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-name">name</a>
-  is <code>Sec-COWL</code> in the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list">header list</a>.</p>
+         <p>Let <var>self</var> be the
+  <a href="https://fetch.spec.whatwg.org/#concept-response-url">url</a>
+  associated with the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response">response</a>.</p>
          
 
 
         <li data-md="">
-         <p>If either <var>conf</var> or <var>int</var> are failure,
+         <p>Let <var>conf</var> and <var>int</var> be the
+  results of calling the <a data-link-type="dfn" href="#parse-labeled-data-metadata">parse labeled data metadata</a>
+  with <var>metadata</var> and <var>self</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>If either <var>conf</var> or <var>int</var> is null,
   return <strong>blocked</strong> and terminate this algorithm.</p>
          
 
@@ -3832,11 +3863,207 @@ of <var>priv</var>.</p>
   trustworthy as the <a data-link-type="dfn" href="#context-integrity-label">context integrity label</a>
   may be allowed by the user agent.</p>
          
+</ol></ol>
+       
+    </section>
+  
+    <section>
+    
+     <h3 class="heading settled" data-level="4.10" id="parse-labeled-metadata-data"><span class="secno">4.10. </span><span class="content">
+      Parse labeled data metadata
+    </span><a class="self-link" href="#parse-labeled-metadata-data"></a></h3>
+     
+    To <dfn data-dfn-type="dfn" data-noexport="" id="parse-labeled-data-metadata">parse labeled data metadata<a class="self-link" href="#parse-labeled-data-metadata"></a></dfn> <var>metadata</var> for
+    origin <var>self</var>, the user agent MUST use an algorithm
+    equivalent to the following:
+
+
+     <ol>
+      <li data-md="">
+       <p>Let <var>conf</var> be null.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>int</var> be null.</p>
+       
+
+
+      <li data-md="">
+       <p>For each non-empty token returned by
+ <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#strictly-split-a-string">strictly splitting</a>
+ the string <var>metadata</var> on the character U+003B SEMICOLON (<code>;</code>):</p>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p><a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#skip-whitespace">Skip whitespace</a>.</p>
+         
+
+
+        <li data-md="">
+         <p><a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#collect-a-sequence-of-characters">Collect a sequence of characters</a> that are
+  not <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#space-characters">space characters</a>. The collected characters
+  are the <var>directive name</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>If there are characters remaining in <var>token</var>,
+  skip ahead exactly one character (which must be a
+  <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#space-characters">space character</a>).</p>
+         
+
+
+        <li data-md="">
+         <p>The remaining characters in <var>token</var> (if any) are
+  the <var>directive value</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>label value</var> be the <a data-link-type="dfn" href="#label">label</a>
+   returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
+   <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the <var>directive
+   value</var> and <var>self</var>.  If the function threw an
+   exception, ignore this instance of the directive and continue
+   to the next token.</p>
+         
+
+
+        <li data-md="">
+         <p>If <var>directive name</var> is <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a>
+  and <var>conf</var> is null, let <var>conf</var> be <var>label
+  value</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>Else, if <var>directive name</var> is <a data-link-type="dfn" href="#data_integrity">data-integrity</a>
+  and <var>int</var> is null, let <var>int</var> be <var>label
+  value</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>Else, ignore this instance of the directive and continue to
+  the next token.</p>
+         
 </ol>
        
+
+      <li data-md="">
+       <p>Return <var>conf</var> and <var>int</var>.</p>
+       
 </ol>
-     
+       
+    </section>
   
+    <section>
+    
+     <h3 class="heading settled" data-level="4.11" id="parse-labeled-metadata-ctx"><span class="secno">4.11. </span><span class="content">
+      Parse labeled context metadata
+    </span><a class="self-link" href="#parse-labeled-metadata-ctx"></a></h3>
+     
+    To <dfn data-dfn-type="dfn" data-noexport="" id="parse-labeled-context-metadata">parse labeled context metadata<a class="self-link" href="#parse-labeled-context-metadata"></a></dfn> <var>metadata</var> for
+    origin <var>self</var>, the user agent MUST use an algorithm
+    equivalent to the following:
+
+
+     <ol>
+      <li data-md="">
+       <p>Let <var>conf</var> be null.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>int</var> be null.</p>
+       
+
+
+      <li data-md="">
+       <p>Let <var>priv</var> be null.</p>
+       
+
+
+      <li data-md="">
+       <p>For each non-empty token returned by
+ <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#strictly-split-a-string">strictly splitting</a>
+ the string <var>metadata</var> on the character U+003B SEMICOLON (<code>;</code>):</p>
+       
+
+
+       <ol>
+        <li data-md="">
+         <p><a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#skip-whitespace">Skip whitespace</a>.</p>
+         
+
+
+        <li data-md="">
+         <p><a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#collect-a-sequence-of-characters">Collect a sequence of characters</a> that are
+  not <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#space-characters">space characters</a>. The collected characters
+  are the <var>directive name</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>If there are characters remaining in <var>token</var>,
+  skip ahead exactly one character (which must be a
+  <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#space-characters">space character</a>).</p>
+         
+
+
+        <li data-md="">
+         <p>The remaining characters in <var>token</var> (if any) are
+  the <var>directive value</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>Let <var>label value</var> be the <a data-link-type="dfn" href="#label">label</a>
+   returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
+   <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the <var>directive
+   value</var> and <var>self</var>.  If the function threw an
+   exception, ignore this instance of the directive and continue
+   to the next token.</p>
+         
+
+
+        <li data-md="">
+         <p>If <var>directive name</var> is <a data-link-type="dfn" href="#ctx_confidentiality">ctx-confidentiality</a>
+  and <var>conf</var> is null, let <var>conf</var> be <var>label
+  value</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>Else, if <var>directive name</var> is <a data-link-type="dfn" href="#ctx_integrity">ctx-integrity</a>
+  and <var>int</var> is null, let <var>int</var> be <var>label
+  value</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>Else, if <var>directive name</var> is <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a>
+  and <var>priv</var> is null, let <var>priv</var> be
+  a newly created <a data-link-type="dfn" href="#privilege">privilege</a> whose
+  <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> is set to <var>label value</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>Else, ignore this instance of the directive and continue to
+  the next token.</p>
+         
+</ol>
+       
+
+      <li data-md="">
+       <p>Return <var>conf</var>, <var>int</var>, and <var>priv</var>.</p>
+       
+</ol>
+       
     </section>
 </section>
 
@@ -4182,6 +4409,8 @@ of <var>priv</var>.</p>
     </ul>
    <li>ownership, <a href="#ownership">2.2</a>
    <li>owns, <a href="#owns">2.2</a>
+   <li>parse labeled context metadata, <a href="#parse-labeled-context-metadata">4.11</a>
+   <li>parse labeled data metadata, <a href="#parse-labeled-data-metadata">4.10</a>
    <li>priv, <a href="#dom-label-subsumesother-priv-priv">3.1</a>
    <li>Privilege, <a href="#privilege0">3.2</a>
    <li>Privilege(), <a href="#dom-privilege-privilege">3.2.1</a>
@@ -4223,6 +4452,7 @@ of <var>priv</var>.</p>
    <li><a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> defines the following terms:
     <ul>
      <li><a href="https://fetch.spec.whatwg.org/#concept-response-body">body</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-request-client">client</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-request-context-frame-type">context frame type</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-request-destination">destination</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-header-extract-mime-type">extracting a mime type</a>
@@ -4240,12 +4470,16 @@ of <var>priv</var>.</p>
    <li><a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
     <ul>
      <li><a href="http://www.w3.org/TR/html5/browsers.html#windows">browsing context</a>
+     <li><a href="http://www.w3.org/TR/html5/infrastructure.html#collect-a-sequence-of-characters">collect a sequence of characters</a>
      <li><a href="http://www.w3.org/TR/html5/browsers.html#windows">context</a>
      <li><a href="http://www.w3.org/TR/html5/webappapis.html#settings-object">environment settings object</a>
      <li><a href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element">iframe</a>
      <li><a href="http://www.w3.org/TR/html5/webappapis.html#incumbent-settings-object">incumbent settings object</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm">internal structured cloning algorithm</a>
      <li><a href="http://www.w3.org/TR/html5/embedded-content-0.html#attr-iframe-sandbox">sandbox</a>
+     <li><a href="http://www.w3.org/TR/html5/infrastructure.html#skip-whitespace">skip whitespace</a>
+     <li><a href="http://www.w3.org/TR/html5/infrastructure.html#space-characters">space characters</a>
+     <li><a href="http://www.w3.org/TR/html5/infrastructure.html#strictly-split-a-string">strictly split a string</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structurally clonable</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structurally cloned</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structured clone</a>
@@ -4395,7 +4629,6 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> Add some examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>
     object. And to provide some intuition for the semantics.<a href="#issue-0c285526"> ↵ </a></div>
    <div class="issue"> Add examples showing how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used.<a href="#issue-15735816"> ↵ </a></div>
-   <div class="issue"> Define parsing algorithms for directives used in the Sec-COWL headers.<a href="#issue-96a5c3f4"> ↵ </a></div>
    <div class="issue"> Should the user agent warn the user if the
   server provided an integrity label that it is not
   allowed to provide?<a href="#issue-1b65ed95"> ↵ </a></div>

@@ -58,6 +58,10 @@ spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
       text: structurally cloned; url: structured-clone
       text: structurally clonable; url: structured-clone
       text: internal structured cloning algorithm; url: internal-structured-cloning-algorithm
+      text: strictly split a string
+      text: skip whitespace
+      text: collect a sequence of characters
+      text: space characters
 spec: RFC6454; urlPrefix: https://tools.ietf.org/html/rfc6454
   type: dfn
     text: origin; url: section-3.2
@@ -99,6 +103,7 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
     text: request; url: concept-request
     text: response; url: concept-response
     text: body; url: concept-response-body
+    text: client; url: concept-request-client
     text: type; url: concept-request-type
     text: destination; url: concept-request-destination
     text: header; url: concept-header
@@ -1615,7 +1620,8 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
       <dfn>source-expression</dfn>   = "'self'" / "'unique'" / <a>host-source</a>
     </pre>
 
-    ISSUE: Define parsing algorithms for directives used in the Sec-COWL headers.
+    The parsing algorithms for <a>label metadata</a> are given in
+    [[#parse-labeled-metadata-data]] and [[#parse-labeled-metadata-ctx]].
 
     <section>
       <h4 id="request-header">The <code>Sec-COWL</code> HTTP Request Header Field</h4>
@@ -2213,13 +2219,13 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
     whether the <a>Request</a> <var>request</var> should proceed or
     not via the following algorithm:
 
-    1. Let <var>context</var> be the <strong>client</strong>
+    1. Let <var>context</var> be the <a>client</a>
        associated with the <var>request</var>.
 
     2. If <var>context</var> is null, let <var>context</var> be the
        <a>incumbent settings object</a>.
 
-       Note, the <strong>client</strong> associated with the
+       Note, the <a>client</a> associated with the
        <var>request</var> is null when <a>navigating</a>, so we use
        the <a>incumbent settings object</a> to get the <a>COWL
        state</a> of the <a>context</a> that initiated the request.
@@ -2235,7 +2241,8 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
 
     6. Let <var>dstConf</var> be the <a integrity>Label</a> created by invoking
        the <a>Label(origin)</a> constructor with the
-       <strong>url</strong> associated with the <var>request</var>.
+       <a href="https://fetch.spec.whatwg.org/#concept-request-url">url</a>
+       associated with the <var>request</var>.
 
     7. If <var>dstConf</var> <a>subsumes</a> <var>conf</var>, return
        <strong>allowed</strong>.
@@ -2298,13 +2305,13 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
     4. Let <var>MIMEType</var> be the result of <a>extracting a MIME
        type</a> from <var>response</var>'s <a>header list</a>. 
 
-    5. Let <var>context</var> be the <strong>client</strong>
+    5. Let <var>context</var> be the <a>client</a>
        associated with the <var>request</var>.
 
     6. If <var>context</var> is null, let <var>context</var> be the
        <a>incumbent settings object</a>.
 
-       Note, the <strong>client</strong> associated with the
+       Note, the <a>client</a> associated with the
        <var>request</var> is null when <a>navigating</a>, so we use
        the <a>incumbent settings object</a> to get or set the <a>COWL
        state</a> of the <a>context</a> that initiated the request.
@@ -2312,16 +2319,23 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
     7. Let <var>state</var> be the <a>COWL state</a> retrieved via the
        <a>environment settings object</a> <var>context</var>.
 
-    8. If <var>destination</var> is <code>"document"</code>,
+    8. Let <var>metadata</var> be
+       the <em>first</em> <a>header</a> whose <a>name</a>
+       is <code>Sec-COWL</code> in the <a>response</a>'s <a>header list</a>.
+
+    9. If <var>destination</var> is <code>"document"</code>,
        <code>"worker"</code> or <code>"serviceworker"</code>:
 
+         0. Let <var>self</var> be the serialization of the
+            <a>origin</a> retrieved via the
+            <a>environment settings object</a> <var>context</var>.
+
          1. Let <var>conf</var>, <var>int</var>, <var>priv</var> be the
-            results of <a>parsing labeled context metadata</a> from
-            the <em>first</em> <a>header</a> whose <a>name</a>
-            is <code>Sec-COWL</code> in the <a>response</a>'s <a>header list</a>.
+            result of calling the <a>parse labeled context
+            metadata</a> algorithm with <var>metadata</var> and <var>self</var>.
 
          2. If either <var>conf</var>, <var>int</var>, or
-            <var>priv</var> are failure, return <strong>blocked</strong>.
+            <var>priv</var> are null, return <strong>blocked</strong>.
 
          3. Else:
          
@@ -2355,14 +2369,17 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
 
             5. Return <strong>allowed</strong>.
 
-    9. Else:
+    10. Else:
+
+         0. Let <var>self</var> be the
+            <a href="https://fetch.spec.whatwg.org/#concept-response-url">url</a>
+            associated with the <a>response</a>.
 
          1. Let <var>conf</var> and <var>int</var> be the
-            results of <a>parsing labeled data metadata</a> from
-            the <em>first</em> <a>header</a> whose <a>name</a>
-            is <code>Sec-COWL</code> in the <a>response</a>'s <a>header list</a>.
+            results of calling the <a>parse labeled data metadata</a>
+            with <var>metadata</var> and <var>self</var>.
 
-         2. If either <var>conf</var> or <var>int</var> are failure,
+         2. If either <var>conf</var> or <var>int</var> is null,
             return <strong>blocked</strong> and terminate this algorithm.
 
          3. If the <var>state</var> <a>effective confidentiality
@@ -2378,8 +2395,111 @@ spec: ENCONDING; urlPrefix: https://encoding.spec.whatwg.org/
             certain responses (e.g., images) which are only not as
             trustworthy as the <a>context integrity label</a>
             may be allowed by the user agent.
+  </section>
+  <section>
+    <h3 id="parse-labeled-metadata-data">
+      Parse labeled data metadata
+    </h3>
+    To <dfn>parse labeled data metadata</dfn> <var>metadata</var> for
+    origin <var>self</var>, the user agent MUST use an algorithm
+    equivalent to the following:
 
+    1. Let <var>conf</var> be null.
 
+    2. Let <var>int</var> be null.
+
+    3. For each non-empty token returned by
+       <a lt="strictly split a string" spec="HTML5">strictly splitting</a>
+       the string <var>metadata</var> on the character U+003B SEMICOLON (<code>;</code>):
+
+       1. <a spec="HTML5">Skip whitespace</a>.
+
+       2. <a spec="HTML5">Collect a sequence of characters</a> that are
+          not <a spec="HTML5">space characters</a>. The collected characters
+          are the <var>directive name</var>.
+
+       3. If there are characters remaining in <var>token</var>,
+          skip ahead exactly one character (which must be a
+          <a spec="HTML5">space character</a>).
+
+       4. The remaining characters in <var>token</var> (if any) are
+          the <var>directive value</var>.
+
+       5.  Let <var>label value</var> be the <a>label</a>
+           returned by calling the <a interface>Label</a>
+           <a>fromJSON()</a> function with the <var>directive
+           value</var> and <var>self</var>.  If the function threw an
+           exception, ignore this instance of the directive and continue
+           to the next token.
+
+       6. If <var>directive name</var> is <a>data-confidentiality</a>
+          and <var>conf</var> is null, let <var>conf</var> be <var>label
+          value</var>.
+
+       7. Else, if <var>directive name</var> is <a>data-integrity</a>
+          and <var>int</var> is null, let <var>int</var> be <var>label
+          value</var>.
+        
+       8. Else, ignore this instance of the directive and continue to
+          the next token.
+
+    4. Return <var>conf</var> and <var>int</var>.
+  </section>
+  <section>
+    <h3 id="parse-labeled-metadata-ctx">
+      Parse labeled context metadata
+    </h3>
+    To <dfn>parse labeled context metadata</dfn> <var>metadata</var> for
+    origin <var>self</var>, the user agent MUST use an algorithm
+    equivalent to the following:
+
+    1. Let <var>conf</var> be null.
+
+    2. Let <var>int</var> be null.
+
+    3. Let <var>priv</var> be null.
+
+    3. For each non-empty token returned by
+       <a lt="strictly split a string" spec="HTML5">strictly splitting</a>
+       the string <var>metadata</var> on the character U+003B SEMICOLON (<code>;</code>):
+
+       1. <a spec="HTML5">Skip whitespace</a>.
+
+       2. <a spec="HTML5">Collect a sequence of characters</a> that are
+          not <a spec="HTML5">space characters</a>. The collected characters
+          are the <var>directive name</var>.
+
+       3. If there are characters remaining in <var>token</var>,
+          skip ahead exactly one character (which must be a
+          <a spec="HTML5">space character</a>).
+
+       4. The remaining characters in <var>token</var> (if any) are
+          the <var>directive value</var>.
+
+       5.  Let <var>label value</var> be the <a>label</a>
+           returned by calling the <a interface>Label</a>
+           <a>fromJSON()</a> function with the <var>directive
+           value</var> and <var>self</var>.  If the function threw an
+           exception, ignore this instance of the directive and continue
+           to the next token.
+
+       6. If <var>directive name</var> is <a>ctx-confidentiality</a>
+          and <var>conf</var> is null, let <var>conf</var> be <var>label
+          value</var>.
+
+       7. Else, if <var>directive name</var> is <a>ctx-integrity</a>
+          and <var>int</var> is null, let <var>int</var> be <var>label
+          value</var>.
+
+       7. Else, if <var>directive name</var> is <a>ctx-privilege</a>
+          and <var>priv</var> is null, let <var>priv</var> be
+          a newly created <a>privilege</a> whose
+          <a>internal privilege label</a> is set to <var>label value</var>.
+        
+       8. Else, ignore this instance of the directive and continue to
+          the next token.
+
+    4. Return <var>conf</var>, <var>int</var>, and <var>priv</var>.
   </section>
 </section>
 

@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-29">29 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-08-31">31 August 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -223,6 +223,7 @@ further.</p>
        <ul class="toc">
         <li><a href="#modifications-fetch"><span class="secno">3.7.1</span> <span class="content">Modifications to Fetch</span></a>
         <li><a href="#modifications-to-web-messaging"><span class="secno">3.7.2</span> <span class="content">Modifications to Web Messaging</span></a>
+        <li><a href="#modifications-to-html5"><span class="secno">3.7.3</span> <span class="content">Modifications to HTML5</span></a>
        </ul>
      </ul>
     <li><a href="#algorithms"><span class="secno">4</span> <span class="content">Algorithms</span></a>
@@ -3153,13 +3154,82 @@ body</a> section of the specification is modified to add:</p>
          
 </ol></ol>
      
+          
+     <h4 class="heading settled" data-level="3.7.3" id="modifications-to-html5"><span class="secno">3.7.3. </span><span class="content">Modifications to HTML5</span><a class="self-link" href="#modifications-to-html5"></a></h4>
+     
+
+
+     <p>When <a data-link-type="dfn" href="#confinement-mode">confinement mode</a> is enabled the user agent MUST
+          ensure that content cannot access other content from the
+          <a data-link-type="dfn">same origin</a> (e.g., using an iframe’s
+          <code><a data-link-type="element-attr" href="http://www.w3.org/TR/html5/embedded-content-0.html#dom-iframe-contentdocument">contentDocument</a></code>) that would violate
+          label restrictions. Specifically, if a <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing
+            context</a>’s <a data-link-type="dfn" href="#confinement-mode">confinement mode</a> is enabled
+          the user agent MUST set the following flags
+          of the context’s <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#active-sandboxing-flag-set">active sandboxing flag set</a>:</p>
+     
+
+
+
+     <ul>
+      <li data-md="">
+       <p>The <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#sandboxed-plugins-browsing-context-flag">sandboxed plugins browsing context flag</a>.</p>
+       
+
+
+      <li data-md="">
+       <p>The <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#sandboxed-document.domain-browsing-context-flag">sandboxed <code>document.domain</code> browsing context flag</a>.</p>
+       
+</ul>
+     
+
+     <p>If the context’s <a data-link-type="dfn" href="#effective-confidentiality-label">effective confidentiality label</a> is
+          not the <a data-link-type="dfn" href="#empty-label">empty label</a>, the user agent MUST additionally
+          set the following flags:</p>
+     
+
+
+     <ul>
+      <li data-md="">
+       <p>The <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#sandboxed-origin-browsing-context-flag">sandboxed origin browsing context flag</a>.  This
+flag ensures that the browsing context cannot access content
+of (what was previously) the same origin. It also prevents
+<a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#sandboxCookies">script from reading from or writing to the
+  <code>document.cookie</code> IDL attribute</a>, and
+blocks access to <code>localStorage</code>. <a data-link-type="biblio" href="#biblio-webstorage">[WEBSTORAGE]</a></p>
+       
+
+
+       <div class="note" role="note">
+  The user agent MUST ensure that if content has access
+  to another content from the same origin, but either ends
+  up enabling <a data-link-type="dfn" href="#confinement-mode">confinement mode</a> and has a
+  non-<a data-link-type="dfn" href="#empty-label">empty label</a>, access must be revoked and
+  the two must be considered as if they are of different
+  origins.  Th current version of this document specifies
+  this requirement in terms of the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#sandboxed-origin-browsing-context-flag">sandboxed origin
+  browsing context flag</a>. 
+
+
+        <p class="issue" id="issue-0eb51ae2"><a class="self-link" href="#issue-0eb51ae2"></a> Implementation-wise, this may pose a challenge
+  for certain browsers. An alternative design may disallow
+  enabling confinement mode if the browsing context has
+  any references to (from) another same-origin content.</p>
+</div>
+       
+
+
+      <li data-md="">
+       <p>The <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#sandboxed-navigation-browsing-context-flag">sandboxed navigation browsing context flag</a>.</p>
+       
+</ul>
+     
 
      <p class="issue" id="issue-ae32071d"><a class="self-link" href="#issue-ae32071d"></a> Should we restrict communication via more covert
       channels, e.g., height/width of an iframe? Maybe at least as
       optional modifications to HTML. Feedback and thoughts on this
       would be welcome.</p>
      
-
     
     </section>
 
@@ -4483,14 +4553,21 @@ of <var>priv</var>.</p>
     </ul>
    <li><a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
     <ul>
+     <li><a href="http://www.w3.org/TR/html5/browsers.html#active-sandboxing-flag-set">active sandboxing flag set</a>
      <li><a href="http://www.w3.org/TR/html5/browsers.html#windows">browsing context</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#collect-a-sequence-of-characters">collect a sequence of characters</a>
+     <li><a href="http://www.w3.org/TR/html5/embedded-content-0.html#dom-iframe-contentdocument">contentdocument</a>
      <li><a href="http://www.w3.org/TR/html5/browsers.html#windows">context</a>
      <li><a href="http://www.w3.org/TR/html5/webappapis.html#settings-object">environment settings object</a>
      <li><a href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element">iframe</a>
      <li><a href="http://www.w3.org/TR/html5/webappapis.html#incumbent-settings-object">incumbent settings object</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm">internal structured cloning algorithm</a>
      <li><a href="http://www.w3.org/TR/html5/embedded-content-0.html#attr-iframe-sandbox">sandbox</a>
+     <li><a href="http://www.w3.org/TR/html5/browsers.html#sandboxed-document.domain-browsing-context-flag">sandboxed document.domain browsing context flag</a>
+     <li><a href="http://www.w3.org/TR/html5/browsers.html#sandboxed-navigation-browsing-context-flag">sandboxed navigation browsing context flag</a>
+     <li><a href="http://www.w3.org/TR/html5/browsers.html#sandboxed-origin-browsing-context-flag">sandboxed origin browsing context flag</a>
+     <li><a href="http://www.w3.org/TR/html5/browsers.html#sandboxed-plugins-browsing-context-flag">sandboxed plugins browsing context flag</a>
+     <li><a href="http://www.w3.org/TR/html5/browsers.html#sandboxCookies">script from reading from or writing to the document.cookie idl attribute</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#skip-whitespace">skip whitespace</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#space-characters">space characters</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#strictly-split-a-string">strictly split a string</a>
@@ -4579,7 +4656,9 @@ of <var>priv</var>.</p>
    <dt id="biblio-dclabels"><a class="self-link" href="#biblio-dclabels"></a>[DCLabels]
    <dd>Deian Stefan; et al. <a href="http://www.scs.stanford.edu/~deian/pubs/stefan:2011:dclabels.pdf">Disjunction Category Labels</a>. URL: <a href="http://www.scs.stanford.edu/~deian/pubs/stefan:2011:dclabels.pdf">http://www.scs.stanford.edu/~deian/pubs/stefan:2011:dclabels.pdf</a>
    <dt id="biblio-json"><a class="self-link" href="#biblio-json"></a>[JSON]
-   <dd>D. Crockford. <a href="https://tools.ietf.org/html/rfc4627">The application/json Media Type for JavaScript Object Notation (JSON)</a>. July 2006. Informational. URL: <a href="https://tools.ietf.org/html/rfc4627">https://tools.ietf.org/html/rfc4627</a></dl>
+   <dd>D. Crockford. <a href="https://tools.ietf.org/html/rfc4627">The application/json Media Type for JavaScript Object Notation (JSON)</a>. July 2006. Informational. URL: <a href="https://tools.ietf.org/html/rfc4627">https://tools.ietf.org/html/rfc4627</a>
+   <dt id="biblio-webstorage"><a class="self-link" href="#biblio-webstorage"></a>[WEBSTORAGE]
+   <dd>Ian Hickson. <a href="http://www.w3.org/TR/webstorage/">Web Storage (Second Edition)</a>. 9 June 2015. CR. URL: <a href="http://www.w3.org/TR/webstorage/">http://www.w3.org/TR/webstorage/</a></dl>
   <h2 class="no-num heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
   <pre class="idl">[<a class="idl-code" data-link-type="constructor" href="#dom-label-label">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-label-labelorigin">Constructor</a>(DOMString <a href="#dom-label-labelorigin-origin">origin</a>), Exposed=Window, Worker]
 interface <a href="#label1">Label</a> {
@@ -4650,6 +4729,10 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
   allowed to provide?<a href="#issue-1b65ed95"> ↵ </a></div>
    <div class="issue"> Add examples showing how to use <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s
       with <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>.<a href="#issue-fd7f06a8"> ↵ </a></div>
+   <div class="issue"> Implementation-wise, this may pose a challenge
+  for certain browsers. An alternative design may disallow
+  enabling confinement mode if the browsing context has
+  any references to (from) another same-origin content.<a href="#issue-0eb51ae2"> ↵ </a></div>
    <div class="issue"> Should we restrict communication via more covert
       channels, e.g., height/width of an iframe? Maybe at least as
       optional modifications to HTML. Feedback and thoughts on this

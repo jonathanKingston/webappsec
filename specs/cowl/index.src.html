@@ -43,6 +43,7 @@ spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
   type: element-attr
     urlPrefix: embedded-content-0.html
       text: sandbox; for: iframe; url: attr-iframe-sandbox
+      text: contentDocument; for: iframe; url: dom-iframe-contentdocument
   type: dfn
     urlPrefix: webappapis.html
       text: environment settings object; url: settings-object
@@ -53,6 +54,14 @@ spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
     urlPrefix: browsers.html
       text: context; url: windows
       text: browsing context; url: windows
+      text: active sandboxing flag set; url: active-sandboxing-flag-set
+      text: sandboxing flag set; url: sandboxing-flag-set
+      text: forced sandboxing flag set; url: forced-sandboxing-flag-set
+      text: sandboxed plugins browsing context flag;url: sandboxed-plugins-browsing-context-flag
+      text: sandboxed document.domain browsing context flag;url: sandboxed-document.domain-browsing-context-flag
+      text: sandboxed origin browsing context flag;url: sandboxed-origin-browsing-context-flag
+      text: sandboxed navigation browsing context flag;url: sandboxed-navigation-browsing-context-flag
+      text: script from reading from or writing to the document.cookie IDL attribute; url: sandboxCookies
     urlPrefix: infrastructure.html
       text: structured clone; url: structured-clone
       text: structurally cloned; url: structured-clone
@@ -117,6 +126,7 @@ spec: FETCH; urlPrefix: https://fetch.spec.whatwg.org/
 spec: ENCODING; urlPrefix: https://encoding.spec.whatwg.org/
   type: dfn
     text: utf-8 decode; url: utf-8-decode
+spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 </pre>
 
 <!-- BIBLIOGRAPHY -->
@@ -1988,11 +1998,55 @@ spec: ENCODING; urlPrefix: https://encoding.spec.whatwg.org/
                 <a>subsume</a> <var>dstInt</var>, then abort the
                 remaining steps.
 
+          <h4>Modifications to HTML5</h4>
+
+          When <a>confinement mode</a> is enabled the user agent MUST
+          ensure that content cannot access other content from the
+          <a>same origin</a> (e.g., using an iframe's
+          <code><a element-attr>contentDocument</a></code>) that would violate
+          label restrictions. Specifically, if a <a>browsing
+            context</a>'s <a>confinement mode</a> is enabled
+          the user agent MUST set the following flags
+          of the context's <a>active sandboxing flag set</a>:
+
+
+          * The <a>sandboxed plugins browsing context flag</a>.
+                 
+          * The <a>sandboxed <code>document.domain</code> browsing context flag</a>.
+
+          If the context's <a>effective confidentiality label</a> is
+          not the <a>empty label</a>, the user agent MUST additionally
+          set the following flags:
+
+          * The <a>sandboxed origin browsing context flag</a>.  This
+            flag ensures that the browsing context cannot access content
+            of (what was previously) the same origin. It also prevents
+            <a>script from reading from or writing to the
+              <code>document.cookie</code> IDL attribute</a>, and
+            blocks access to <code>localStorage</code>. [[WEBSTORAGE]]
+
+            <div class="note">
+              The user agent MUST ensure that if content has access
+              to another content from the same origin, but either ends
+              up enabling <a>confinement mode</a> and has a
+              non-<a>empty label</a>, access must be revoked and
+              the two must be considered as if they are of different
+              origins.  Th current version of this document specifies
+              this requirement in terms of the <a>sandboxed origin
+              browsing context flag</a>. 
+
+              ISSUE: Implementation-wise, this may pose a challenge
+              for certain browsers. An alternative design may disallow
+              enabling confinement mode if the browsing context has
+              any references to (from) another same-origin content.
+            </div>
+
+          * The <a>sandboxed navigation browsing context flag</a>.
+
       ISSUE: Should we restrict communication via more covert
       channels, e.g., height/width of an iframe? Maybe at least as
       optional modifications to HTML. Feedback and thoughts on this
       would be welcome.
-
     </section>
 
 </section>

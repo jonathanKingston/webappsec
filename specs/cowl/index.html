@@ -187,26 +187,26 @@ further.</p>
        <ul class="toc">
         <li><a href="#constructors"><span class="secno">3.1.1</span> <span class="content">Constructors</span></a>
         <li><a href="#methods"><span class="secno">3.1.2</span> <span class="content">Methods</span></a>
-        <li><a href="#examples0"><span class="secno">3.1.3</span> <span class="content">Examples</span></a>
+        <li><a href="#label-examples"><span class="secno">3.1.3</span> <span class="content">Examples</span></a>
        </ul>
       <li><a href="#privileges0"><span class="secno">3.2</span> <span class="content">Privileges</span></a>
        <ul class="toc">
         <li><a href="#constructors0"><span class="secno">3.2.1</span> <span class="content">Constructors</span></a>
         <li><a href="#methods0"><span class="secno">3.2.2</span> <span class="content">Methods</span></a>
-        <li><a href="#examples1"><span class="secno">3.2.3</span> <span class="content">Examples</span></a>
+        <li><a href="#privilege-examples"><span class="secno">3.2.3</span> <span class="content">Examples</span></a>
        </ul>
       <li><a href="#context-labels"><span class="secno">3.3</span> <span class="content">Labeled Contexts</span></a>
        <ul class="toc">
         <li><a href="#attributes"><span class="secno">3.3.1</span> <span class="content">Attributes</span></a>
         <li><a href="#methods1"><span class="secno">3.3.2</span> <span class="content">Methods</span></a>
-        <li><a href="#examples2"><span class="secno">3.3.3</span> <span class="content">Examples</span></a>
+        <li><a href="#COWL-examples"><span class="secno">3.3.3</span> <span class="content">Examples</span></a>
        </ul>
       <li><a href="#object-labels"><span class="secno">3.4</span> <span class="content">Labeled Objects</span></a>
        <ul class="toc">
         <li><a href="#constructors1"><span class="secno">3.4.1</span> <span class="content">Constructors</span></a>
         <li><a href="#attributes0"><span class="secno">3.4.2</span> <span class="content">Attributes</span></a>
         <li><a href="#methods2"><span class="secno">3.4.3</span> <span class="content">Methods</span></a>
-        <li><a href="#examples3"><span class="secno">3.4.4</span> <span class="content">Examples</span></a>
+        <li><a href="#labeledobject-examples"><span class="secno">3.4.4</span> <span class="content">Examples</span></a>
        </ul>
       <li><a href="#header"><span class="secno">3.5</span> <span class="content">The <code>Sec-COWL</code> HTTP Headers</span></a>
        <ul class="toc">
@@ -217,7 +217,7 @@ further.</p>
        <ul class="toc">
         <li><a href="#sending-labeled-objects"><span class="secno">3.6.1</span> <span class="content">Sending <span>labeled objects</span></span></a>
         <li><a href="#receive-labeled-object"><span class="secno">3.6.2</span> <span class="content"><span>Receiving </span><span>labeled objects</span></span></a>
-        <li><a href="#examples4"><span class="secno">3.6.3</span> <span class="content">Examples</span></a>
+        <li><a href="#examples0"><span class="secno">3.6.3</span> <span class="content">Examples</span></a>
        </ul>
       <li><a href="#enforcement"><span class="secno">3.7</span> <span class="content">Confinement Enforcement</span></a>
        <ul class="toc">
@@ -1429,7 +1429,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
      
 
     
-     <h4 class="heading settled" data-level="3.1.3" id="examples0"><span class="secno">3.1.3. </span><span class="content">Examples</span><a class="self-link" href="#examples0"></a></h4>
+     <h4 class="heading settled" data-level="3.1.3" id="label-examples"><span class="secno">3.1.3. </span><span class="content">Examples</span><a class="self-link" href="#label-examples"></a></h4>
      
 
     
@@ -1722,7 +1722,7 @@ exception and terminate this algorithm.</p>
      
 
     
-     <h4 class="heading settled" data-level="3.2.3" id="examples1"><span class="secno">3.2.3. </span><span class="content">Examples</span><a class="self-link" href="#examples1"></a></h4>
+     <h4 class="heading settled" data-level="3.2.3" id="privilege-examples"><span class="secno">3.2.3. </span><span class="content">Examples</span><a class="self-link" href="#privilege-examples"></a></h4>
      
 
     
@@ -1934,8 +1934,9 @@ subject to confinement.</p>
 
 
        <li data-md="">
-        <p>Unless the <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a> is
-set to a non-<a data-link-type="dfn" href="#empty-label">empty label</a>, the context’s communication
+        <p>Unless the <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a>
+and the <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a> are
+non-<a data-link-type="dfn" href="#empty-label">empty label</a>, the context’s communication
 is unrestricted; code is only
 subject to the restrictions imposed by other mechanism such as
 the Same-Origin Policy, CSP, and CORS.</p>
@@ -2139,13 +2140,66 @@ and set the <a data-link-type="dfn" href="#current-privilege">current privilege<
      
 
     
-     <h4 class="heading settled" data-level="3.3.3" id="examples2"><span class="secno">3.3.3. </span><span class="content">Examples</span><a class="self-link" href="#examples2"></a></h4>
+     <h4 class="heading settled" data-level="3.3.3" id="COWL-examples"><span class="secno">3.3.3. </span><span class="content">Examples</span><a class="self-link" href="#COWL-examples"></a></h4>
      
+    Below are several examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> API.  <a href="#privilege-examples">§3.2.3 Examples</a> contains
+    several examples on how to set the <a data-link-type="dfn" href="#context-privilege">context privileges</a>.
 
 
-     <p class="issue" id="issue-0c285526"><a class="self-link" href="#issue-0c285526"></a> Add some examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>
-    object. And to provide some intuition for the semantics.</p>
+    
+     <div class="example" id="example-a61f2dcf"><a class="self-link" href="#example-a61f2dcf"></a>
+      Enabling COWL <a data-link-type="dfn" href="#confinement-mode">confinement mode</a> for the current context is
+      straightforward:
+      
+      <pre><code>COWL.isEnabled() === false;
+COWL.enable();
+COWL.isEnabled() === true;
+</code></pre>
+      
+
+      <p>At this point, no confinement restrictions are
+      applied—COWL is backwards compatible with the existing
+      model. But, the context labels can be set to restrict
+      communication.</p>
+      
+    
+     </div>
      
+
+    
+     <div class="example" id="example-4d73d870"><a class="self-link" href="#example-4d73d870"></a>
+      An author can set the <a data-link-type="dfn" href="#context-integrity-label">context integrity label</a> to ensure
+      that the context can only receive messages from the same origin
+      (another context or server).
+      
+      <pre><code>COWL.integrity = new Label(window.location.origin);
+</code></pre>
+      
+    
+     </div>
+     
+
+    
+     <div class="example" id="example-355efe82"><a class="self-link" href="#example-355efe82"></a>
+      The author of <code>https://mashup.com</code> can set the <a data-link-type="dfn" href="#context-confidentiality-label">context
+      confidentiality label</a> to receive data sensitive from
+      <code>https://provider.com</code>:
+      
+      <pre><code>COWL.confidentiality = new Label('https://provider.com');
+</code></pre>
+      
+
+      <p>At this point, the context can only communicate with
+      <code>https://provider.com</code>. The data provide can 
+      ensures that the context is appropriately labeled before
+      inspecting the HTTP response by inspecting and setting
+      appropriate labels using the <code>Sec-COWL</code> header (see
+      <a href="#header">§3.5 The Sec-COWL HTTP Headers</a>).</p>
+      
+    
+     </div>
+     
+
   
     </section>
 
@@ -2436,11 +2490,114 @@ influenced the computation.</p>
      
 
     
-     <h4 class="heading settled" data-level="3.4.4" id="examples3"><span class="secno">3.4.4. </span><span class="content">Examples</span><a class="self-link" href="#examples3"></a></h4>
+     <h4 class="heading settled" data-level="3.4.4" id="labeledobject-examples"><span class="secno">3.4.4. </span><span class="content">Examples</span><a class="self-link" href="#labeledobject-examples"></a></h4>
+     
+    Below are several examples showing the usage of <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s.  <a href="#examples-checker">§1.2.1 Confining untrusted third-party services</a> gives an
+    example of how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s can be used to
+    confine third-party libraries (e.g., a password strength
+    checker). <a href="#xhr-examples"></a> shows how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used with the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> constructor.
+
+    
+     <div class="example" id="example-276aaca3"><a class="self-link" href="#example-276aaca3"></a>
+      Author of <code>https://police.gov</code> wishes to plot
+      the location of police cars on a map, provided by
+      <code>https://maps.biz</code>. After revealing the general area
+      to <code>https://maps.biz</code>,
+      the author of <code>https://police.gov</code> labels the police
+      car coordinates and sends them to the mapping service:
+
+      
+      <pre><code>
+// Fetch map for provided location and draw it
+mapsIframe.postMessage({ cmd: 'draw', location: ... }, mapsOrigin);
+
+var locations = ... // Array of police-car coordinates
+        
+// Label the locations:
+var labeldLocations = new <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>(locations, 
+                                        { confidentiality: new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>(window.location.origin) });
+        
+// Send the labeled locations and plot them
+mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin);
+</code></pre>
+      
+
+      <p>When receiving a <code>draw</code> message, the author of
+      <code>https://maps.biz</code> navigates the iframe map (a nested
+      context) to draw the map; otherwise, simplify forward it the
+      messages from the parent (e.g., <code>plot</code>,
+      <code>zoom</code>, and <code>move</code>). (This design ensures
+      that only the innermost iframe gets tainted.)</p>
+      
+
+
+      <p>The innermost map iframe registers a handler, that for example
+      draws cars on top of map tiles:</p>
+      
+      
+      <pre><code>window.addEventListener("message", function (event) {
+  switch (event.data.cmd) {
+    case 'plot':
+      var coordinates = event.data.locations.<a class="idl-code" data-link-type="attribute" href="#dom-labeledobject-protectedobject">protectedObject</a>;
+      coordinates.forEach(function (coordinate) {
+        // add car to map at coordinate
+      });
+    case 'zoom': ...
+    case 'move': ...
+    ...
+  };
+}, false);
+</code></pre>
+      
+
+      <p>Note that before getting the first <a data-link-type="dfn">protectedObject</a>, the iframe
+      can communicate arbitrarily, e.g., to fetch map tiles. But once
+      it inspects the confidential locations COWL confines the
+      code—it is only able to communicate to
+      <code>https://policde.gov</code>. Importantly, it can keep
+      receiving messages from its parent context via
+      <a data-link-type="functionish" href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a> to for instance move a car.</p>
+      
+    
+     </div>
      
 
+    
+     <div class="example" id="example-1e2c45bd"><a class="self-link" href="#example-1e2c45bd"></a>
+      The author of <code>https://example.com</code> wishes to ensure
+      that a particular JSON object conforms to a set of validation
+      filters before submitting it to a remote server.  (Consider, for
+      example, a form validator that checks if an email address is
+      valid.) To this end, it labels the JSON and sends the <a data-link-type="dfn" href="#labeled-objects">labeled
+      object</a> to (e.g., a Worker or iframe) that performs the
+      validation.
 
-     <p class="issue" id="issue-15735816"><a class="self-link" href="#issue-15735816"></a> Add examples showing how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used.</p>
+
+      <p>The validation author inspects the object, but only endorses it
+      if it conforms to the spec:</p>
+      
+      
+      <pre><code>function handler(lObj) {
+  if (validateA(lObj.protectedObject)) {
+    var origin = ... ; // current origin (e.g., window.location.origin)
+    var endorsement = new Label(origin).or('cowl://validate-A');
+    // Return a clone of the labeled object that is additionally
+    // endorsed by the current (sub-)origin.
+    return lObj.clone({ integrity: lObj.integrity.and(endorsement) });
+  } else {
+    return null;
+  }
+}
+</code></pre>
+      
+
+      <p>The author of <code>https://example.com</code> can then pass the
+      endorsed object to other validators or end-point (e.g., a
+      server), who can in turn further endorse the object and verify
+      the origins that have endorsed it.</p>
+      
+    
+     </div>
      
 
   
@@ -2601,25 +2758,13 @@ influenced the computation.</p>
       
 
 
-      <p>To process this header, the user agent MUST use the
-      <a href="#process-response">Process <var>response</var> to <var>request</var> as COWL</a>
-      algorithm when performing a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetching">fetch</a>, as described in <a href="#modifications-fetch">§3.7.1 Modifications to Fetch</a>.</p>
+      <p>The header value may contain <a data-link-type="dfn" href="#labeled-context-metadata">labeled context metadata</a>
+      which can be used to set th initial <a data-link-type="dfn" href="#cowl-state">COWL state</a> of a
+      context; or it may contain <a data-link-type="dfn" href="#labeled-data-metadata">labeled data metadata</a> which
+      specifies the sensitivity of the response (which COWL then uses
+      to determine whether or not to block the response).</p>
       
 
-      
-      <div class="example" id="example-85fc8790"><a class="self-link" href="#example-85fc8790"></a>
-        The author of <code>http://a.com</code> may wish to reply to a 
-        request with data that is sensitive to both <code>https://a.com</code> and
-        <a data-link-type="dfn">https://b.com</a>, while simultaneously indicating that
-        it endorses the data:
-        
-       <pre><code>Sec-COWL: <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a> [ ['https://a.com'], ['https://b.com'] ];
-          <a data-link-type="dfn" href="#data_integrity">data-integrity</a> [ ['https://a.com'] ];
-</code></pre>
-       
-      
-      </div>
-      
       
       <div class="example" id="example-16f97c55"><a class="self-link" href="#example-16f97c55"></a>
         An author may wish to specify that the
@@ -2633,6 +2778,30 @@ influenced the computation.</p>
        
       
       </div>
+      
+      
+      <div class="example" id="example-98699cc1"><a class="self-link" href="#example-98699cc1"></a>
+        The author of <code>http://a.com</code> may wish to respond to a 
+        request with data that is sensitive to both <code>https://a.com</code> and
+        <a data-link-type="dfn">https://b.com</a>, while simultaneously indicating that
+        it endorses the response data:
+        
+       <pre><code>Sec-COWL: <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a> [ ['https://a.com'], ['https://b.com'] ];
+          <a data-link-type="dfn" href="#data_integrity">data-integrity</a> [ ['https://a.com'] ];
+</code></pre>
+       
+
+       <p>COWL blocks the response unless the current context’s labels
+        are at least as restricting.</p>
+       
+      
+      </div>
+      
+
+
+      <p>To process this header, the user agent MUST use the
+      <a href="#process-response">Process <var>response</var> to <var>request</var> as COWL</a>
+      algorithm when performing a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetching">fetch</a>, as described in <a href="#modifications-fetch">§3.7.1 Modifications to Fetch</a>.</p>
       
     
      </section>
@@ -2939,7 +3108,7 @@ body</a> section of the specification is modified to add:</p>
 </ul></ol>
      
       
-     <h4 class="heading settled" data-level="3.6.3" id="examples4"><span class="secno">3.6.3. </span><span class="content">Examples</span><a class="self-link" href="#examples4"></a></h4>
+     <h4 class="heading settled" data-level="3.6.3" id="examples0"><span class="secno">3.6.3. </span><span class="content">Examples</span><a class="self-link" href="#examples0"></a></h4>
      
 
 
@@ -3183,9 +3352,9 @@ body</a> section of the specification is modified to add:</p>
 </ul>
      
 
-     <p>If the context’s <a data-link-type="dfn" href="#effective-confidentiality-label">effective confidentiality label</a> is
-          not the <a data-link-type="dfn" href="#empty-label">empty label</a>, the user agent MUST additionally
-          set the following flags:</p>
+     <p>If the context’s <a data-link-type="dfn" href="#effective-confidentiality-label">effective confidentiality label</a> or
+          <a data-link-type="dfn">integrity label</a> are not the <a data-link-type="dfn" href="#empty-label">empty label</a>, the
+          user agent MUST additionally set the following flags:</p>
      
 
 
@@ -3211,10 +3380,11 @@ blocks access to <code>localStorage</code>. <a data-link-type="biblio" href="#bi
   browsing context flag</a>. 
 
 
-        <p class="issue" id="issue-0eb51ae2"><a class="self-link" href="#issue-0eb51ae2"></a> Implementation-wise, this may pose a challenge
+        <p class="issue" id="issue-84533028"><a class="self-link" href="#issue-84533028"></a> Implementation-wise, this may pose a challenge
   for certain browsers. An alternative design may disallow
   enabling confinement mode if the browsing context has
-  any references to (from) another same-origin content.</p>
+  any references to (from) another same-origin content.
+  Feedback on this would be very welcome.</p>
 </div>
        
 
@@ -4721,9 +4891,6 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> Current WebIDL implementation requires an underscore for
     certain identifiers. Can we rename <code>_or</code> to
     <code>or</code>?<a href="#issue-afa876b4"> ↵ </a></div>
-   <div class="issue"> Add some examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>
-    object. And to provide some intuition for the semantics.<a href="#issue-0c285526"> ↵ </a></div>
-   <div class="issue"> Add examples showing how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used.<a href="#issue-15735816"> ↵ </a></div>
    <div class="issue"> Should the user agent warn the user if the
   server provided an integrity label that it is not
   allowed to provide?<a href="#issue-1b65ed95"> ↵ </a></div>
@@ -4732,7 +4899,8 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> Implementation-wise, this may pose a challenge
   for certain browsers. An alternative design may disallow
   enabling confinement mode if the browsing context has
-  any references to (from) another same-origin content.<a href="#issue-0eb51ae2"> ↵ </a></div>
+  any references to (from) another same-origin content.
+  Feedback on this would be very welcome.<a href="#issue-84533028"> ↵ </a></div>
    <div class="issue"> Should we restrict communication via more covert
       channels, e.g., height/width of an iframe? Maybe at least as
       optional modifications to HTML. Feedback and thoughts on this

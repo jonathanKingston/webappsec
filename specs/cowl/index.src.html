@@ -95,6 +95,7 @@ spec: XHR; urlPrefix: https://xhr.spec.whatwg.org/
   type: dfn
     text: XMLHttpRequest
     text: final MIME type; url: final-mime-type
+    text: author request headers; url: author-request-headers
   type: attribute
     text: responseType; url: dom-xmlhttprequest-responsetype
     text: response; url: dom-xmlhttprequest-responsetype
@@ -345,16 +346,17 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
      <a href="#response-header">Sec-COWL</a>: <a>data-confidentiality</a> [ ["https://provider.com"] ]
     </code></pre>
 
-    Once a <code>https://mashup.com</code> context reads the labeled
-    response (see [[#extension-xhr]]), COWL imposes the label
-    restrictions and confines the code to only communicate with
+    COWL limits a <code>https://mashup.com</code> context to reading
+    the response, if the label restrictions of the response are
+    respected, i.e., if the code can only communicate with
     <code>https://provider.com</code>.
 
-    Note, if the <code>https://mashup.com</code> author does not
-    specify a labeled response type (e.g., <code>labeled-text</code>),
-    COWL only allows the code to inspect the response if the
+    Note, COWL only allows the code to inspect the response if the
     <a>context labels</a> are more restricting than the labels of the
-    response.
+    response. A more permissive approach that does not require the
+    context to be tainted a-prior is to use <a>labeled JSON
+    response</a>. The <a href="#mashup-example-xhr">Mashup XHR
+    example</a> shows how authors can accomplish this.
   </div>
 
   <h4 id="examples-isolation">Content isolation via privilege separation</h4>
@@ -1769,7 +1771,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       The ABNF for the <code>Sec-COWL</code> HTTP request header is:
 
       <pre>
-        "Sec-COWL:" <a>ctx-metadata</a>
+        "Sec-COWL:" <a>ctx-metadata</a> / <a>data-metadata</a>
       </pre>
 
       The user agent MUST send a header field named <code>Sec-COWL</code>
@@ -1778,7 +1780,10 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       metadata</a> of the context that performed the request. This
       <a>labeled context metadata</a> MUST include the current
       <a>context confidentiality label</a>, <a>context integrity
-      label</a>, and <a>context privileges</a>.
+      label</a>, and <a>context privileges</a>. The user agent MAY
+      also send another header with this field name whose value is
+      <a>labeld data metadata</a> (e.g., when sending <a>labled
+      objects</a> iwth <a>XMLHttpRequest</a>).
 
 
       <div class="example">
@@ -1904,16 +1909,61 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 
       8. Set the <code>Content-Type</code> <a>header</a> to <code>`application/labeled-json`</code>.
 
-      9. Invoke the
-         <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
-         method on the object this method was called on with 
-         <var>json</var> as an argument.
-         
-         Note, that <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
-         throws an exception in step 4 if <var>obj</var> cannot be <a>serialized</a>.
-         User agents MUST ensure that all <a>protected object</a>s can be
-         serialized at the time of creating <a interface>LabeledObject<a>s.
+      9. Append a header named <code>Sec-COWL</code> to the
+         <a>author request headers</a> associated with the object this
+         methods was called on.  The value of the
+         <code>Sec-COWL</code> header MUST be <a>labeled data
+         metadata</a> containing the confidentiality and integrity
+         labels of the <a argument for="XMLHttpRequest/send(lobj)">lobj</a> argument.
       
+      10. Invoke the
+          <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+          method on the object this method was called on with 
+          <var>json</var> as an argument.
+          
+          Note, that <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+          throws an exception in step 4 if <var>obj</var> cannot be <a>serialized</a>.
+          User agents MUST ensure that all <a>protected object</a>s can be
+          serialized at the time of creating <a interface>LabeledObject<a>s.
+
+      <h5 id="labeledobject-xhr-send-example">Examples</h5>
+      <div class="example">
+        Author of <code>https://example.com</code> sends JSON object
+        endorsed by <code>https://validator.com</code>:
+        <pre><code>
+        // Suppose that labeldObject is a public, high-integrity value:
+        labeledObject.confidentiality.equals(new Label());
+        labeledObject.integrity.equals(new Label("https://validator.com"));
+
+        // Create an XHR request:
+        var req = new XMLHttpRequest()
+        req.open("POST", "https://example.com/...");
+
+        // Send the labeled object:
+        req.send(labeledObject);
+        </code></pre>
+        If permitted, <a>send()</a> would send an HTTP request of the
+        form:
+
+        <pre><code>
+        Sec-COWL: <a>ctx-confidentiality</a> [[]];
+                  <a>ctx-integrity</a> [[]];
+                  <a>ctx-privilege</a> [["https://example.com"]];
+        Sec-COWL: <a>data-confidentiality</a> [[]];
+                  <a>data-integrity</a> [["https://validator.com"]];
+        Content-Type: application/labeled-json;
+
+        { 
+          "confidentiality": [[]],
+          "integrity": [["https://validator.com"]],
+          "object": ...
+        }
+        </code></pre>
+        The server can then verify the integrity label of the request
+        and ensure that, if the user agent is conformant, the data was
+        endorsed by <code>https://validator.com</code>.
+      </div>
+
     <h4 id="receive-labeled-object">Receiving <a>labeled objects</a></h4>
     To allow authors to receive <a>labeled objects</a> from remote
     servers, the XMLHttpRequest specification SHOULD contain the
@@ -2014,10 +2064,65 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 
          * Set <a>response LabeledObject object</a> to null.
 
-      <h4>Examples</h4>
+      <h5 id="labeledobject-xhr-receive-example">Examples</h5>
+      <div class="example" id="mashup-example-xhr">
+        [[#examples-mashup]] gives an example of a mashup scenario
+        wherein the data provider uses the <a
+        href="#response-header">Sec-COWL</a> HTTP response header to
+        ensure that the mashup integrator can only read the HTTP
+        response if it is sufficiently confined. A more permissive
+        approach is to send a <a>labeld JSON response</a>.
 
-      ISSUE: Add examples showing how to use <a interface>LabeledObject</a>s
-      with <a>XMLHttpRequest</a>.
+        The server operator of <code>https://provider.com</code> uses a
+        CORS response header to send <code>https://mashup.com</code>
+        a labeled JSON object. To ensure that the data is protected it
+        sets the <code>Content-Type</code> response header value to
+        <code>`application/labeled-json`</code>.
+      
+        <pre><code>
+         <a>Access-Control-Allow-Origin</a>: https://mashup.com
+         Content-Type: application/labeled-json;
+         
+         { 
+           "confidentiality": [[]],
+           "integrity": [["https://validator.com"]],
+           "object": ...
+         }
+        </code></pre>
+
+        The confidentiality label specifies that the object is
+        confidential to <code>https://provider.com</code> and should
+        not be disseminated arbitrarily.
+      
+        The author of <code>https://mashup.com</code> can read such
+        labeled responses by simply setting the <a>responseType</a>
+        accordingly:
+        <pre><code>
+
+        // Create an XHR request to get the data:
+        var req = new XMLHttpRequest()
+        req.open("GET", "https://provider.com/apis/...");
+        req.responseType = "labled-json";
+        req.onload = function (e) {
+          var labeledObject = req.response; // <a interface>LabeledObject</a>
+          labeledObject.confidentiality.equals(new Label());
+          labeledObject.integrity.equals(new Label("https://provider.com"));
+          // Context is still untainted
+        };
+
+        // Send the labeled object:
+        req.send();
+        </code></pre>
+
+        In doing so, COWL sets the <a attribute>response</a> to a new <a
+        interface>LabeledObject</a>, but does not <a>taint</a> the
+        context with the response label. Indeed the
+        <code>https://mashup.com</code> integrator can perform many
+        other requests to different origins. Only when the
+        <a>protected objects</a> of these <a>labeled objects</a> are
+        used will COWL taint the context and impose the label
+        restrictions.
+      </div>
                 
     </section>
 
@@ -2593,6 +2698,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     <h3 id="parse-labeled-metadata-data">
       Parse labeled data metadata
     </h3>
+
     To <dfn>parse <a>labeled data metadata</a></dfn> <var>metadata</var> for
     origin <var>self</var>, the user agent MUST use an algorithm
     equivalent to the following:
@@ -2647,6 +2753,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     <h3 id="parse-labeled-metadata-ctx">
       Parse labeled context metadata
     </h3>
+
     To <dfn>parse <a>labeled context metadata</a></dfn> <var>metadata</var> for
     origin <var>self</var>, the user agent MUST use an algorithm
     equivalent to the following:

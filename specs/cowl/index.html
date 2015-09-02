@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-08-31">31 August 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-09-02">2 September 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -216,8 +216,13 @@ further.</p>
       <li><a href="#extension-xhr"><span class="secno">3.6</span> <span class="content">Extensions to XMLHttpRequest</span></a>
        <ul class="toc">
         <li><a href="#sending-labeled-objects"><span class="secno">3.6.1</span> <span class="content">Sending <span>labeled objects</span></span></a>
-        <li><a href="#receive-labeled-object"><span class="secno">3.6.2</span> <span class="content"><span>Receiving </span><span>labeled objects</span></span></a>
-        <li><a href="#examples0"><span class="secno">3.6.3</span> <span class="content">Examples</span></a>
+         <ul class="toc">
+          <li><a href="#labeledobject-xhr-send-example"><span class="secno">3.6.1.1</span> <span class="content">Examples</span></a>
+         </ul>
+        <li><a href="#receive-labeled-object"><span class="secno">3.6.2</span> <span class="content">Receiving <span>labeled objects</span></span></a>
+         <ul class="toc">
+          <li><a href="#labeledobject-xhr-receive-example"><span class="secno">3.6.2.1</span> <span class="content">Examples</span></a>
+         </ul>
        </ul>
       <li><a href="#enforcement"><span class="secno">3.7</span> <span class="content">Confinement Enforcement</span></a>
        <ul class="toc">
@@ -504,7 +509,7 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
      
 
   
-     <div class="example" id="example-350de039"><a class="self-link" href="#example-350de039"></a>
+     <div class="example" id="example-f96eaf4e"><a class="self-link" href="#example-f96eaf4e"></a>
     The server operator of <code>https://provider.com</code> uses a
     CORS response header to grant <code>https://mashup.com</code>
     access to a resource. The operator also sets a <code>COWL</code>
@@ -519,18 +524,19 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
       
 
 
-      <p>Once a <code>https://mashup.com</code> context reads the labeled
-    response (see <a href="#extension-xhr">§3.6 Extensions to XMLHttpRequest</a>), COWL imposes the label
-    restrictions and confines the code to only communicate with
+      <p>COWL limits a <code>https://mashup.com</code> context to reading
+    the response, if the label restrictions of the response are
+    respected, i.e., if the code can only communicate with
     <code>https://provider.com</code>.</p>
       
 
 
-      <p class="note" role="note">Note, if the <code>https://mashup.com</code> author does not
-    specify a labeled response type (e.g., <code>labeled-text</code>),
-    COWL only allows the code to inspect the response if the
+      <p class="note" role="note">Note, COWL only allows the code to inspect the response if the
     <a data-link-type="dfn" href="#context-labels0">context labels</a> are more restricting than the labels of the
-    response.</p>
+    response. A more permissive approach that does not require the
+    context to be tainted a-prior is to use <a data-link-type="dfn" href="#labeled-json-response">labeled JSON
+    response</a>. The <a href="#mashup-example-xhr">Mashup XHR
+    example</a> shows how authors can accomplish this.</p>
       
   
      </div>
@@ -2696,7 +2702,7 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
       
 
       
-      <pre>"Sec-COWL:" <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a>
+      <pre>"Sec-COWL:" <a data-link-type="dfn" href="#ctx_metadata">ctx-metadata</a> / <a data-link-type="dfn" href="#data_metadata">data-metadata</a>
 </pre>
       
 
@@ -2707,7 +2713,10 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
       metadata</a> of the context that performed the request. This
       <a data-link-type="dfn" href="#labeled-context-metadata">labeled context metadata</a> MUST include the current
       <a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a>, <a data-link-type="dfn" href="#context-integrity-label">context integrity
-      label</a>, and <a data-link-type="dfn" href="#context-privilege">context privileges</a>.</p>
+      label</a>, and <a data-link-type="dfn" href="#context-privilege">context privileges</a>. The user agent MAY
+      also send another header with this field name whose value is
+      <a data-link-type="dfn">labeld data metadata</a> (e.g., when sending <a data-link-type="dfn">labled
+      objects</a> iwth <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>).</p>
       
 
 
@@ -2914,20 +2923,75 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
 
 
       <li data-md="">
+       <p>Append a header named <code>Sec-COWL</code> to the
+ <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#author-request-headers">author request headers</a> associated with the object this
+ methods was called on.  The value of the
+ <code>Sec-COWL</code> header MUST be <a data-link-type="dfn" href="#labeled-data-metadata">labeled data
+ metadata</a> containing the confidentiality and integrity
+ labels of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
+       
+
+
+      <li data-md="">
        <p>Invoke the
- <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
- method on the object this method was called on with 
- <var>json</var> as an argument.</p>
+  <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
+  method on the object this method was called on with 
+  <var>json</var> as an argument.</p>
        
 
 
        <p class="note" role="note">Note, that <a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
- throws an exception in step 4 if <var>obj</var> cannot be <a data-link-type="dfn">serialized</a>.
- User agents MUST ensure that all <a data-link-type="dfn" href="#protected-object">protected object</a>s can be
- serialized at the time of creating <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a><a data-link-type="dfn">s.</a></p><a data-link-type="dfn">
+  throws an exception in step 4 if <var>obj</var> cannot be <a data-link-type="dfn">serialized</a>.
+  User agents MUST ensure that all <a data-link-type="dfn" href="#protected-object">protected object</a>s can be
+  serialized at the time of creating <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a><a data-link-type="dfn">s.</a></p><a data-link-type="dfn">
 </a></ol><a data-link-type="dfn">
-    </a>
-     <h4 class="heading settled" data-level="3.6.2" id="receive-labeled-object"><span class="secno">3.6.2. </span><span class="content"><a data-link-type="dfn">Receiving </a><a data-link-type="dfn" href="#labeled-objects">labeled objects</a></span><a class="self-link" href="#receive-labeled-object"></a></h4>
+      
+      <h5 class="heading settled" data-level="3.6.1.1" id="labeledobject-xhr-send-example"><span class="secno">3.6.1.1. </span><span class="content">Examples</span><a class="self-link" href="#labeledobject-xhr-send-example"></a></h5>
+      </a>
+     <div class="example" id="example-28604e8b"><a class="self-link" href="#example-28604e8b"></a><a data-link-type="dfn">
+        Author of <code>https://example.com</code> sends JSON object
+        endorsed by <code>https://validator.com</code>:
+        
+       <pre><code>// Suppose that labeldObject is a public, high-integrity value:
+labeledObject.confidentiality.equals(new Label());
+labeledObject.integrity.equals(new Label("https://validator.com"));
+
+// Create an XHR request:
+var req = new XMLHttpRequest()
+req.open("POST", "https://example.com/...");
+
+// Send the labeled object:
+req.send(labeledObject);
+</code></pre>
+       
+
+      </a>
+      <p><a data-link-type="dfn">If permitted, </a><a data-link-type="functionish" href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a> would send an HTTP request of the
+        form:</p>
+
+        
+      <pre><code>Sec-COWL: <a data-link-type="dfn" href="#ctx_confidentiality">ctx-confidentiality</a> [[]];
+          <a data-link-type="dfn" href="#ctx_integrity">ctx-integrity</a> [[]];
+          <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a> [["https://example.com"]];
+Sec-COWL: <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a> [[]];
+          <a data-link-type="dfn" href="#data_integrity">data-integrity</a> [["https://validator.com"]];
+Content-Type: application/labeled-json;
+
+{ 
+  "confidentiality": [[]],
+  "integrity": [["https://validator.com"]],
+  "object": ...
+}
+</code></pre>
+
+      <p>The server can then verify the integrity label of the request
+        and ensure that, if the user agent is conformant, the data was
+        endorsed by <code>https://validator.com</code>.</p>
+      </div>
+     
+
+    
+     <h4 class="heading settled" data-level="3.6.2" id="receive-labeled-object"><span class="secno">3.6.2. </span><span class="content">Receiving <a data-link-type="dfn" href="#labeled-objects">labeled objects</a></span><a class="self-link" href="#receive-labeled-object"></a></h4>
      
     To allow authors to receive <a data-link-type="dfn" href="#labeled-objects">labeled objects</a> from remote
     servers, the XMLHttpRequest specification SHOULD contain the
@@ -3108,12 +3172,76 @@ body</a> section of the specification is modified to add:</p>
 </ul></ol>
      
       
-     <h4 class="heading settled" data-level="3.6.3" id="examples0"><span class="secno">3.6.3. </span><span class="content">Examples</span><a class="self-link" href="#examples0"></a></h4>
+     <h5 class="heading settled" data-level="3.6.2.1" id="labeledobject-xhr-receive-example"><span class="secno">3.6.2.1. </span><span class="content">Examples</span><a class="self-link" href="#labeledobject-xhr-receive-example"></a></h5>
      
+      
+     <div class="example" id="mashup-example-xhr"><a class="self-link" href="#mashup-example-xhr"></a>
+        <a href="#examples-mashup">§1.2.2 Sharing data with third-party mashups</a> gives an example of a mashup scenario
+        wherein the data provider uses the <a href="#response-header">Sec-COWL</a> HTTP response header to
+        ensure that the mashup integrator can only read the HTTP
+        response if it is sufficiently confined. A more permissive
+        approach is to send a <a data-link-type="dfn">labeld JSON response</a>.
 
 
-     <p class="issue" id="issue-fd7f06a8"><a class="self-link" href="#issue-fd7f06a8"></a> Add examples showing how to use <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s
-      with <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>.</p>
+      <p>The server operator of <code>https://provider.com</code> uses a
+        CORS response header to send <code>https://mashup.com</code>
+        a labeled JSON object. To ensure that the data is protected it
+        sets the <code>Content-Type</code> response header value to
+        <code>`application/labeled-json`</code>.</p>
+      
+
+        
+      <pre><code><a data-link-type="dfn" href="http://www.w3.org/TR/cors/#access-control-allow-origin-response-header">Access-Control-Allow-Origin</a>: https://mashup.com
+Content-Type: application/labeled-json;
+         
+{ 
+  "confidentiality": [[]],
+  "integrity": [["https://validator.com"]],
+  "object": ...
+}
+</code></pre>
+      
+
+
+      <p>The confidentiality label specifies that the object is
+        confidential to <code>https://provider.com</code> and should
+        not be disseminated arbitrarily.</p>
+      
+
+
+      <p>The author of <code>https://mashup.com</code> can read such
+        labeled responses by simply setting the <a data-link-type="dfn">responseType</a>
+        accordingly:</p>
+      
+        
+      <pre><code>
+// Create an XHR request to get the data:
+var req = new XMLHttpRequest()
+req.open("GET", "https://provider.com/apis/...");
+req.responseType = "labled-json";
+req.onload = function (e) {
+  var labeledObject = req.response; // <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>
+  labeledObject.confidentiality.equals(new Label());
+  labeledObject.integrity.equals(new Label("https://provider.com"));
+  // Context is still untainted
+};
+
+// Send the labeled object:
+req.send();
+</code></pre>
+      
+
+
+      <p>In doing so, COWL sets the <a class="idl-code" data-link-type="attribute" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">response</a> to a new <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>, but does not <a data-link-type="dfn" href="#tainted">taint</a> the
+        context with the response label. Indeed the
+        <code>https://mashup.com</code> integrator can perform many
+        other requests to different origins. Only when the
+        <a data-link-type="dfn" href="#protected-object">protected objects</a> of these <a data-link-type="dfn" href="#labeled-objects">labeled objects</a> are
+        used will COWL taint the context and impose the label
+        restrictions.</p>
+      
+      
+     </div>
      
 
     
@@ -4113,9 +4241,12 @@ of <var>priv</var>.</p>
       Parse labeled data metadata
     </span><a class="self-link" href="#parse-labeled-metadata-data"></a></h3>
      
-    To <dfn data-dfn-type="dfn" data-noexport="" id="parse-labeled-data-metadata">parse <a data-link-type="dfn" href="#labeled-data-metadata">labeled data metadata</a><a class="self-link" href="#parse-labeled-data-metadata"></a></dfn> <var>metadata</var> for
+
+
+     <p>To <dfn data-dfn-type="dfn" data-noexport="" id="parse-labeled-data-metadata">parse <a data-link-type="dfn" href="#labeled-data-metadata">labeled data metadata</a><a class="self-link" href="#parse-labeled-data-metadata"></a></dfn> <var>metadata</var> for
     origin <var>self</var>, the user agent MUST use an algorithm
-    equivalent to the following:
+    equivalent to the following:</p>
+     
 
 
      <ol>
@@ -4213,9 +4344,12 @@ of <var>priv</var>.</p>
       Parse labeled context metadata
     </span><a class="self-link" href="#parse-labeled-metadata-ctx"></a></h3>
      
-    To <dfn data-dfn-type="dfn" data-noexport="" id="parse-labeled-context-metadata">parse <a data-link-type="dfn" href="#labeled-context-metadata">labeled context metadata</a><a class="self-link" href="#parse-labeled-context-metadata"></a></dfn> <var>metadata</var> for
+
+
+     <p>To <dfn data-dfn-type="dfn" data-noexport="" id="parse-labeled-context-metadata">parse <a data-link-type="dfn" href="#labeled-context-metadata">labeled context metadata</a><a class="self-link" href="#parse-labeled-context-metadata"></a></dfn> <var>metadata</var> for
     origin <var>self</var>, the user agent MUST use an algorithm
-    equivalent to the following:
+    equivalent to the following:</p>
+     
 
 
      <ol>
@@ -4776,10 +4910,12 @@ of <var>priv</var>.</p>
     <ul>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a>
+     <li><a href="https://xhr.spec.whatwg.org/#author-request-headers">author request headers</a>
      <li><a href="https://xhr.spec.whatwg.org/#final-mime-type">final mime type</a>
      <li><a href="https://xhr.spec.whatwg.org/#the-open()-method">open()</a>
      <li><a href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">response</a>
      <li><a href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsetype">responseType</a>
+     <li><a href="https://xhr.spec.whatwg.org/#the-send()-method">send()</a>
      <li><a href="https://xhr.spec.whatwg.org/#xmlhttprequest">xmlhttprequest</a>
     </ul>
    <li><a data-link-type="biblio" href="#biblio-dom-ls">[dom-ls]</a> defines the following terms:
@@ -4894,8 +5030,6 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
    <div class="issue"> Should the user agent warn the user if the
   server provided an integrity label that it is not
   allowed to provide?<a href="#issue-1b65ed95"> ↵ </a></div>
-   <div class="issue"> Add examples showing how to use <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s
-      with <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>.<a href="#issue-fd7f06a8"> ↵ </a></div>
    <div class="issue"> Implementation-wise, this may pose a challenge
   for certain browsers. An alternative design may disallow
   enabling confinement mode if the browsing context has

@@ -52,7 +52,6 @@ spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
     urlPrefix: embedded-content-0.html
       text: iframe; url: the-iframe-element
     urlPrefix: browsers.html
-      text: context; url: windows
       text: browsing context; url: windows
       text: active sandboxing flag set; url: active-sandboxing-flag-set
       text: sandboxing flag set; url: sandboxing-flag-set
@@ -194,10 +193,11 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
   sharing it with a third-party password strength checking service. In
   turn, COWL ensures that the third-party service, which necessarily
   computes on the sensitive password, is confined and respects the
-  policy on the password, i.e., COWL disallows it from disclosing the
-  password to any origin other than <code>https://example.com</code>.
+  policy on the password: COWL disallows it from disclosing the
+  password to any <a>origin</a> other than
+  <code>https://example.com</code>.
 
-  COWL enforces such policies by confining code, at the
+  COWL enforces such policies by confining code at the
   <a>context</a>-level, according to the sensitivity (i.e., the label)
   of the data the code has observed. To reap the greatest benefits of
   COWL, authors will need to compartmentalize applications into
@@ -210,18 +210,20 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
   page whose origin is <code>https://example.com</code> has the
   privilege for <code>https://example.com</code>. This gives the page
   the authority to arbitrarily disseminate data sensitive to
-  <code>https://example.com</code>, i.e., to be backwards-compatible,
+  <code>https://example.com</code>; to be backwards-compatible,
   the page is not confined when reading data sensitive to
   <code>https://example.com</code>.  However, COWL allows the author
-  to run the page with a "weaker" privilege (e.g., one corresponding the
-  current user at <code>https://example.com</code>) or drop the
-  privilege altogether.
+  to run the page with "weaker" <a>delegated privileges</a> (e.g., one
+  corresponding the current user at <code>https://example.com</code>)
+  or to drop the privilege altogether.
 
   COWL is intended to be used as a defense-in-depth mechanism that can
-  restrict how untrusted code sensitive data.  Authors should
-  still use discretionary access control mechanisms, such as CSP and
-  CORS, to restrict access to the data in the first place.
-
+  restrict how untrusted&mdash;buggy but not malicious&mdash;code
+  sensitive data. Given the complexities of browser implementations
+  and presence of covert channels, malicious code may be able to
+  exfiltrate data. Authors should still use discretionary access
+  control mechanisms, such as CSP and CORS, to restrict access to the
+  data in the first place.
 
   <section>
   <h3 id="goals">Goals</h3>
@@ -229,21 +231,19 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
   The goal of COWL is to provide authors with a means for protecting
   the confidentiality and integrity of data that is shared with
   untrusted, whether third-party or their own, code.  Existing
-  mechanisms (e.g., CORS and the <a>postMessage()</a> <a argument
-    for="postMessage()">targetOrigin</a> argument) provide a way for
-  restricting which origins may access the shared data.  But, once
-  content has access to data it can usually disseminate it without
-  restrictions.  While CSP can be used to confine code, i.e.,
+  mechanisms (e.g.,
+  CORS'sk<a><code>Access-Control-Allow-Origin</code></a> header and
+  the <a>postMessage()</a> <code>targetOrigin</code> argument) provide
+  a way for restricting which <a>origins</a> may access the shared data.
+  But, once content has access to data it can usually disseminate it
+  without restrictions.  While CSP can be used to confine code, i.e.,
   restrict how confidential data is disseminated, setting a correct
-  CSP policy (as to confine code) is difficult and limited to
-  content the author has control over. Indeed, sharing confidential
-  data in the existing model (e.g., via <a>cross-document messaging</a>)
-  implicitly requires the author to trust the receiver not to leak the
-  data, accidentally or otherwise.  COWL provides a defense-in-depth
-  option for protecting data confidentiality and integrity.  In
-  particular, with COWL:
-
-  <!-- TODO: fix targetOrigin link in above paragraph -->
+  CSP policy (as to confine code) is difficult and limited to content
+  the author has control over. Indeed, sharing confidential data in
+  the existing model almost always requires the sender to trust the
+  receiver not to leak the data, accidentally or otherwise.  COWL
+  provides a defense-in-depth option for protecting data
+  confidentiality and integrity.  In particular, with COWL:
 
   1. Authors should be able to specify confidentiality and integrity
      policies on data in terms of origin labels: the origins to whom the
@@ -275,10 +275,11 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
   <a>labeled object</a> with the untrusted code.  In turn, COWL
   confines the untrusted code once it inspects the sensitive data, as
   to ensure that it can only communicate according to the
-  author-specified policy&mdash;the label.
+  author-specified policy (the label).
 
   <div class="example">
-    Consider using a third-party password strength checker provided by
+    The author of <code>https://example.com</code>
+    wishes to use a third-party password strength checker provided by
     <code>https://untrusted.com</code>.  To protect the
     confidentiality of the password, the
     <code>https://example.com</code> application can use COWL to
@@ -299,10 +300,11 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     // Register listener to receive a response from checker, etc.
     </code></pre>
 
-    Once the checker inspects the password, COWL limits the iframe to
-    communicating with origins that preserve the password's
-    confidentiality (in this case, <code>https://example.com</code>).
-    Indeed, this policy is enforced mandatorily, even if the
+    Once the checker inspects the <a>protected object</a>, i.e., the
+    password, COWL limits the iframe to communicating with origins
+    that preserve the password's confidentiality (in this case,
+    <code>https://example.com</code>).  This policy is
+    enforced mandatorily, even if the
     <code>https://untrusted.com</code> iframe sends the password to
     yet another iframe.
 
@@ -328,16 +330,17 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
   <a>origins</a> that can access the data [[!CORS]], the operator
   wishes to restrict how the data is further disseminated by these
   origins. To do so, the operator sends a response header
-  field named <code>Sec-COWL</code> (described in [[#response-header]])
-  whose value contains the sensitivity of the data in the form of a
-  serialized confidentiality <a>label</a>.  In turn, COWL enforces the label
-  restrictions on the third-party code, once it inspects the response.
+  field named <a href="#response-header"><code>Sec-COWL</code></a>
+  (described in [[#response-header]]) whose value contains the
+  sensitivity of the data in the form of a serialized confidentiality
+  <a>label</a>.  In turn, COWL enforces the label restrictions on the
+  third-party code.
 
   <div class="example">
     The server operator of <code>https://provider.com</code> uses a
     CORS response header to grant <code>https://mashup.com</code>
-    access to a resource. The operator also sets a <code>COWL</code>
-    header to specify that the resource is confidential to
+    access to a resource. The operator also sets a COWL header to
+    specify that the resource is confidential to
     <code>https://provider.com</code> and should not be disseminated
     arbitrarily:
 
@@ -346,17 +349,19 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
      <a href="#response-header">Sec-COWL</a>: <a>data-confidentiality</a> [ ["https://provider.com"] ]
     </code></pre>
 
-    COWL limits a <code>https://mashup.com</code> context to reading
-    the response, if the label restrictions of the response are
-    respected, i.e., if the code can only communicate with
+    COWL only allows a <code>https://mashup.com</code> context to read
+    the sensitive response if the label restrictions of the response
+    are respected, i.e., if the code can only communicate with
     <code>https://provider.com</code>.
 
     Note, COWL only allows the code to inspect the response if the
-    <a>context labels</a> are more restricting than the labels of the
-    response. A more permissive approach that does not require the
-    context to be tainted a-prior is to use <a>labeled JSON
-    response</a>. The <a href="#mashup-example-xhr">Mashup XHR
-    example</a> shows how authors can accomplish this.
+    <a>context labels</a>, which dictate the context's ability to
+    communicate, are more
+    restricting than the labels of the response. A more permissive
+    approach, which does not require the context give up its ability
+    to communicate arbitrarily is to use <a>labeled JSON response</a>.
+    The <a href="#mashup-example-xhr">mashup XHR example</a> shows how
+    authors can accomplish this.
   </div>
 
   <h4 id="examples-isolation">Content isolation via privilege separation</h4>
@@ -368,7 +373,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
   importantly, does not have authority of the physical origin.
   Concretely, when serving content, the operator can set the
   content's <a>context privilege</a> to a weaker, <a>delegated
-  privilege</a>. This ensures that the content is privilege
+  privilege</a>. This ensures that the content are privilege
   separated.
 
   <div class="example">
@@ -376,38 +381,40 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     different parts of their site according to users. The server
     operator can weaken the privilege of a page when serving user
     content by providing a response header field named
-    <code>Sec-COWL</code> (see [[#response-header]]) whose value contains
-    the serialized <a>delegated privilege</a>. For example, for any
+    <a href="#response-header"><code>Sec-COWL</code></a>
+    (see [[#response-header]]) whose value contains
+    a serialized <a>delegated privilege</a>. For example, for any
     content under <code>https://university.edu/~user1</code>, the
     following header is set:
 
     <pre><code>
-     <a href="#response-header">Sec-COWL</a>: ctx-privilege [ ['self', 'cowl://user1'] ]
+     <a href="#response-header">Sec-COWL</a>: <a>ctx-privilege</a> [ ['self', 'cowl://user1'] ]
     </code></pre>
 
     Having this privilege can be understood as having the authority of
     <code>user1</code>'s part of the
     <code>https://university.edu</code> origin.  COWL ensures that the
-    content of this user cannot interfere with
-    <code>https://university.edu</code>'s or another user's content,
+    content of this user cannot interfere with the content of
+    <code>https://university.edu</code> or another user 
     e.g.,  <code>user2</code>.  For example, the content cannot modify
     <code>https://university.edu</code> cookies or the DOM of another
     <code>http://university.edu</code> page.
 
-    Additionally, this <a>delegated privilege</a> ensures that the
+    This <a>delegated privilege</a> also ensures that the
     content cannot disseminate data sensitive to another user (e.g.,
-    <code>user2</code>) arbitrarily&mdash;it can only disseminate
-    <code>user1</code>'s data on <code>http://university.edu</code>.
-    Of course, this requires that the server operator label sensitive data
-    (e.g., when sending it to the client) appropriately (e.g.,
-    <code>user2</code>'s data is labeled
+    <code>user2</code>) arbitrarily&mdash; without being confined,
+    it can only disseminate <code>user1</code>'s data on
+    <code>http://university.edu</code>.
+    Of course, this requires the server operator to label
+    sensitive data (e.g., when sending it to the user agent) appropriately
+    (e.g., <code>user2</code>'s data is labeled
     <code><a>Label</a>("https://university.edu").or("user2")</code>).
   </div>
 
   <div class="note">
     Note, sub-domains should be used when possible to ensure that
     content is isolated using the Same-Origin Policy. But, even in
-    such casese, COWL can provide a useful layer of defense.
+    such cases, COWL can provide a useful layer of defense.
   </div>
 
   <h4 id="examples-leastpriv">Running content with least-privileges</h4>
@@ -425,23 +432,26 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     in JavaScript:
 
     <pre><code>
-    // Drop privileges:
+    // Drop privileges, by setting the <a>context privilege</a> to an <a>empty privilege</a>:
     COWL.privilege = new <a>Privilege()</a>;
 
-    // ... load untrusted library ...
+    // Load untrusted library
     </code></pre>
 
     Or, by setting the content's initial privilege to the <a>empty
-      privilege</a> using <code>Sec-COWL</code> response header:
+      privilege</a> using
+    <a href="#response-header"><code>Sec-COWL</code></a> response header:
 
     <pre><code>
      <a href="#response-header">Sec-COWL</a>: <a>ctx-privilege</a> [ [] ]
     </code></pre>
 
-    Note, while this ensures that the context code cannot, for instance,
-    access the origin's cookies, the author must still associate a
-    confidentiality label with resources (e.g., responses sent to the
-    client) to ensure that sensitive data is properly protected.
+    <div class="note">
+      Note, while this ensures that the context code cannot, for instance,
+      access the origin's cookies, the author must still associate a
+      confidentiality label with resources (e.g., HTTP responses) to
+      ensure that data is properly protected.
+    </div>
   </div>
 
   In some cases it is useful for a particular context to have the
@@ -451,30 +461,29 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
   should run the context with a <a>delegated privilege</a> instead of
   the <a>empty privilege</a>. The above [[#examples-isolation]] shows
   one such example.
-
-
   </section>
+
   <section>
-    <h3 id="trust-model">Trust Model</h3>
+  <h3 id="trust-model">Trust Model</h3>
     COWL provides developers with a way of imposing restrictions on
     how untrusted code can disseminate sensitive data.  However,
-    authors should not share sensitive data with malicious code, since
-    such code may be able to exploit covert channels, which are present
-    in most browsers, to leak the data.  COWL can only prevent
-    information leakage from code that (e.g., is buggy and) uses
-    overt communication channels.
+    authors should avoid sharing sensitive data with malicious code,
+    since such code may be able to exploit covert channels, which are
+    present in most browsers, to leak the data.  COWL can only prevent
+    information leakage from code that (e.g., is buggy and) uses overt
+    communication channels.
 
     Similarly, COWL provides no guarantees against attacks wherein
     users are manipulated into leaking sensitive data via out-of-band
-    channels.  For example, an attacker may be able to convince the
+    channels.  For example, an attacker may be able to convince a
     user to navigate their user agent to an attacker-owned origin by
-    entering a URL containing sensitive information into the user
+    entering a URL that contains sensitive information into the user
     agent's address bar.
 
     <div class="note">
-      COWL should always be used as an additional defense layer to other
-      security mechanisms such as CSP, SRI, CORS, and iframe <code><a
-      element-attr>sandbox</a></code>.
+      COWL should always be used as an additional layer of defense to
+      other security mechanisms such as CSP, SRI, CORS, and iframe
+      <code><a element-attr>sandbox</a></code>.
     </div>
   </section>
 </section>
@@ -482,10 +491,9 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 <!-- Big Text: definitions -->
 <section>
   <h2 id="key-concepts">Key Concepts and Terminology</h2>
+
   <h3>Labels</h3>
-  <ol>
-    <li>
-      An <dfn>origin label</dfn>, or more succinctly a
+  1.  An <dfn>origin label</dfn>, or more succinctly a
       <dfn>label</dfn>, encodes either a confidentiality or integrity
       security policy as conjunctive normal form (AND's and OR's)
       formulae over <a>origin</a>s.  Labels can be associated with
@@ -551,9 +559,8 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         reflects the fact that the object (produced by
         <code>https://a.com</code>) was not tampered.
       </div>
-    </li>
-    <li>
-      Mathematically, a label is a <em>conjunctive normal form</em>
+
+  2.  Mathematically, a label is a <em>conjunctive normal form</em>
       formula over origins [[DCLabels]].
 
       A label is in <dfn>normal form</dfn> if reducing it according to
@@ -583,17 +590,14 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       contexts.
     </li>
     <li>
-      When reading a <a>labeled object</a> a context gets
+      When reading a <a>labeled object</a>, a context gets
       <dfn>tainted</dfn>, i.e., its <a>context labels</a> are updated by
       invoking <a>context tainting</a> algorithm, to reflect that it
-      has read sensitive (of different trustworthiness) data and
-      should be confined accordingly.
-    </li>
-  </ol>
+      has read sensitive (of potentially different trustworthiness)
+      data and should be confined accordingly.
+       
   <h3>Privileges</h3>
-  <ol>
-    <li>
-      A <dfn>privilege</dfn> is an unforgeable object that corresponds
+  1.  A <dfn>privilege</dfn> is an unforgeable object that corresponds
       to a <a>label</a>. Privileges are associated with contexts and
       reflect the authority of the context.
 
@@ -665,14 +669,14 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 
         But, if the context's <a>current privilege</a> corresponds
         to <code><a interface>Label</a>("https://a.com")</code>, the
-        context it would be able to bypass some of these integrity restrictions.
+        context would be able to bypass some of these integrity restrictions.
         Specifically, the context would be able to communicate with the
         more-trustworthy context (labeled
         <code><a interface>Label</a>("https://a.com")</code>) since the
-        privilege confers it the right to endorse its context on
-        behalf of <code>https://a.com</code>. Indeed, when taking
-        privileges into account, the <a>effective integrity label</a>
-        of the context is <code><a
+        privilege confers it the right to endorse (or vouch for) its
+        context on behalf of <code>https://a.com</code>. Indeed, when
+        taking privileges into account, the <a>effective integrity
+        label</a> of the context is <code><a
         interface>Label</a>("https://a.com")</code>. 
         
         Note, the privilege cannot be used to bypass any integrity
@@ -686,31 +690,26 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       described in [[#context-labels]]. But, authors should set the <a>current
       privilege</a> to a <a>delegated privilege</a> to follow
       the principle of least privilege.
-    </li>
-    <li>
-      The <dfn>current privilege</dfn> is the privilege associated
+
+  2.  The <dfn>current privilege</dfn> is the privilege associated
       with the current context. [[#context-labels]] specifies how
       privileges are associated with contexts.
-    </li>
-    <li>
-      The <dfn>effective confidentiality label</dfn> is the label
+
+  3.  The <dfn>effective confidentiality label</dfn> is the label
       returned by the <a>label downgrade</a> algorithm when invoked
       with the <a>current confidentiality label</a> and <a>current
       privilege</a>.
-    </li>
-    <li>
-      The <dfn>effective integrity label</dfn> is the label
+
+  4.  The <dfn>effective integrity label</dfn> is the label
       returned by the <a>label upgrade</a> algorithm when invoked
       with the <a>current integrity label</a> and <a>current
       privilege</a>.
-    </li>
-    <li>
-      Code can take <dfn>ownership</dfn> of a <a>privilege</a>
+
+  5.  Code can take <dfn>ownership</dfn> of a <a>privilege</a>
       <var>priv</var> by setting the <a>current privilege</a> to the
       privilege produced via the <a>combination</a> of the <a>current
         privilege</a> and <var>priv</var>. In doing so, it is said
       that the context <dfn>owns</dfn> the privilege.
-    </li>
 </section>
 
 <!-- Big Text: framework -->
@@ -1242,7 +1241,8 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     COWL extends <a>browsing contexts</a> and <a>Workers</a> with a
     <dfn>COWL state</dfn>, which is used to restrict the context's
     communication channels. The term <dfn>context</dfn> is used to
-    refer to both browsing contexts and Workers. The COWL state consists of:
+    refer to both <a>browsing contexts</a> and <a>Workers</a>. The
+    COWL state consists of:
 
     * The <dfn>confinement mode</dfn> status, which indicates whether
     or not COWL confinement is enabled and thus <a>labels</a> should

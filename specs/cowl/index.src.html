@@ -408,7 +408,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     Of course, this requires the server operator to label
     sensitive data (e.g., when sending it to the user agent) appropriately
     (e.g., <code>user2</code>'s data is labeled
-    <code><a>Label</a>("https://university.edu").or("user2")</code>).
+    <code><a>Label</a>("https://university.edu")._or("user2")</code>).
   </div>
 
   <div class="note">
@@ -656,7 +656,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       <div class="example">
         Consider an <code>https://a.com</code> context whose
         <a>current integrity label</a> is
-        <code><a interface>Label</a>("https://a.com").or("https://b.com")</code>.
+        <code><a interface>Label</a>("https://a.com")._or("https://b.com")</code>.
         This label confines the context to only communicating with
         entities that are at most as trustworthy as this
         label. For example, it restricts the context from
@@ -724,10 +724,10 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       <dd>
       COWL provides a <a interface>Label</a> interface for specifying
       confidentiality and integrity policies in terms of
-        <a>origins</a>. <a>Labels</a> can be associated with data and
-        content using the JavaScript <a interface>LabeledObject</a>
-      and <a interface>COWL</a> interfaces or the <code>Sec-COWL</code>
-      HTTP response header.
+      <a>origins</a>. <a>Labels</a> can be associated with data and
+      content using the JavaScript <a interface>LabeledObject</a> and
+      <a interface>COWL</a> interfaces or the <code>Sec-COWL</code>
+      HTTP headers.
       </dd>
       <dt>Explicit authority via <a>privileges<a></dt>
       <dd>
@@ -735,21 +735,22 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       interface>Privilege</a> interface for operating on and minting
       new <a>privileges</a>.  The <a interface>COWL</a> JavaScript
       interface and <code>Sec-COWL</code> HTTP response header can be used
-      used to explicitly set the authority of a context.
+      used to explicitly control the authority of a context by setting
+      the <a>context privilege</a>.
       </dd>
       <dt>Confinement enforcement mechanism</dt>
       <dd>
       COWL extends <a>browsing contexts</a> and <a>Workers</a> with
       labels and privileges, which are used when enforcing
       confinement, i.e., when restricting a context's network and
-      cross-document messaging communication.  This document defines
+      cross-context messaging communication.  This document defines
       the necessary changes and extensions to existing browser
       constructs and algorithms to enforce confinement.
       </dd>
     </dl>
 
   <section>
-    <h3 id="label">Labels</h3>
+  <h3 id="label">Labels</h3>
 
     Each <a>label</a> is an immutable object represented by a
     <a interface>Label</a> object, the interface of which is defined in
@@ -813,7 +814,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         The user agent MUST return <code>true</code> if the <a interface>Label</a> on
         which the method has been called is <a>equivalent</a> to the
         <a argument for="Label/equals(other)">other</a>
-        parameter; otherwise it MUST return <code>false</code>
+        parameter; otherwise it MUST return <code>false</code>.
       </dd>
       <dt><dfn method title="subsumes(other, priv)">subsumes(Label other, optional Privilege priv)</dfn></dt>
       <dd>
@@ -909,7 +910,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
            argument is provided: 
            
            1. If the argument is not a <a>URL</a>, the function
-              MUST throw <code>TypeError</code> exception [[!ECMA-262]] and
+              MUST throw a <code>TypeError</code> exception [[!ECMA-262]] and
               terminate this algorithm.
 
            2. Else, set <var>self</var> to the <a argument for="Label/fromJSON(obj, self)">self</a> argument.
@@ -934,7 +935,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
               4. Else, throw a <code>TypeError</code> exception [[!ECMA-262]] and
                  terminate this algorithm.
 
-              5. Let <var>dset label</var> be <code><var>dset label</var>.<a>or(<var>origin</var>)</a></code>
+              5. Let <var>dset label</var> be <code><var>dset label</var>.<a>_or(<var>origin</var>)</a></code>
 
            3. Let <var>lab</var> be <code><var>lab</var>.<a>and(<var>dset label</var>)</a></code>
 
@@ -966,7 +967,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 
       // C: Data confidential to either a.com or b.com.
       // I: Data endorsed/trusted by either a.com or b.com.
-      var aORb = new <a interface>Label</a>("https://a.com").or("https://b.com");
+      var aORb = new <a interface>Label</a>("https://a.com")._or("https://b.com");
       </code></pre>
       Examples of label comparisons with intuition for the semantics.
       <pre><code>
@@ -985,7 +986,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       // C: Data that that is confidential to a.com (b.com) is not comparable to
       //    data that is confidential to b.com (a.com).
       // I: Data that that is endorsed by a.com (b.com) is not comparable to
-      //    data that is endorsed to b.com (a.com).
+      //    data that is endorsed by b.com (a.com).
       a.subsumes(b) === false;
       b.subsumes(a) === false;
 
@@ -1215,7 +1216,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         // The label corresponding to the university origin:
         var uni = new <a interface>Label</a>(window.location.origin);
         // Create a new label that corresponds to user1's data on university.edu:
-        var user1 = uni.or("cowl://user1"); // Here the cowl:// is an arbitrary <a>scheme</a>
+        var user1 = uni._or("cowl://user1"); // Here the cowl:// is an arbitrary <a>scheme</a>
 
         // Originally, COWL.privilege.asLabel().equals(uni).
         // Drop the current <a>context privilege</a> to a delegated privilege:
@@ -1224,13 +1225,13 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 
       At this point, the context can only arbitrarily disseminate data
       that is labeled
-      <code><a interface>Label</a>("https://university.edu").or("cowl://user1")</code>;
+      <code><a interface>Label</a>("https://university.edu")._or("cowl://user1")</code>;
       it cannot disseminate data that is
       sensitive to the university (e.g., which is labeled
       <code><a interface>Label</a>("https://university.edu")</code>)
       or another user's data (e.g., <code>user2</code>'s data is
       labeled
-      <code><a interface>Label</a>("https://university.edu").or("cowl://user2")</code>).
+      <code><a interface>Label</a>("https://university.edu")._or("cowl://user2")</code>).
     </div>
 
   </section>
@@ -1701,7 +1702,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       function handler(lObj) {
         if (validateA(lObj.protectedObject)) {
           var origin = ... ; // current origin (e.g., window.location.origin)
-          var endorsement = new Label(origin).or('cowl://validate-A');
+          var endorsement = new Label(origin)._or('cowl://validate-A');
           // Return a clone of the labeled object that is additionally
           // endorsed by the current (sub-)origin.
           return lObj.clone({ integrity: lObj.integrity.and(endorsement) });
@@ -1826,7 +1827,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         An author may wish to specify that the
         <code>https://university.edu/~user1</code> page should run with
         a delegated privilege&mdash;namely, 
-        <code><a interface>Label</a>("https://university.edu/").or("cowl://user1")</code>&mdash;from
+        <code><a interface>Label</a>("https://university.edu/")._or("cowl://user1")</code>&mdash;from
          the start:
         <pre><code>
         Sec-COWL: <a>ctx-privilege</a> [ ['self', 'cowl://user1'] ];

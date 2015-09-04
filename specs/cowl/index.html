@@ -566,7 +566,7 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
      
 
   
-     <div class="example" id="example-735e15a2"><a class="self-link" href="#example-735e15a2"></a>
+     <div class="example" id="example-dbdf1640"><a class="self-link" href="#example-dbdf1640"></a>
     Suppose <code>https://university.edu</code> wished to isolate
     different parts of their site according to users. The server
     operator can weaken the privilege of a page when serving user
@@ -602,7 +602,7 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
     Of course, this requires the server operator to label
     sensitive data (e.g., when sending it to the user agent) appropriately
     (e.g., <code>user2</code>’s data is labeled
-    <code><a data-link-type="dfn" href="#label">Label</a>("https://university.edu").or("user2")</code>).</p>
+    <code><a data-link-type="dfn" href="#label">Label</a>("https://university.edu")._or("user2")</code>).</p>
       
   
      </div>
@@ -934,10 +934,10 @@ reflects the fact that the object (produced by
       
 
   
-      <div class="example" id="example-a34b5143"><a class="self-link" href="#example-a34b5143"></a>
+      <div class="example" id="example-7f599baa"><a class="self-link" href="#example-7f599baa"></a>
     Consider an <code>https://a.com</code> context whose
     <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a> is
-    <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").or("https://b.com")</code>.
+    <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")._or("https://b.com")</code>.
     This label confines the context to only communicating with
     entities that are at most as trustworthy as this
     label. For example, it restricts the context from
@@ -1031,10 +1031,10 @@ reflects the fact that the object (produced by
      <dd>
       COWL provides a <a class="idl-code" data-link-type="interface" href="#label1">Label</a> interface for specifying
       confidentiality and integrity policies in terms of
-        <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origins</a>. <a data-link-type="dfn" href="#label">Labels</a> can be associated with data and
-        content using the JavaScript <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>
-      and <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> interfaces or the <code>Sec-COWL</code>
-      HTTP response header.
+      <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origins</a>. <a data-link-type="dfn" href="#label">Labels</a> can be associated with data and
+      content using the JavaScript <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> and
+      <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> interfaces or the <code>Sec-COWL</code>
+      HTTP headers.
       
      
       
@@ -1044,7 +1044,8 @@ reflects the fact that the object (produced by
       The COWL framework provides a JavaScript </a><a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> interface for operating on and minting
       new <a data-link-type="dfn" href="#privilege">privileges</a>.  The <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> JavaScript
       interface and <code>Sec-COWL</code> HTTP response header can be used
-      used to explicitly set the authority of a context.
+      used to explicitly control the authority of a context by setting
+      the <a data-link-type="dfn" href="#context-privilege">context privilege</a>.
       
      
       
@@ -1055,7 +1056,7 @@ reflects the fact that the object (produced by
       COWL extends <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing contexts</a> and <a data-link-type="dfn" href="http://www.w3.org/TR/workers/#worker">Workers</a> with
       labels and privileges, which are used when enforcing
       confinement, i.e., when restricting a context’s network and
-      cross-document messaging communication.  This document defines
+      cross-context messaging communication.  This document defines
       the necessary changes and extensions to existing browser
       constructs and algorithms to enforce confinement.
       
@@ -1065,7 +1066,7 @@ reflects the fact that the object (produced by
 
   
     <section>
-    
+  
      <h3 class="heading settled" data-level="3.1" id="label0"><span class="secno">3.1. </span><span class="content">Labels</span><a class="self-link" href="#label0"></a></h3>
      
 
@@ -1169,7 +1170,7 @@ itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org
         The user agent MUST return <code>true</code> if the <a class="idl-code" data-link-type="interface" href="#label1">Label</a> on
         which the method has been called is <a data-link-type="dfn" href="#equivalent">equivalent</a> to the
         <a class="idl-code" data-link-type="argument" href="#dom-label-equalsother-other">other</a>
-        parameter; otherwise it MUST return <code>false</code>
+        parameter; otherwise it MUST return <code>false</code>.
       
       
       
@@ -1364,7 +1365,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
          <ol>
           <li data-md="">
            <p>If the argument is not a <a data-link-type="dfn" href="http://dom.spec.whatwg.org/#concept-document-url">URL</a>, the function
-  MUST throw <code>TypeError</code> exception <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> and
+  MUST throw a <code>TypeError</code> exception <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> and
   terminate this algorithm.</p>
            
 
@@ -1422,7 +1423,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
 
 
             <li data-md="">
-             <p>Let <var>dset label</var> be <code><var>dset label</var>.<a data-link-type="functionish">or(<var>origin</var>)</a></code></p>
+             <p>Let <var>dset label</var> be <code><var>dset label</var>.<a data-link-type="functionish" href="#dom-label-_orlabel-or-domstring-other">_or(<var>origin</var>)</a></code></p>
              
 </ol>
            
@@ -1443,7 +1444,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
      
 
     
-     <div class="example" id="example-71d217c6"><a class="self-link" href="#example-71d217c6"></a>
+     <div class="example" id="example-d46057c9"><a class="self-link" href="#example-d46057c9"></a>
       Example labels. Intuition for each label’s semantics is given in
       the context of it being used as a confidentiality label (C) and
       integrity label (I).
@@ -1466,7 +1467,7 @@ var aANDb = new <a class="idl-code" data-link-type="interface" href="#label1">La
 
 // C: Data confidential to either a.com or b.com.
 // I: Data endorsed/trusted by either a.com or b.com.
-var aORb = new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").or("https://b.com");
+var aORb = new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")._or("https://b.com");
 </code></pre>
       
 
@@ -1488,7 +1489,7 @@ aANDb.subsumes(b) === true;
 // C: Data that that is confidential to a.com (b.com) is not comparable to
 //    data that is confidential to b.com (a.com).
 // I: Data that that is endorsed by a.com (b.com) is not comparable to
-//    data that is endorsed to b.com (a.com).
+//    data that is endorsed by b.com (a.com).
 a.subsumes(b) === false;
 b.subsumes(a) === false;
 
@@ -1823,7 +1824,7 @@ checker.postMessage(labeledPassword, "https://untrusted.com");
       <pre><code lang-js="">// The label corresponding to the university origin:
 var uni = new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>(window.location.origin);
 // Create a new label that corresponds to user1’s data on university.edu:
-var user1 = uni.or("cowl://user1"); // Here the cowl:// is an arbitrary <a data-link-type="dfn" href="http://www.w3.org/TR/url/#concept-url-scheme">scheme</a>
+var user1 = uni._or("cowl://user1"); // Here the cowl:// is an arbitrary <a data-link-type="dfn" href="http://www.w3.org/TR/url/#concept-url-scheme">scheme</a>
 
 // Originally, COWL.privilege.asLabel().equals(uni).
 // Drop the current <a data-link-type="dfn" href="#context-privilege">context privilege</a> to a delegated privilege:
@@ -1834,13 +1835,13 @@ COWL.privilege = COWL.privilege.delegate(user1);
 
       <p>At this point, the context can only arbitrarily disseminate data
       that is labeled
-      <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu").or("cowl://user1")</code>;
+      <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu")._or("cowl://user1")</code>;
       it cannot disseminate data that is
       sensitive to the university (e.g., which is labeled
       <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu")</code>)
       or another user’s data (e.g., <code>user2</code>’s data is
       labeled
-      <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu").or("cowl://user2")</code>).</p>
+      <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu")._or("cowl://user2")</code>).</p>
       
     
      </div>
@@ -2574,7 +2575,7 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
      
 
     
-     <div class="example" id="example-1e2c45bd"><a class="self-link" href="#example-1e2c45bd"></a>
+     <div class="example" id="example-56afb186"><a class="self-link" href="#example-56afb186"></a>
       The author of <code>https://example.com</code> wishes to ensure
       that a particular JSON object conforms to a set of validation
       filters before submitting it to a remote server.  (Consider, for
@@ -2591,7 +2592,7 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
       <pre><code>function handler(lObj) {
   if (validateA(lObj.protectedObject)) {
     var origin = ... ; // current origin (e.g., window.location.origin)
-    var endorsement = new Label(origin).or('cowl://validate-A');
+    var endorsement = new Label(origin)._or('cowl://validate-A');
     // Return a clone of the labeled object that is additionally
     // endorsed by the current (sub-)origin.
     return lObj.clone({ integrity: lObj.integrity.and(endorsement) });
@@ -2780,11 +2781,11 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
       
 
       
-      <div class="example" id="example-16f97c55"><a class="self-link" href="#example-16f97c55"></a>
+      <div class="example" id="example-44a5074a"><a class="self-link" href="#example-44a5074a"></a>
         An author may wish to specify that the
         <code>https://university.edu/~user1</code> page should run with
         a delegated privilege—namely, 
-        <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu/").or("cowl://user1")</code>—from
+        <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://university.edu/")._or("cowl://user1")</code>—from
          the start:
         
        <pre><code>Sec-COWL: <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a> [ ['self', 'cowl://user1'] ];

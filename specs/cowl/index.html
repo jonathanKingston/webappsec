@@ -3585,12 +3585,12 @@ blocks access to <code>localStorage</code>. <a data-link-type="biblio" href="#bi
      
 
      <p class="note" role="note">Note, this algorithms assumes that <a data-link-type="dfn" href="#disjunction-set">disjunction sets</a> and
-    <a data-link-type="dfn" href="#label-set">label sets</a> do not have duplicate elements, like
+    <a data-link-type="dfn" href="#label-set">label sets</a> do not have duplicate elements, much like
     mathematical sets.</p>
      
 
     
-     <div class="example" id="example-d5fc36c1"><a class="self-link" href="#example-d5fc36c1"></a>
+     <div class="example" id="example-fc3ca2e0"><a class="self-link" href="#example-fc3ca2e0"></a>
       The <a data-link-type="dfn" href="#label">Label</a> API uses this algorithm to ensure that labels
       don’t have redundant information. Consider for example, the
       following labels:
@@ -3607,17 +3607,16 @@ var a2   = a.<a data-link-type="functionish" href="#dom-label-andlabel-or-domstr
       
 
       
-      <pre><code>a2.<a data-link-type="functionish" href="#dom-label-tojson">toJSON()</a> === [["https://a.com"]];
+      <pre><code>JSON.stringify(a2) === '[["https://a.com"]]';
 a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
 </code></pre>
       
-
     
      </div>
      
-
   
     </section>
+
   
     <section>
     
@@ -3630,11 +3629,11 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
 
      <ol>
       <li data-md="">
-       <p>Return <code>true</code> if for each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a>
-<var>b</var> in the <a data-link-type="dfn" href="#label-set">label set</a> of <var>B</var>, there is
-<a data-link-type="dfn" href="#disjunction-set">disjunction set</a> <var>a</var> in the <a data-link-type="dfn" href="#label-set">label set</a> of
-<var>A</var> such that <var>a</var> is a <em>subset</em> of
-<var>b</var>.</p>
+       <p>If, for each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a>
+  <var>b</var> in the <a data-link-type="dfn" href="#label-set">label set</a> of <var>B</var> there is
+  <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> <var>a</var> in the <a data-link-type="dfn" href="#label-set">label set</a> of
+  <var>A</var> such that <var>a</var> is a <em>subset</em> of
+  <var>b</var>, return <code>true</code>.</p>
        
 </ol>
      
@@ -3653,9 +3652,9 @@ a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
     subsumes <var>B</var> is equivalent as <var>A</var>
     <em>implies</em> <var>B</var>, i.e, <var>A</var>⇒<var>B</var>.</p>
      
-
   
     </section>
+
   
     <section>
     
@@ -3706,19 +3705,19 @@ of <var>priv</var>.</p>
      
 
      <p class="note" role="note">Note, <a data-link-type="dfn" href="#label-downgrade0">label downgrade</a> removes every disjunction set
-    permitted by <var>priv</var>, i.e., it can be used to safely
-    declassify data labeled <var>label</var>.</p>
+    permitted by <var>priv</var>. This is used to safely declassify
+    data labeled <var>label</var>.</p>
      
-
   
     </section>
+
   
     <section>
     
      <h3 class="heading settled" data-level="4.4" id="label-upgrade"><span class="secno">4.4. </span><span class="content">Label Upgrade</span><a class="self-link" href="#label-upgrade"></a></h3>
      
     The <dfn data-dfn-type="dfn" data-noexport="" id="label-upgrade0">label upgrade<a class="self-link" href="#label-upgrade0"></a></dfn> algorithm takes an integrity
-    label, <var>label</var> and a privilege<var>priv</var>, and
+    label <var>label</var> and a privilege <var>priv</var>, and
     returns the most permissive label according to the following
     steps:
 
@@ -3726,7 +3725,7 @@ of <var>priv</var>.</p>
      <ol>
       <li data-md="">
        <p>Let <var>privLabel</var> be the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a>
-of <var>priv</var>.</p>
+ of <var>priv</var>.</p>
        
 
 
@@ -3736,13 +3735,13 @@ of <var>priv</var>.</p>
 </ol>
      
 
-     <p class="note" role="note">Note, <a data-link-type="dfn" href="#label-upgrade0">label upgrade</a> is the dual of <a data-link-type="dfn" href="#label-downgrade0">label downgrade</a>,
-    i.e., it can be used to safely endorse data labeled (and
-    thus potentially endorsed) <var>label</var>.</p>
+     <p class="note" role="note">Note, <a data-link-type="dfn" href="#label-upgrade0">label upgrade</a> is the dual of <a data-link-type="dfn" href="#label-downgrade0">label downgrade</a>.
+    This can be used to safely endorse data labeled  <var>label</var>
+    (and thus potentially already endorsed).</p>
      
-
   
     </section>
+
   
     <section>
     
@@ -3784,11 +3783,10 @@ of <var>priv</var>.</p>
  <var>currentInt</var>.<a data-link-type="functionish" href="#dom-label-_orlabel-or-domstring-other">_or(<var>integrity</var>)</a>
  and <a data-link-type="dfn" href="#current-privilege">current privilege</a>.</p>
        
-
 </ol>
-     
-  
+       
     </section>
+
   
     <section>
     
@@ -3826,9 +3824,9 @@ of <var>priv</var>.</p>
        <p>Else, return <code>true</code>.</p>
        
 </ol>
-     
-  
+       
     </section>
+
   
     <section>
     
@@ -3864,7 +3862,13 @@ of <var>priv</var>.</p>
        <div class="note" role="note">
  To prevent attacks that launder page privileges, the current
  version of COWL only allows transferring fresh privileges.
- </div>
+
+
+        <p class="issue" id="issue-eb38f690"><a class="self-link" href="#issue-eb38f690"></a> We can be more permissive and allow transferring all but
+ <a data-link-type="dfn" href="#default-privilege">default privileges</a>. Feedback on this would be welcome.</p>
+        
+ 
+       </div>
        
 
 
@@ -3884,11 +3888,13 @@ of <var>priv</var>.</p>
 
      <p class="note" role="note">Note, cross-context messaging constructs such as
     <a data-link-type="functionish" href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">postMessage()</a> use the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structured clone</a> algorithm
-    (e.g., see the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm">internal structured cloning algorithm</a>). As a
-    result, authors can transfer COWL object types, such as <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s, to other contexts.</p>
+    (e.g., see the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm">internal structured cloning algorithm</a>).
+    This algorithm is used to allow  authors to transfer COWL
+    object, such as <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s, to other contexts.</p>
      
   
     </section>
+
   
     <section>
     
@@ -4009,19 +4015,20 @@ of <var>priv</var>.</p>
      
     
      <div class="note" role="note">
-      Note: <a data-link-type="dfn" id="#should-block-fetch">If a request proceeds</a>, we
-      still might want to block the response based on the <a data-link-type="dfn" href="#label">label</a>
-      of the response. For example, if the <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality
-        label</a> does not <a data-link-type="dfn" href="#subsumes">subsumes</a> the confidentiality label
-      of the response, the user agent MUST block the response since it
-      could otherwise violate the confidentiality of the data. This
+      <a data-link-type="dfn" id="#should-block-fetch">If a request proceeds</a>, we
+      still might want to block the response based on the <a data-link-type="dfn" href="#labeled-data-metadata">labeled
+      data metadata</a> of the response. For example, if the
+      <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a> does not <a data-link-type="dfn" href="#subsumes">subsume</a> the
+      confidentiality label of the response, the user agent MUST block
+      the response since it could otherwise violate the confidentiality
+      of the response data. (The dual holds for integrity.) This
       algorithm is used to make the determination of whether or not a
       response is blocked.
 
 
       <p>This algorithm is also used to set the <a data-link-type="dfn" href="#cowl-state">COWL state</a> for
       new documents and Workers according to server-supplied the
-      <a data-link-type="dfn">labeled context metada</a>.</p>
+      <a data-link-type="dfn" href="#labeled-context-metadata">labeled context metadata</a>.</p>
       
     
      </div>
@@ -4140,8 +4147,8 @@ of <var>priv</var>.</p>
            <p class="note" role="note">Note, by performing the <a data-link-type="dfn">subsumption</a> check before
  setting the <a data-link-type="dfn" href="#context-privilege">context privilege</a> (next step), the
  <a data-link-type="dfn" href="#context-integrity-label">context integrity label</a> can be upgraded from
- the <a data-link-type="dfn" href="#empty-label">empty label</a>, but the <a data-link-type="dfn" href="#context-privilege">context
- privilege</a> can be dropped.</p>
+ the <a data-link-type="dfn" href="#empty-label">empty label</a>, while allowing the <a data-link-type="dfn" href="#context-privilege">context
+ privilege</a> to also be dropped.</p>
            
 
 
@@ -4225,6 +4232,7 @@ of <var>priv</var>.</p>
 </ol></ol>
        
     </section>
+
   
     <section>
     
@@ -4285,26 +4293,25 @@ of <var>priv</var>.</p>
 
 
         <li data-md="">
-         <p>Let <var>label value</var> be the <a data-link-type="dfn" href="#label">label</a>
-   returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
-   <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the <var>directive
-   value</var> and <var>self</var>.  If the function threw an
-   exception, ignore this instance of the directive and continue
-   to the next token.</p>
+         <p>Let <var>label value</var> be the <a data-link-type="dfn" href="#label">label</a> returned by
+   calling the <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the
+   <var>directive value</var> and <var>self</var>.  If the
+   function threw an exception, ignore this instance of the
+   directive and continue to the next token.</p>
          
 
 
         <li data-md="">
-         <p>If <var>directive name</var> is <a data-link-type="dfn" href="#data_confidentiality">data-confidentiality</a>
+         <p>If <var>directive name</var> is <a data-link-type="dfn" href="#data_confidentiality"><code>data-confidentiality</code></a>
   and <var>conf</var> is null, let <var>conf</var> be <var>label
   value</var>.</p>
          
 
 
         <li data-md="">
-         <p>Else, if <var>directive name</var> is <a data-link-type="dfn" href="#data_integrity">data-integrity</a>
-  and <var>int</var> is null, let <var>int</var> be <var>label
-  value</var>.</p>
+         <p>Else, if <var>directive name</var> is
+  <a data-link-type="dfn" href="#data_integrity"><code>data-integrity</code></a> and <var>int</var> is null,
+  let <var>int</var> be <var>label value</var>.</p>
          
 
 
@@ -4328,6 +4335,7 @@ of <var>priv</var>.</p>
      
   
     </section>
+
   
     <section>
     
@@ -4394,33 +4402,33 @@ of <var>priv</var>.</p>
 
         <li data-md="">
          <p>Let <var>label value</var> be the <a data-link-type="dfn" href="#label">label</a>
-   returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
-   <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the <var>directive
-   value</var> and <var>self</var>.  If the function threw an
-   exception, ignore this instance of the directive and continue
-   to the next token.</p>
+   returned by calling the <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the
+   <var>directive value</var> and <var>self</var>.  If the
+   function threw an exception, ignore this instance of the
+   directive and continue to the next token.</p>
          
 
 
         <li data-md="">
-         <p>If <var>directive name</var> is <a data-link-type="dfn" href="#ctx_confidentiality">ctx-confidentiality</a>
-  and <var>conf</var> is null, let <var>conf</var> be <var>label
+         <p>If <var>directive name</var> is
+  <a data-link-type="dfn" href="#ctx_confidentiality"><code>ctx-confidentiality</code></a> and <var>conf</var> is
+  null, let <var>conf</var> be <var>label value</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>Else, if <var>directive name</var> is
+  <a data-link-type="dfn" href="#ctx_integrity"><code>ctx-integrity</code></a> and <var>int</var> is null,
+  let <var>int</var> be <var>label value</var>.</p>
+         
+
+
+        <li data-md="">
+         <p>Else, if <var>directive name</var> is
+  <a data-link-type="dfn" href="#ctx_privilege"><code>ctx-privilege</code></a> and <var>priv</var> is null,
+  let <var>priv</var> be a newly created <a data-link-type="dfn" href="#privilege">privilege</a> whose
+  <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> is set to <var>label
   value</var>.</p>
-         
-
-
-        <li data-md="">
-         <p>Else, if <var>directive name</var> is <a data-link-type="dfn" href="#ctx_integrity">ctx-integrity</a>
-  and <var>int</var> is null, let <var>int</var> be <var>label
-  value</var>.</p>
-         
-
-
-        <li data-md="">
-         <p>Else, if <var>directive name</var> is <a data-link-type="dfn" href="#ctx_privilege">ctx-privilege</a>
-  and <var>priv</var> is null, let <var>priv</var> be
-  a newly created <a data-link-type="dfn" href="#privilege">privilege</a> whose
-  <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> is set to <var>label value</var>.</p>
          
 
 
@@ -5027,6 +5035,8 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
       channels, e.g., height/width of an iframe? Maybe at least as
       optional modifications to HTML. Feedback and thoughts on this
       would be welcome.<a href="#issue-ae32071d"> ↵ </a></div>
+   <div class="issue"> We can be more permissive and allow transferring all but
+ <a data-link-type="dfn" href="#default-privilege">default privileges</a>. Feedback on this would be welcome.<a href="#issue-eb38f690"> ↵ </a></div>
    <div class="issue"> We can simply disallow leaks via top-level
  navigation at the cost of potentially forcing users to
  navigate away by closing tabs or inputing another URL via

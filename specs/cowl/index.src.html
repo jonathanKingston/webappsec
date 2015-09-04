@@ -2315,7 +2315,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     3. Return a newly created <a>Label</a> whose <a>label set</a> is <var>lset</var>.
 
     Note, this algorithms assumes that <a>disjunction sets</a> and
-    <a>label sets</a> do not have duplicate elements, like
+    <a>label sets</a> do not have duplicate elements, much like
     mathematical sets.
 
     <div class="example">
@@ -2332,24 +2332,23 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       <code>a.<a>subsumes(aORb)</a></code>):
 
       <pre><code>
-        a2.<a>toJSON()</a> === [["https://a.com"]];
+        JSON.stringify(a2) === '[["https://a.com"]]';
         a2.<a>equals(a)</a>;
       </code></pre>
-
     </div>
-
   </section>
+
   <section>
     <h3 id="subsumes-check">Label Subsumption</h3>
     The <dfn>label subsumption</dfn> algorithm takes a two labels
     <var>A</var> and <var>B</var> and produces a boolean according to
     these steps:
 
-    1. Return <code>true</code> if for each <a>disjunction set</a>
-    <var>b</var> in the <a>label set</a> of <var>B</var>, there is
-    <a>disjunction set</a> <var>a</var> in the <a>label set</a> of
-    <var>A</var> such that <var>a</var> is a <em>subset</em> of
-    <var>b</var>.
+    1.  If, for each <a>disjunction set</a>
+        <var>b</var> in the <a>label set</a> of <var>B</var> there is
+        <a>disjunction set</a> <var>a</var> in the <a>label set</a> of
+        <var>A</var> such that <var>a</var> is a <em>subset</em> of
+        <var>b</var>, return <code>true</code>.
 
     <!-- TODO: link subset -->
 
@@ -2359,8 +2358,8 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     subsumption</a> is logical implication: <var>A</var>
     subsumes <var>B</var> is equivalent as <var>A</var>
     <em>implies</em> <var>B</var>, i.e, <var>A</var>&Rightarrow;<var>B</var>.
-
   </section>
+
   <section>
     <h3 id="label-downgrade">Label Downgrade</h3>
     The <dfn>label downgrade</dfn> algorithm takes a confidentiality
@@ -2385,27 +2384,27 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     3. Return a newly created <a>Label</a> whose <a>label set</a> is <var>lset</var>.
 
     Note, <a>label downgrade</a> removes every disjunction set
-    permitted by <var>priv</var>, i.e., it can be used to safely
-    declassify data labeled <var>label</var>.
-
+    permitted by <var>priv</var>. This is used to safely declassify
+    data labeled <var>label</var>.
   </section>
+
   <section>
     <h3 id="label-upgrade">Label Upgrade</h3>
     The <dfn>label upgrade</dfn> algorithm takes an integrity
-    label, <var>label</var> and a privilege<var>priv</var>, and
+    label <var>label</var> and a privilege <var>priv</var>, and
     returns the most permissive label according to the following
     steps:
 
     1. Let <var>privLabel</var> be the <a>internal privilege label</a>
-    of <var>priv</var>.
+       of <var>priv</var>.
     
     2. Return <code><var>label</var>.<a>and(<var>privLabel</var>)</a></code>.
 
-    Note, <a>label upgrade</a> is the dual of <a>label downgrade</a>,
-    i.e., it can be used to safely endorse data labeled (and
-    thus potentially endorsed) <var>label</var>.
-
+    Note, <a>label upgrade</a> is the dual of <a>label downgrade</a>.
+    This can be used to safely endorse data labeled  <var>label</var>
+    (and thus potentially already endorsed).
   </section>
+
   <section>
     <h3 id="taint-context">Context Tainting</h3>
     The <dfn>context tainting</dfn> algorithm takes a two labels,
@@ -2431,9 +2430,8 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
        algorithm when invoked with
        <var>currentInt</var>.<a>_or(<var>integrity</var>)</a>
        and <a>current privilege</a>.
-
-
   </section>
+
   <section>
     <h3 id="write-check">Write Check</h3>
     The <dfn>write check</dfn> algorithm takes two labels,
@@ -2454,8 +2452,8 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
        <a>subsumes</a> <var>objInt</var>, return <code>false</code>.
 
     7. Else, return <code>true</code>.
-
   </section>
+
   <section>
     <h3 id="structured-cloning">Structured Cloning</h3>
     When a user agent is required to obtain a <a>structured clone</a>
@@ -2478,6 +2476,9 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
        <div class="note">
        To prevent attacks that launder page privileges, the current
        version of COWL only allows transferring fresh privileges.
+
+       ISSUE: We can be more permissive and allow transferring all but
+       <a>default privileges</a>. Feedback on this would be welcome.
        </div>
 
     4. If <var>input</var> is a <a interface>LabeledObject</a> object, let
@@ -2490,10 +2491,11 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 
     Note, cross-context messaging constructs such as
     <a>postMessage()</a> use the <a>structured clone</a> algorithm
-    (e.g., see the <a>internal structured cloning algorithm</a>). As a
-    result, authors can transfer COWL object types, such as <a
-    interface>LabeledObject</a>s, to other contexts.
+    (e.g., see the <a>internal structured cloning algorithm</a>).
+    This algorithm is used to allow  authors to transfer COWL
+    object, such as <a interface>LabeledObject</a>s, to other contexts.
   </section>
+
   <section>
     <h3 id="should-block-fetch">
       Should fetching <var>request</var> be blocked as COWL?
@@ -2564,18 +2566,19 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       Process <var>response</var> to <var>request</var> as COWL
     </h3>
     <div class="note">
-      Note: <a id="#should-block-fetch">If a request proceeds</a>, we
-      still might want to block the response based on the <a>label</a>
-      of the response. For example, if the <a>current confidentiality
-        label</a> does not <a>subsumes</a> the confidentiality label
-      of the response, the user agent MUST block the response since it
-      could otherwise violate the confidentiality of the data. This
+      <a id="#should-block-fetch">If a request proceeds</a>, we
+      still might want to block the response based on the <a>labeled
+      data metadata</a> of the response. For example, if the
+      <a>current confidentiality label</a> does not <a>subsume</a> the
+      confidentiality label of the response, the user agent MUST block
+      the response since it could otherwise violate the confidentiality
+      of the response data. (The dual holds for integrity.) This
       algorithm is used to make the determination of whether or not a
       response is blocked.
 
       This algorithm is also used to set the <a>COWL state</a> for
       new documents and Workers according to server-supplied the
-      <a>labeled context metada</a>.
+      <a>labeled context metadata</a>.
     </div>
 
     Given a <a>Request</a> <var>request</var> and <a>Response</a>
@@ -2638,8 +2641,8 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
                Note, by performing the <a>subsumption</a> check before
                setting the <a>context privilege</a> (next step), the
                <a>context integrity label</a> can be upgraded from
-               the <a>empty label</a>, but the <a>context
-               privilege</a> can be dropped.
+               the <a>empty label</a>, while allowing the <a>context
+               privilege</a> to also be dropped.
 
                ISSUE: Should the user agent warn the user if the
                server provided an integrity label that it is not
@@ -2685,6 +2688,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
             trustworthy as the <a>context integrity label</a>
             may be allowed by the user agent.
   </section>
+
   <section>
     <h3 id="parse-labeled-metadata-data">
       Parse labeled data metadata
@@ -2715,20 +2719,19 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
        4. The remaining characters in <var>token</var> (if any) are
           the <var>directive value</var>.
 
-       5.  Let <var>label value</var> be the <a>label</a>
-           returned by calling the <a interface>Label</a>
-           <a>fromJSON()</a> function with the <var>directive
-           value</var> and <var>self</var>.  If the function threw an
-           exception, ignore this instance of the directive and continue
-           to the next token.
+       5.  Let <var>label value</var> be the <a>label</a> returned by
+           calling the <a>fromJSON()</a> function with the
+           <var>directive value</var> and <var>self</var>.  If the
+           function threw an exception, ignore this instance of the
+           directive and continue to the next token.
 
-       6. If <var>directive name</var> is <a>data-confidentiality</a>
+       6. If <var>directive name</var> is <a><code>data-confidentiality</code></a>
           and <var>conf</var> is null, let <var>conf</var> be <var>label
           value</var>.
 
-       7. Else, if <var>directive name</var> is <a>data-integrity</a>
-          and <var>int</var> is null, let <var>int</var> be <var>label
-          value</var>.
+       7. Else, if <var>directive name</var> is
+          <a><code>data-integrity</code></a> and <var>int</var> is null,
+          let <var>int</var> be <var>label value</var>.
         
        8. Else, ignore this instance of the directive and continue to
           the next token.
@@ -2740,6 +2743,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       agents SHOULD report the directives that were ignored.
     </div>
   </section>
+
   <section>
     <h3 id="parse-labeled-metadata-ctx">
       Parse labeled context metadata
@@ -2755,7 +2759,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 
     3. Let <var>priv</var> be null.
 
-    3. For each non-empty token returned by
+    4. For each non-empty token returned by
        <a lt="strictly split a string" spec="HTML5">strictly splitting</a>
        the string <var>metadata</var> on the character U+003B SEMICOLON (<code>;</code>):
 
@@ -2773,29 +2777,29 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
           the <var>directive value</var>.
 
        5.  Let <var>label value</var> be the <a>label</a>
-           returned by calling the <a interface>Label</a>
-           <a>fromJSON()</a> function with the <var>directive
-           value</var> and <var>self</var>.  If the function threw an
-           exception, ignore this instance of the directive and continue
-           to the next token.
+           returned by calling the <a>fromJSON()</a> function with the
+           <var>directive value</var> and <var>self</var>.  If the
+           function threw an exception, ignore this instance of the
+           directive and continue to the next token.
 
-       6. If <var>directive name</var> is <a>ctx-confidentiality</a>
-          and <var>conf</var> is null, let <var>conf</var> be <var>label
+       6. If <var>directive name</var> is
+          <a><code>ctx-confidentiality</code></a> and <var>conf</var> is
+          null, let <var>conf</var> be <var>label value</var>.
+
+       7. Else, if <var>directive name</var> is
+          <a><code>ctx-integrity</code></a> and <var>int</var> is null,
+          let <var>int</var> be <var>label value</var>.
+
+       8. Else, if <var>directive name</var> is
+          <a><code>ctx-privilege</code></a> and <var>priv</var> is null,
+          let <var>priv</var> be a newly created <a>privilege</a> whose
+          <a>internal privilege label</a> is set to <var>label
           value</var>.
-
-       7. Else, if <var>directive name</var> is <a>ctx-integrity</a>
-          and <var>int</var> is null, let <var>int</var> be <var>label
-          value</var>.
-
-       7. Else, if <var>directive name</var> is <a>ctx-privilege</a>
-          and <var>priv</var> is null, let <var>priv</var> be
-          a newly created <a>privilege</a> whose
-          <a>internal privilege label</a> is set to <var>label value</var>.
         
-       8. Else, ignore this instance of the directive and continue to
+       9. Else, ignore this instance of the directive and continue to
           the next token.
 
-    4. Return <var>conf</var>, <var>int</var>, and <var>priv</var>.
+    5. Return <var>conf</var>, <var>int</var>, and <var>priv</var>.
 
     <div class="note">
       To make it easier for developers to debug applications, user

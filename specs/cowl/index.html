@@ -1852,16 +1852,16 @@ COWL.privilege = COWL.privilege.delegate(user1);
 
   
     <section>
-    
+  
      <h3 class="heading settled" data-level="3.3" id="context-labels"><span class="secno">3.3. </span><span class="content">Labeled Contexts</span><a class="self-link" href="#context-labels"></a></h3>
      
 
 
      <p>COWL extends <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing contexts</a> and <a data-link-type="dfn" href="http://www.w3.org/TR/workers/#worker">Workers</a> with a
     <dfn data-dfn-type="dfn" data-noexport="" id="cowl-state">COWL state<a class="self-link" href="#cowl-state"></a></dfn>, which is used to restrict the context’s
-    communication channels. The term <dfn data-dfn-type="dfn" data-noexport="" id="context">context<a class="self-link" href="#context"></a></dfn> is used to
-    refer to both <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing contexts</a> and <a data-link-type="dfn" href="http://www.w3.org/TR/workers/#worker">Workers</a>. The
-    COWL state consists of:</p>
+    communication channels. In this document, the term
+    <dfn data-dfn-type="dfn" data-noexport="" id="context">context<a class="self-link" href="#context"></a></dfn> is used to refer to both <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing
+    contexts</a> and <a data-link-type="dfn" href="http://www.w3.org/TR/workers/#worker">Workers</a>. The COWL state consists of:</p>
      
 
 
@@ -1874,7 +1874,7 @@ be enforced in the current context.</p>
 
 
       <li data-md="">
-       <p>The <dfn data-dfn-type="dfn" data-noexport="" id="context-labels0">context <a data-link-type="dfn" href="#label">labels</a><a class="self-link" href="#context-labels0"></a></dfn>:</p>
+       <p>The <dfn data-dfn-type="dfn" data-noexport="" id="context-labels0">context <a data-link-type="dfn" href="#label">labels</a><a class="self-link" href="#context-labels0"></a></dfn>, which consist consist of:</p>
        
 
 
@@ -1935,7 +1935,7 @@ Worker’s <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#sec
     
      <div class="note" role="note">
       The <a data-link-type="dfn" href="#default-cowl-state">default COWL state</a> is backwards-compatible with the
-      existing model. Specifically:
+      existing Web model. Specifically:
 
 
       <ul>
@@ -1948,31 +1948,29 @@ subject to confinement.</p>
        <li data-md="">
         <p>Unless the <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a>
 and the <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a> are
-non-<a data-link-type="dfn" href="#empty-label">empty label</a>, the context’s communication
+non-<a data-link-type="dfn" href="#empty-label">empty label</a>s, the context’s communication
 is unrestricted; code is only
 subject to the restrictions imposed by other mechanism such as
-the Same-Origin Policy, CSP, and CORS.</p>
+the Same-Origin Policy and CSP.</p>
         
 
 
        <li data-md="">
         <p>Unless the <a data-link-type="dfn" href="#current-privilege">current privilege</a> is dropped or set to a
 <a data-link-type="dfn" href="#delegated-privilege">delegated privilege</a>, code can disseminate data sensitive
-to the context’s <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a>, even when <a data-link-type="dfn" href="#confinement-mode">confinement
-mode</a> is enabled.  Such data is implicitly declassified using
-the <a data-link-type="dfn" href="#context-privilege">context privilege</a>.  Authors should always send
-<a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s to explicitly communicate the sensitivity
-(and integrity) of the data they are sharing.</p>
+to the browsing context’s <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a>, even when <a data-link-type="dfn" href="#confinement-mode">confinement
+mode</a> is enabled.  Such data is implicitly <em>declassified</em>
+using the <a data-link-type="dfn" href="#context-privilege">context privilege</a>. Authors should send
+<a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s to explicitly communicate the
+sensitivity (and integrity) of the data they are sharing.</p>
         
 </ul>
-      
-    
+          
      </div>
      
 
 
-     <p>Each browsing context and Worker’s <a data-link-type="dfn" href="#cowl-state">COWL state</a> is made
-    available via the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> interface defined below.</p>
+     <p>Each context’s <a data-link-type="dfn" href="#cowl-state">COWL state</a> is made available via the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> interface defined below.</p>
      
 
     
@@ -2032,19 +2030,16 @@ to the following:</p>
 
 
           <li data-md="">
-           <p>If <var>canWrite</var> is <code>false</code>, the user
- agent MUST throw a <a data-link-type="dfn">SecurityError</a>
- exception and terminate this algorithm.</p>
+           <p>If <var>canWrite</var> is <code>false</code>, throw a <a data-link-type="dfn">SecurityError</a> exception and terminate
+ this algorithm.</p>
            
 
 
           <li data-md="">
-           <p>Else, the user agent MUST set the <a data-link-type="dfn" href="#current-confidentiality-label">current
- confidentiality label</a> to <var>conf</var>.</p>
+           <p>Else, set the <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a> to <var>conf</var>.</p>
            
 </ol></ul>
-       
-      
+             
       
       
       <dt><dfn class="idl-code" data-dfn-for="COWL" data-dfn-type="attribute" data-export="" id="dom-cowl-integrity" title="COWL/integrity">integrity<a class="self-link" href="#dom-cowl-integrity"></a></dfn>, <span> of type <a data-link-type="idl-name" href="#label1">Label</a></span>
@@ -2084,19 +2079,17 @@ to the following:</p>
 
 
           <li data-md="">
-           <p>If <var>canWrite</var> is <code>false</code>, the user
- agent MUST throw a <a data-link-type="dfn">SecurityError</a>
+           <p>If <var>canWrite</var> is <code>false</code>,
+ throw a <a data-link-type="dfn">SecurityError</a>
  exception and terminate this algorithm.</p>
            
 
 
           <li data-md="">
-           <p>Else, the user agent MUST set the <a data-link-type="dfn" href="#current-integrity-label">current
- integrity label</a> to <var>int</var>.</p>
+           <p>Else, set the <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a> to <var>int</var>.</p>
            
 </ol></ul>
-       
-      
+             
       
       
       <dt><dfn class="idl-code" data-dfn-for="COWL" data-dfn-type="attribute" data-export="" id="dom-cowl-privilege" title="COWL/privilege">privilege<a class="self-link" href="#dom-cowl-privilege"></a></dfn>, <span> of type <a data-link-type="idl-name" href="#privilege0">Privilege</a></span>
@@ -2154,18 +2147,18 @@ and set the <a data-link-type="dfn" href="#current-privilege">current privilege<
     
      <h4 class="heading settled" data-level="3.3.3" id="COWL-examples"><span class="secno">3.3.3. </span><span class="content">Examples</span><a class="self-link" href="#COWL-examples"></a></h4>
      
-    Below are several examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> API.  <a href="#privilege-examples">§3.2.3 Examples</a> contains
-    several examples on how to set the <a data-link-type="dfn" href="#context-privilege">context privileges</a>.
+    Below are several examples showing how to use the <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> API.  The <a href="#privilege-examples">§3.2.3 Examples</a> illustrate
+    the use of <a data-link-type="dfn" href="#context-privilege">context privileges</a>.
 
 
     
-     <div class="example" id="example-a61f2dcf"><a class="self-link" href="#example-a61f2dcf"></a>
+     <div class="example" id="example-b7acba42"><a class="self-link" href="#example-b7acba42"></a>
       Enabling COWL <a data-link-type="dfn" href="#confinement-mode">confinement mode</a> for the current context is
       straightforward:
       
-      <pre><code>COWL.isEnabled() === false;
-COWL.enable();
-COWL.isEnabled() === true;
+      <pre><code><a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>.isEnabled() === false;
+<a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>.enable();
+<a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>.isEnabled() === true;
 </code></pre>
       
 
@@ -2179,12 +2172,12 @@ COWL.isEnabled() === true;
      
 
     
-     <div class="example" id="example-4d73d870"><a class="self-link" href="#example-4d73d870"></a>
+     <div class="example" id="example-5e3e8c6a"><a class="self-link" href="#example-5e3e8c6a"></a>
       An author can set the <a data-link-type="dfn" href="#context-integrity-label">context integrity label</a> to ensure
-      that the context can only receive messages from the same origin
-      (another context or server).
+      that the context can only receive messages from
+      (another context or server of) the same origin:
       
-      <pre><code>COWL.integrity = new Label(window.location.origin);
+      <pre><code><a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>.integrity = new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>(window.location.origin);
 </code></pre>
       
     
@@ -2192,26 +2185,25 @@ COWL.isEnabled() === true;
      
 
     
-     <div class="example" id="example-355efe82"><a class="self-link" href="#example-355efe82"></a>
+     <div class="example" id="example-382d01cf"><a class="self-link" href="#example-382d01cf"></a>
       The author of <code>https://mashup.com</code> can set the <a data-link-type="dfn" href="#context-confidentiality-label">context
       confidentiality label</a> to receive data sensitive from
       <code>https://provider.com</code>:
       
-      <pre><code>COWL.confidentiality = new Label('https://provider.com');
+      <pre><code><a class="idl-code" data-link-type="interface" href="#cowl">COWL</a>.confidentiality = new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>('https://provider.com');
 </code></pre>
       
 
       <p>At this point, the context can only communicate with
-      <code>https://provider.com</code>. The data provide can 
-      ensures that the context is appropriately labeled before
-      inspecting the HTTP response by inspecting and setting
-      appropriate labels using the <code>Sec-COWL</code> header (see
-      <a href="#header">§3.5 The Sec-COWL HTTP Headers</a>).</p>
+      <code>https://provider.com</code>. The data provider can 
+      ensures that the context is appropriately labeled as such before
+      it can inspect an HTTP response by setting response labels using
+      the <a href="#response-header"><code>Sec-COWL</code></a> response
+      header.</p>
       
     
      </div>
      
-
   
     </section>
 
@@ -3806,34 +3798,27 @@ of <var>priv</var>.</p>
     <var>objConf</var> and <var>objInt</var>, and returns
     <code>true</code> if the current context is allowed to write to
     (or create) an entity labeled as such; otherwise, it returns
-    <code>false</code>. The user agent MUS use an algorithm whose
+    <code>false</code>. The user agent MUST use an algorithm whose
     behavior is as follows:
 
 
      <ol>
       <li data-md="">
-       <p>Let <var>currentConf</var> be the current <a data-link-type="dfn" href="#context-confidentiality-label">context
+       <p>Let <var>currentConf</var> be the current  context’s <a data-link-type="dfn" href="#effective-confidentiality-label">effective
  confidentiality label</a>.</p>
        
 
 
       <li data-md="">
-       <p>Let <var>currentInt</var> be the current <a data-link-type="dfn" href="#context-integrity-label">context
+       <p>Let <var>currentInt</var> be the current context’s <a data-link-type="dfn" href="#effective-integrity-label">effective
  integrity label</a>.</p>
        
 
 
       <li data-md="">
-       <p>Let <var>privs</var> be the current <a data-link-type="dfn" href="#context-privilege">context privileges</a>.</p>
-       
-
-
-
-      <li data-md="">
-       <p>If <code><var>objConf</var>.<a data-link-type="functionish" href="#dom-label-subsumesother-priv">subsumes(<var>currentConf</var>, <var>privs</var>)</a></code>
- of
- <code><var>currentInt</var>.<a data-link-type="functionish" href="#dom-label-subsumesother-priv">subsumes(<var>objInt</var>, <var>privs</var>)</a></code>
- return <code>false</code>, return <code>false</code>.</p>
+       <p>If <var>objConf</var> does not <a data-link-type="dfn" href="#subsumes">subsume</a>
+ <var>currentConf</var> or if <var>currentInt</var> does not
+ <a data-link-type="dfn" href="#subsumes">subsumes</a> <var>objInt</var>, return <code>false</code>.</p>
        
 
 

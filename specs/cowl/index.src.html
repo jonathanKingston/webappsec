@@ -409,6 +409,10 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     sensitive data (e.g., when sending it to the user agent) appropriately
     (e.g., <code>user2</code>'s data is labeled
     <code><a>Label</a>("https://university.edu")._or("user2")</code>).
+
+    The <a  href="#university-example-js">sub-origin isolation in
+    JavaScript</a> shows how this example can be implemented using the
+    COWL JavaScript APIs.
   </div>
 
   <div class="note">
@@ -1031,11 +1035,11 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
   </section>
 
   <section>
-    <h3 id="privileges">Privileges</h3>
+  <h3 id="privileges">Privileges</h3>
 
     Each <a>privilege</a> is an immutable object represented by a <a
-        interface>Privilege</a> object, the interface of which is
-      defined in this section.
+    interface>Privilege</a> object, the interface of which is
+    defined in this section.
 
     A <a interface>Privilege</a> MUST have an <dfn>internal privilege
     label</dfn>.
@@ -1054,8 +1058,8 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     is said to be <dfn>dropping privileges</dfn>.
 
     A privilege <var>P1</var> is said to be a <dfn>delegated
-      privilege</dfn> of <var>P2</var> if <var>P2</var>'s <a>internal
-      privilege label</a> <a>subsumes</a> <var>P1</var>'s <a>internal
+    privilege</dfn> of <var>P2</var> if <var>P2</var>'s <a>internal
+    privilege label</a> <a>subsumes</a> <var>P1</var>'s <a>internal
     privilege label</a>.
 
     <pre class="idl">
@@ -1082,11 +1086,11 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       agent MUST use an algorithm equivalent to the following:
 
       1. Let <var>unique Label</var> be the label produced by invoking the
-      <a>Label(other)</a> constructor with a <a>globally unique
-        identifier</a>.
+         <a>Label(other)</a> constructor with a <a>globally unique
+         identifier</a>.
 
       2. Return a new <a interface>Privilege</a> that has an
-      <a>internal privilege label</a> set to <var>unique Label</var>.
+         <a>internal privilege label</a> set to <var>unique Label</var>.
       </dd>
     </dl>
 
@@ -1104,14 +1108,13 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       created according to an algorithm equivalent to the following:
       
       1. Let <var>internalLabel</var> be the
-      <a>internal privilege label</a> of the 
-      <a interface>Privilege</a> on which the method has been called.
+         <a>internal privilege label</a> of the 
+         <a interface>Privilege</a> on which the method has been called.
 
       2. Let <var>otherLabel</var> be the <a>internal privilege label</a> of
-      the <a argument for="Privilege/combine(other)">other</a> argument.
+         the <a argument for="Privilege/combine(other)">other</a> argument.
 
-      3. Return <code><var>internalLabel</var>.<a method for="Label/and(other)">and</a>(<var>otherLabel</var>)</code>.
-      <!-- TODO: and is not linked -->
+      3. Return <code><var>internalLabel</var>.<a>and(<var>otherLabel</var>)</a></code>.
       </dd>
       <dt><dfn method title="delegate(label)">delegate(Label label)</dfn></dt>
       <dd>
@@ -1120,27 +1123,26 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       created according to an algorithm equivalent to the following:
       
         1. Let <var>internalLabel</var> be the
-        <a>internal privilege label</a> of the 
-        <a interface>Privilege</a> on which the method has been called.
+           <a>internal privilege label</a> of the 
+           <a interface>Privilege</a> on which the method has been called.
 
         2. If the <var>internalLabel</var> does not <a>subsume</a> the
-        <a argument for="Privilege/delegate(label)">label</a>
-        argument, the user agent MUST throw a <a spec="HTML5">SecurityError</a>
-        exception and terminate this algorithm.
+           <a argument for="Privilege/delegate(label)">label</a>
+           argument, throw a <a spec="HTML5">SecurityError</a>
+           exception and terminate this algorithm.
 
-        3. Else, the user agent MUST return a new <a interface>Privilege</a> that has an
-        <a>internal privilege label</a> set to
-        <a argument for="Privilege/delegate(label)">label</a>.
+        3. Else, return a new <a interface>Privilege</a> that has an
+           <a>internal privilege label</a> set to
+           <a argument for="Privilege/delegate(label)">label</a>.
       </dd>
     </dl>
 
     <div class="note">
       Note, the <a interface>Privilege</a> constructors and the
-      <a>combine()</a> and <a>delegate()</a> methods provide a way
-      creating privileges.  Context code must still take
-      <a>ownership</a> of a privilege or set the <a>current
-      privilege</a> to it for the privilege to be used
-      (to bypass label restrictions).
+      <a>combine()</a> and <a>delegate()</a> methods only provide ways
+      for creating privileges.  Context code must still take
+      <a>ownership</a> of or set the <a>current privilege</a> to the
+      privilege for it to be used (to bypass label restrictions).
     </div>
 
     <h4 id="privilege-examples">Examples</h4>
@@ -1156,11 +1158,11 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       As a result, reading data that is sensitive to
       <code><a interface>Label</a>("https://example.com")</code> does
       not confine the context. For example, reading a
-      <a interface>LabeledObject</a> whose confidentiality label is
+      <a>labeled object</a> whose confidentiality label is
       <code><a interface>Label</a>("https://example.com")</code> does
       not restrict the context from communicating&mdash;and thus
       accidentally leak that object's contents&mdash;to another origin.
-      To prevent accidental leaks, the author can drop the privilege by
+      To prevent accidental leaks, the author should drop privileges by
       setting the <a>current privilege</a> to an <a>empty
       privilege</a>:
       <pre><code>
@@ -1174,11 +1176,11 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       After this point, if the context reads data with a
       <code><a interface>Label</a>("https://example.com")</code>
       confidentiality label, COWL will restrict it to communicating
-      to <code>https://example.com</code>.
+      with <code>https://example.com</code>.
     </div>
 
     <div class="example">
-      Consider an extension to password-checker example of
+      Consider an extension to the password strength checker example of
       [[#examples-checker]] that uses <a>FreshPrivilege()</a>s to
       ensure that the untrusted checker cannot communicate with any
       entity other than the parent context.
@@ -1196,7 +1198,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         checker.postMessage(labeledPassword, "https://untrusted.com");
       </code></pre>
       Once the <code>https://untrusted.com</code> context reads the
-      password is will be <a>tainted</a> by the unique, <a>internal
+      password it will be <a>tainted</a> by the unique, <a>internal
       privilege label</a> of <code>priv</code>; the unique origin
       ensures that it cannot send the password to, for example, public
       parts of <code>https://example.com</code>. Indeed, only the
@@ -1205,15 +1207,14 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     </div>
 
     <div id="university-example-js" class="example">
-
       Consider an implementation of the content isolation example of
       [[#examples-isolation]] using the COWL JavaScript API.
       In this example, the author <code>https://university.edu</code> isolates
       different parts of their site according to
-      users, in this case <code>user1</code>:
+      users. For <code>user1</code> it can do this as follows:
 
-      <pre><code lang-js>
-        // The label corresponding to the university origin:
+      <pre><code>
+        // Create a label corresponding to the university origin:
         var uni = new <a interface>Label</a>(window.location.origin);
         // Create a new label that corresponds to user1's data on university.edu:
         var user1 = uni._or("cowl://user1"); // Here the cowl:// is an arbitrary <a>scheme</a>
@@ -1229,11 +1230,10 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       it cannot disseminate data that is
       sensitive to the university (e.g., which is labeled
       <code><a interface>Label</a>("https://university.edu")</code>)
-      or another user's data (e.g., <code>user2</code>'s data is
+      or to another user (e.g., <code>user2</code>'s data is
       labeled
       <code><a interface>Label</a>("https://university.edu")._or("cowl://user2")</code>).
     </div>
-
   </section>
 
   <section>

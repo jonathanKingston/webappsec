@@ -742,39 +742,39 @@ COWL.privilege = new <a data-link-type="functionish" href="#dom-privilege-privil
       
 
   
-      <div class="example" id="example-291b7884"><a class="self-link" href="#example-291b7884"></a>
-   The confidentiality label
-   <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").<a data-link-type="dfn">or</a>("https://b.com")</code>,
-   when associated with a context,
-   restricts the context to sending data to
-   <code>https://a.com</code> or <code>https://b.com</code>, but
-   no other origins.
-   This context label reflects the fact the context may contain data
-   that is sensitive to either <code>https://a.com</code> or
-   <code>https://b.com</code>; it is thus only safe for it to
-   communicate <em>to</em> these origins.
+      <div class="example" id="example-41708dbe"><a class="self-link" href="#example-41708dbe"></a>
+    The confidentiality label
+    <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").<a data-link-type="dfn">or</a>("https://b.com")</code>,
+    when associated with a context,
+    restricts the context to sending data to
+    <code>https://a.com</code> or <code>https://b.com</code>, but
+    no other origins.
+    This context label reflects the fact the context may contain data
+    that is sensitive to either <code>https://a.com</code> or
+    <code>https://b.com</code>; it is thus only safe for it to
+    communicate <em>to</em> these origins.
 
 
        <p class="note" role="note">Note, because the context can communicate data to either origin,
-   another context associated with the more restricting
-   label <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code> cannot
-   send it data. Doing so would allow for data confidential
-   to <code>https://a.com</code> to be leaked to <code>https://b.com</code>.</p>
+    another context associated with the more restricting
+    label <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com")</code> cannot
+    send it data. Doing so would allow for data confidential
+    to <code>https://a.com</code> to be leaked to <code>https://b.com</code>.</p>
        
   
       </div>
       
 
   
-      <div class="example" id="example-d3a289e9"><a class="self-link" href="#example-d3a289e9"></a>
-   The integrity label
-   <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").<a data-link-type="dfn">or</a>("https://b.com")</code>,
-   when associated with a context, restricts the context to
-   receiving data from (a context or server) that is at least as
-   trustworthy as <code>https://a.com</code> or
-   <code>https://b.com</code>.  This context label ensures that
-   the code running in the context can only be influenced by
-   <code>https://a.com</code> and <code>https://b.com</code>.
+      <div class="example" id="example-4d160c46"><a class="self-link" href="#example-4d160c46"></a>
+    The integrity label
+    <code><a class="idl-code" data-link-type="interface" href="#label1">Label</a>("https://a.com").<a data-link-type="dfn">or</a>("https://b.com")</code>,
+    when associated with a context, restricts the context to
+    receiving data from (a context or server) that is at least as
+    trustworthy as <code>https://a.com</code> or
+    <code>https://b.com</code>.  This context label ensures that
+    the code running in the context can only be influenced by
+    <code>https://a.com</code> and <code>https://b.com</code>.
   </div>
       
 
@@ -823,48 +823,55 @@ reflects the fact that the object (produced by
       <p>Mathematically, a label is a <em>conjunctive normal form</em>
   formula over origins <a data-link-type="biblio" href="#biblio-dclabels">[DCLabels]</a>.</p>
       
+  
+      <ul>
+    
+       <li>
+      A label is in <dfn data-dfn-type="dfn" data-noexport="" id="normal-form">normal form<a class="self-link" href="#normal-form"></a></dfn> if reducing it according to
+      the <a data-link-type="dfn" href="#label-normal-form-reduction">label normal form reduction</a> algorithm produces the
+      same value.
 
 
-      <p>A label is in <dfn data-dfn-type="dfn" data-noexport="" id="normal-form">normal form<a class="self-link" href="#normal-form"></a></dfn> if reducing it according to
-  the <a data-link-type="dfn" href="#label-normal-form-reduction">label normal form reduction</a> algorithm produces the
-  same value.</p>
+        <p>Two labels are <dfn data-dfn-type="dfn" data-noexport="" id="equivalent">equivalent<a class="self-link" href="#equivalent"></a></dfn> if their <a data-link-type="dfn" href="#normal-form">normal form</a>
+      values are mathematically equal.</p>
+        
+
+
+        <p>A label <var>A</var> <dfn data-dfn-type="dfn" data-noexport="" id="subsumes">subsumes<a class="self-link" href="#subsumes"></a></dfn> (or is more
+      <dfn data-dfn-type="dfn" data-noexport="" id="restricting">restricting<a class="self-link" href="#restricting"></a></dfn> than) another label
+      <var>B</var> if the result of running the <a data-link-type="dfn" href="#label-subsumption">label subsumption</a>
+      algorithm on the <a data-link-type="dfn" href="#normal-form">normal form</a>s of <var>A</var> and
+      <var>B</var> returns <code>true</code>. Labels are partially
+      ordered according to this subsumes relation.</p>
+        
+    
+       
+    
+       <li>
+      The <dfn data-dfn-type="dfn" data-noexport="" id="current-confidentiality-label">current confidentiality label<a class="self-link" href="#current-confidentiality-label"></a></dfn> is the
+      confidentiality label associated with the current context.
+      <a href="#context-labels">§3.3 Labeled Contexts</a> specifies how labels are associated with
+      contexts.
+    
+       
+    
+       <li>
+      The <dfn data-dfn-type="dfn" data-noexport="" id="current-integrity-label">current integrity label<a class="self-link" href="#current-integrity-label"></a></dfn> is the
+      integrity label associated with the current context.
+      <a href="#context-labels">§3.3 Labeled Contexts</a> specifies how labels are associated with
+      contexts.
+    
+       
+    
+       <li>
+      When reading a <a data-link-type="dfn" href="#labeled-objects">labeled object</a>, a context gets
+      <dfn data-dfn-type="dfn" data-noexport="" id="tainted">tainted<a class="self-link" href="#tainted"></a></dfn>, i.e., its <a data-link-type="dfn" href="#context-labels0">context labels</a> are updated by
+      invoking <a data-link-type="dfn" href="#context-tainting">context tainting</a> algorithm, to reflect that it
+      has read sensitive (of potentially different trustworthiness)
+      data and should be confined accordingly.
+  
+      </ul>
       
-
-
-      <p>Two labels are <dfn data-dfn-type="dfn" data-noexport="" id="equivalent">equivalent<a class="self-link" href="#equivalent"></a></dfn> if their <a data-link-type="dfn" href="#normal-form">normal form</a>
-  values are mathematically equal.</p>
-      
-
-
-      <p>A label <var>A</var> <dfn data-dfn-type="dfn" data-noexport="" id="subsumes">subsumes<a class="self-link" href="#subsumes"></a></dfn> (or is more
-  <dfn data-dfn-type="dfn" data-noexport="" id="restricting">restricting<a class="self-link" href="#restricting"></a></dfn> than) another label
-  <var>B</var> if the result of running the <a data-link-type="dfn" href="#label-subsumption">label subsumption</a>
-  algorithm on the <a data-link-type="dfn" href="#normal-form">normal form</a>s of <var>A</var> and
-  <var>B</var> returns <code>true</code>. Labels are partially
-  ordered according to this subsumes relation.</p>
-      
-
-
-     <li>
-  The <dfn data-dfn-type="dfn" data-noexport="" id="current-confidentiality-label">current confidentiality label<a class="self-link" href="#current-confidentiality-label"></a></dfn> is the
-  confidentiality label associated with the current context.
-  <a href="#context-labels">§3.3 Labeled Contexts</a> specifies how labels are associated with
-  contexts.
-
-
-     <li>
-  The <dfn data-dfn-type="dfn" data-noexport="" id="current-integrity-label">current integrity label<a class="self-link" href="#current-integrity-label"></a></dfn> is the
-  integrity label associated with the current context.
-  <a href="#context-labels">§3.3 Labeled Contexts</a> specifies how labels are associated with
-  contexts.
-
-
-     <li>
-  When reading a <a data-link-type="dfn" href="#labeled-objects">labeled object</a>, a context gets
-  <dfn data-dfn-type="dfn" data-noexport="" id="tainted">tainted<a class="self-link" href="#tainted"></a></dfn>, i.e., its <a data-link-type="dfn" href="#context-labels0">context labels</a> are updated by
-  invoking <a data-link-type="dfn" href="#context-tainting">context tainting</a> algorithm, to reflect that it
-  has read sensitive (of potentially different trustworthiness)
-  data and should be confined accordingly.
 </ol>
   
     <h3 class="heading settled" data-level="2.2" id="privileges"><span class="secno">2.2. </span><span class="content">Privileges</span><a class="self-link" href="#privileges"></a></h3>
@@ -1035,23 +1042,23 @@ reflects the fact that the object (produced by
      
       
      <dd>
-      COWL provides a <a class="idl-code" data-link-type="interface" href="#label1">Label</a> interface for specifying
-      confidentiality and integrity policies in terms of
-      <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origins</a>. <a data-link-type="dfn" href="#label">Labels</a> can be associated with data and
-      content using the JavaScript <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> and
-      <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> interfaces or the <code>Sec-COWL</code>
-      HTTP headers.
+        COWL provides a <a class="idl-code" data-link-type="interface" href="#label1">Label</a> interface for specifying
+        confidentiality and integrity policies in terms of
+        <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origins</a>. <a data-link-type="dfn" href="#label">Labels</a> can be associated with data and
+        content using the JavaScript <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a> and
+        <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> interfaces or the <code>Sec-COWL</code>
+        HTTP headers.
       
      
       
      <dt>Explicit authority via <a data-link-type="dfn" href="#privilege">privileges</a><a data-link-type="dfn" href="#current-confidentiality-label"></a><a data-link-type="dfn">
       </a>
      <dd><a data-link-type="dfn">
-      The COWL framework provides a JavaScript </a><a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> interface for operating on and minting
-      new <a data-link-type="dfn" href="#privilege">privileges</a>.  The <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> JavaScript
-      interface and <code>Sec-COWL</code> HTTP response header can be used
-      used to explicitly control the authority of a context by setting
-      the <a data-link-type="dfn" href="#context-privilege">context privilege</a>.
+        The COWL framework provides a JavaScript </a><a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> interface for operating on and minting
+        new <a data-link-type="dfn" href="#privilege">privileges</a>.  The <a class="idl-code" data-link-type="interface" href="#cowl">COWL</a> JavaScript
+        interface and <code>Sec-COWL</code> HTTP response header can be used
+        used to explicitly control the authority of a context by setting
+        the <a data-link-type="dfn" href="#context-privilege">context privilege</a>.
       
      
       
@@ -1059,12 +1066,12 @@ reflects the fact that the object (produced by
      
       
      <dd>
-      COWL extends <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing contexts</a> and <a data-link-type="dfn" href="http://www.w3.org/TR/workers/#worker">Workers</a> with
-      labels and privileges, which are used when enforcing
-      confinement, i.e., when restricting a context’s network and
-      cross-context messaging communication.  This document defines
-      the necessary changes and extensions to existing browser
-      constructs and algorithms to enforce confinement.
+        COWL extends <a data-link-type="dfn" href="http://www.w3.org/TR/html5/browsers.html#windows">browsing contexts</a> and <a data-link-type="dfn" href="http://www.w3.org/TR/workers/#worker">Workers</a> with
+        labels and privileges, which are used when enforcing
+        confinement, i.e., when restricting a context’s network and
+        cross-context messaging communication.  This document defines
+        the necessary changes and extensions to existing browser
+        constructs and algorithms to enforce confinement.
       
      
     
@@ -1144,17 +1151,17 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lab
        <ol>
         <li data-md="">
          <p>If the <a class="idl-code" data-link-type="argument" href="#dom-label-label-origin-origin">origin</a>
-argument is not a <a data-link-type="dfn" href="http://dom.spec.whatwg.org/#concept-document-url">URL</a>, the constructor MUST throw a
-<code>TypeError</code> exception <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> and
-terminate this algorithm.</p>
+  argument is not a <a data-link-type="dfn" href="http://dom.spec.whatwg.org/#concept-document-url">URL</a>, the constructor MUST throw a
+  <code>TypeError</code> exception <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> and
+  terminate this algorithm.</p>
          
 
 
         <li data-md="">
          <p>Else, it MUST return a new <a data-link-type="dfn" href="#label">Label</a> that contains a
-<a data-link-type="dfn" href="#label-set">label set</a> of a single <a data-link-type="dfn" href="#disjunction-set">disjunction set</a>, which
-itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org/#concept-document-url">URL</a> corresponding to the
-<a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a> of the parameter.</p>
+ <a data-link-type="dfn" href="#label-set">label set</a> of a single <a data-link-type="dfn" href="#disjunction-set">disjunction set</a>, which
+ itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org/#concept-document-url">URL</a> corresponding to the
+ <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6454#section-3.2">origin</a> of the parameter.</p>
          
 </ol>
              
@@ -1223,21 +1230,21 @@ itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org
        <ol>
         <li data-md="">
          <p>Let <var>O</var> be the
-<a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> argument.</p>
+ <a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> argument.</p>
          
 
 
         <li data-md="">
          <p>If the type of <a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> is
-<a data-link-type="dfn">DOMString</a>, run the following sub-steps:</p>
+  <a data-link-type="dfn">DOMString</a>, run the following sub-steps:</p>
          
 
 
          <ol>
           <li data-md="">
            <p>Set <var>O</var> to the result of invoking the
-<a data-link-type="functionish" href="#dom-label-label">Label(other)</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> as an argument, if the
-constructor did not raise an exception.</p>
+ <a data-link-type="functionish" href="#dom-label-label">Label(other)</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> as an argument, if the
+ constructor did not raise an exception.</p>
            
 
 
@@ -1249,9 +1256,9 @@ constructor did not raise an exception.</p>
 
         <li data-md="">
          <p>Return a new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>, in <a data-link-type="dfn" href="#normal-form">normal form</a>, which is
-<a data-link-type="dfn" href="#equivalent">equivalent</a> to adding <var>O</var>’s <a data-link-type="dfn" href="#label-set">label set</a> to
-the <a data-link-type="dfn" href="#label-set">label set</a> of the <a class="idl-code" data-link-type="interface" href="#label1">Label</a> on which
-the method was invoked.</p>
+ <a data-link-type="dfn" href="#equivalent">equivalent</a> to adding <var>O</var>’s <a data-link-type="dfn" href="#label-set">label set</a> to
+ the <a data-link-type="dfn" href="#label-set">label set</a> of the <a class="idl-code" data-link-type="interface" href="#label1">Label</a> on which
+ the method was invoked.</p>
          
 </ol>
              
@@ -1267,21 +1274,21 @@ the method was invoked.</p>
        <ol>
         <li data-md="">
          <p>Let <var>O</var> be the
-<a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> argument.</p>
+ <a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> argument.</p>
          
 
 
         <li data-md="">
          <p>If the type of <a class="idl-code" data-link-type="argument" href="#dom-label-_or-other-other">other</a> is
-<a data-link-type="dfn">DOMString</a>, run the following sub-steps:</p>
+  <a data-link-type="dfn">DOMString</a>, run the following sub-steps:</p>
          
 
 
          <ol>
           <li data-md="">
            <p>Set <var>O</var> to the result of invoking the
-<a data-link-type="functionish" href="#dom-label-label">Label(other)</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-_or-other-other">other</a> as an argument, if the
-constructor did not raise an exception.</p>
+ <a data-link-type="functionish" href="#dom-label-label">Label(other)</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-_or-other-other">other</a> as an argument, if the
+ constructor did not raise an exception.</p>
            
 
 
@@ -1293,10 +1300,10 @@ constructor did not raise an exception.</p>
 
         <li data-md="">
          <p>Return a new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>, in <a data-link-type="dfn" href="#normal-form">normal form</a>,
-which is <a data-link-type="dfn" href="#equivalent">equivalent</a> to adding each element of each
-<a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of <var>O</var>’s <a data-link-type="dfn" href="#label-set">label set</a> to
-each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the <a data-link-type="dfn" href="#label-set">label set</a> of the
-<a class="idl-code" data-link-type="interface" href="#label1">Label</a> on which the method was called.</p>
+ which is <a data-link-type="dfn" href="#equivalent">equivalent</a> to adding each element of each
+ <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of <var>O</var>’s <a data-link-type="dfn" href="#label-set">label set</a> to
+ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the <a data-link-type="dfn" href="#label-set">label set</a> of the
+ <a class="idl-code" data-link-type="interface" href="#label1">Label</a> on which the method was called.</p>
          
 </ol>
              
@@ -1613,10 +1620,10 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="pri
       
       
       <dd>
-      When invoking the <a data-link-type="functionish" href="#dom-privilege-privilege">Privilege()</a> constructor, the user
-      agent MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> that has an
-      <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> set to
-      <code><a data-link-type="functionish" href="#dom-label-label">Label()</a></code>.
+        When invoking the <a data-link-type="functionish" href="#dom-privilege-privilege">Privilege()</a> constructor, the user
+        agent MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> that has an
+        <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> set to
+        <code><a data-link-type="functionish" href="#dom-label-label">Label()</a></code>.
       
       
       
@@ -1624,8 +1631,8 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="pri
       
       
       <dd>
-      When invoking the <a data-link-type="functionish" href="#dom-privilege-freshprivilege">FreshPrivilege()</a> constructor, the user
-      agent MUST use an algorithm equivalent to the following:
+        When invoking the <a data-link-type="functionish" href="#dom-privilege-freshprivilege">FreshPrivilege()</a> constructor, the user
+        agent MUST use an algorithm equivalent to the following:
 
 
        <ol>
@@ -1641,6 +1648,7 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="pri
  <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> set to <var>unique Label</var>.</p>
          
 </ol>
+             
       
     
      </dl>
@@ -1656,8 +1664,8 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="pri
       
       
       <dd>
-      The user agent MUST return the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> of the
-      <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> on which the method has been called.
+        The user agent MUST return the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> of the
+        <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> on which the method has been called.
       
       
       
@@ -1665,9 +1673,9 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="pri
       
       
       <dd>
-      The user agent MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> whose <a data-link-type="dfn" href="#internal-privilege-label">internal
-      privilege label</a> is <a data-link-type="dfn" href="#equivalent">equivalent</a> to a <a data-link-type="dfn" href="#label">label</a>
-      created according to an algorithm equivalent to the following:
+        The user agent MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> whose <a data-link-type="dfn" href="#internal-privilege-label">internal
+        privilege label</a> is <a data-link-type="dfn" href="#equivalent">equivalent</a> to a <a data-link-type="dfn" href="#label">label</a>
+        created according to an algorithm equivalent to the following:
 
 
        <ol>
@@ -1688,15 +1696,16 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="pri
          <p>Return <code><var>internalLabel</var>.<a data-link-type="functionish" href="#dom-label-and">and(<var>otherLabel</var>)</a></code>.</p>
          
 </ol>
+             
       
-
+      
       <dt><dfn class="idl-code" data-dfn-for="Privilege" data-dfn-type="method" data-export="" data-lt="delegate(label)" id="dom-privilege-delegate" title="delegate(label)">delegate(Label label)<a class="self-link" href="#dom-privilege-delegate"></a></dfn>
       
-
+      
       <dd>
-The user agent MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> whose <a data-link-type="dfn" href="#internal-privilege-label">internal
-privilege label</a> is <a data-link-type="dfn" href="#equivalent">equivalent</a> to a <a data-link-type="dfn" href="#label">label</a>
-created according to an algorithm equivalent to the following:
+        The user agent MUST return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> whose <a data-link-type="dfn" href="#internal-privilege-label">internal
+        privilege label</a> is <a data-link-type="dfn" href="#equivalent">equivalent</a> to a <a data-link-type="dfn" href="#label">label</a>
+        created according to an algorithm equivalent to the following:
 
 
        <ol>
@@ -1721,6 +1730,7 @@ created according to an algorithm equivalent to the following:
  <a class="idl-code" data-link-type="argument" href="#dom-privilege-delegate-label-label">label</a>.</p>
          
 </ol>
+             
       
     
      </dl>
@@ -2125,9 +2135,9 @@ and set the <a data-link-type="dfn" href="#current-privilege">current privilege<
       
       
       <dd>
-      On invocation, the user agent MUST enable <a data-link-type="dfn" href="#confinement-mode">confinement
-      mode</a> by setting the current context’s <a data-link-type="dfn" href="#cowl-state">COWL state</a>
-      confinement mode status.
+        On invocation, the user agent MUST enable <a data-link-type="dfn" href="#confinement-mode">confinement
+        mode</a> by setting the current context’s <a data-link-type="dfn" href="#cowl-state">COWL state</a>
+        confinement mode status.
       
       
       
@@ -2266,52 +2276,53 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lab
 
 
        <p>When invoking the <a data-link-type="functionish" href="#dom-labeledobject-labeledobject">LabeledObject()</a> constructor, the user
-      agent MUST use an algorithm equivalent to the following:</p>
+        agent MUST use an algorithm equivalent to the following:</p>
        
 
 
        <ol>
         <li data-md="">
          <p>Let <var>obj clone</var> be the result of obtaining a
-<a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structured clone</a> of the <a class="idl-code" data-link-type="argument">protectedObject</a> argument.</p>
+ <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structured clone</a> of the <a class="idl-code" data-link-type="argument">protectedObject</a> argument.</p>
          
 
 
         <li data-md="">
          <p>Let <var>conf</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-confidentiality">confidentiality</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-labeledobject-obj-labels-labels">labels</a>
-argument, if it is set.  Otherwise, let <var>conf</var> be
-the <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a>.</p>
+ argument, if it is set.  Otherwise, let <var>conf</var> be
+ the <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a>.</p>
          
 
 
         <li data-md="">
          <p>Let <var>int</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-integrity">integrity</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-labeledobject-obj-labels-labels">labels</a>
-parameter, if it is set.  Otherwise, let <var>int</var> be the
-<a data-link-type="dfn" href="#current-integrity-label">current integrity label</a>.</p>
+ parameter, if it is set.  Otherwise, let <var>int</var> be the
+ <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a>.</p>
          
 
 
         <li data-md="">
          <p>Let <var>canWrite</var> be the result of invoking the <a data-link-type="dfn" href="#write-check0">write
-check</a> algorithm with the <var>conf</var> and <var>int</var> labels.</p>
+ check</a> algorithm with the <var>conf</var> and <var>int</var> labels.</p>
          
 
 
         <li data-md="">
          <p>If <var>canWrite</var> is <code>false</code>, the constructor
-MUST throw a <a data-link-type="dfn">SecurityError</a> exception
-and terminate this algorithm.</p>
+ MUST throw a <a data-link-type="dfn">SecurityError</a> exception
+ and terminate this algorithm.</p>
          
 
 
         <li data-md="">
          <p>Else, the user agent MUST return a new
-<a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>, with the <a data-link-type="dfn" href="#protected-object">protected object</a>
-set to <var>obj clone</var>, the confidentiality label set to
-<var>conf</var>, and the integrity
-label set to <var>int</var>.</p>
+ <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>, with the <a data-link-type="dfn" href="#protected-object">protected object</a>
+ set to <var>obj clone</var>, the confidentiality label set to
+ <var>conf</var>, and the integrity
+ label set to <var>int</var>.</p>
          
 </ol>
+             
       
 
       
@@ -2421,8 +2432,8 @@ influenced the computation.</p>
       
       
       <dd>
-      On invocation, the user agent MUST use an algorithm equivalent
-      to the following:
+        On invocation, the user agent MUST use an algorithm equivalent
+        to the following:
 
 
        <ol>
@@ -2488,6 +2499,7 @@ influenced the computation.</p>
  <var>newConf</var>, and the integrity label set to <var>newInt</var>.</p>
          
 </ol>
+             
       
     
      </dl>
@@ -3298,9 +3310,9 @@ req.send();
        <ol>
         <li data-md="">
          <p>If <a href="#process-response">process
- <var>response</var> to <var>request</var> as COWL</a>
- returns <strong>blocked</strong>, set <var>response</var>
- to a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error">network error</a>.</p>
+   <var>response</var> to <var>request</var> as COWL</a>
+   returns <strong>blocked</strong>, set <var>response</var>
+   to a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error">network error</a>.</p>
          
 </ol></ol>
      
@@ -3564,7 +3576,7 @@ blocks access to <code>localStorage</code>. <a data-link-type="biblio" href="#bi
          <ol>
           <li data-md="">
            <p>Remove every <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> in <var>lset</var> that
-<var>dset</var> is a subset of.</p>
+ <var>dset</var> is a subset of.</p>
            
 
 
@@ -3665,7 +3677,7 @@ a2.<a data-link-type="functionish" href="#dom-label-equals">equals(a)</a>;
      <ol>
       <li data-md="">
        <p>Let <var>privLabel</var> be the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a>
-of <var>priv</var>.</p>
+ of <var>priv</var>.</p>
        
 
 
@@ -4563,15 +4575,15 @@ of <var>priv</var>.</p>
      
     
      <dd>
-    Labeling a resource with the <code>application/labeled-json</code>
-    type asserts that the resource is a JSON text that consists of an
-    object with a single entry called <code>"confidentiality"</code>
-    consisting of an array of entries, each of which consists of an
-    array of strings, a single entry called <code>"integrity"</code>
-    consisting of an array of entries, each of which consists of an
-    array of strings, and a single entry called <code>"object"</code>
-    consisting of a JSON object.  The relevant specifications are the
-    JSON specification and this specification. <a data-link-type="biblio" href="#biblio-json">[JSON]</a>
+      Labeling a resource with the <code>application/labeled-json</code>
+      type asserts that the resource is a JSON text that consists of an
+      object with a single entry called <code>"confidentiality"</code>
+      consisting of an array of entries, each of which consists of an
+      array of strings, a single entry called <code>"integrity"</code>
+      consisting of an array of entries, each of which consists of an
+      array of strings, and a single entry called <code>"object"</code>
+      consisting of a JSON object.  The relevant specifications are the
+      JSON specification and this specification. <a data-link-type="biblio" href="#biblio-json">[JSON]</a>
     
      
 

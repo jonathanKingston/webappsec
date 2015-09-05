@@ -127,6 +127,8 @@ spec: ENCODING; urlPrefix: https://encoding.spec.whatwg.org/
   type: dfn
     text: utf-8 decode; url: utf-8-decode
 spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
+  type: dfn
+    text: localStorage; url: the-localstorage-attribute
 </pre>
 
 <!-- BIBLIOGRAPHY -->
@@ -508,33 +510,33 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       [[#context-labels]].
 
       <div class="example">
-       The confidentiality label
-       <code><a interface>Label</a>("https://a.com").<a>or</a>("https://b.com")</code>,
-       when associated with a context,
-       restricts the context to sending data to
-       <code>https://a.com</code> or <code>https://b.com</code>, but
-       no other origins.
-       This context label reflects the fact the context may contain data
-       that is sensitive to either <code>https://a.com</code> or
-       <code>https://b.com</code>; it is thus only safe for it to
-       communicate <em>to</em> these origins.
+        The confidentiality label
+        <code><a interface>Label</a>("https://a.com").<a>or</a>("https://b.com")</code>,
+        when associated with a context,
+        restricts the context to sending data to
+        <code>https://a.com</code> or <code>https://b.com</code>, but
+        no other origins.
+        This context label reflects the fact the context may contain data
+        that is sensitive to either <code>https://a.com</code> or
+        <code>https://b.com</code>; it is thus only safe for it to
+        communicate <em>to</em> these origins.
 
-       Note, because the context can communicate data to either origin,
-       another context associated with the more restricting
-       label <code><a interface>Label</a>("https://a.com")</code> cannot
-       send it data. Doing so would allow for data confidential
-       to <code>https://a.com</code> to be leaked to <code>https://b.com</code>.
+        Note, because the context can communicate data to either origin,
+        another context associated with the more restricting
+        label <code><a interface>Label</a>("https://a.com")</code> cannot
+        send it data. Doing so would allow for data confidential
+        to <code>https://a.com</code> to be leaked to <code>https://b.com</code>.
       </div>
 
       <div class="example">
-       The integrity label
-       <code><a interface>Label</a>("https://a.com").<a>or</a>("https://b.com")</code>,
-       when associated with a context, restricts the context to
-       receiving data from (a context or server) that is at least as
-       trustworthy as <code>https://a.com</code> or
-       <code>https://b.com</code>.  This context label ensures that
-       the code running in the context can only be influenced by
-       <code>https://a.com</code> and <code>https://b.com</code>.
+        The integrity label
+        <code><a interface>Label</a>("https://a.com").<a>or</a>("https://b.com")</code>,
+        when associated with a context, restricts the context to
+        receiving data from (a context or server) that is at least as
+        trustworthy as <code>https://a.com</code> or
+        <code>https://b.com</code>.  This context label ensures that
+        the code running in the context can only be influenced by
+        <code>https://a.com</code> and <code>https://b.com</code>.
       </div>
 
       When associated with an object, a confidentiality label
@@ -550,55 +552,57 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         with the following labels:
 
         * Confidentiality:
-        <code><a interface>Label</a>("https://example.com")</code>.
-        This label indicates that the object is sensitive to
-        <code>https://example.com</code>.
+          <code><a interface>Label</a>("https://example.com")</code>.
+          This label indicates that the object is sensitive to
+          <code>https://example.com</code>.
 
         * Integrity: 
-        <code><a interface>Label</a>("https://a.com")</code>.  This
-        label indicates that the object has been endorsed by
-        <code>https://a.com</code>. If
-        <code>https://example.com</code> received the message from an
-        intermediary <code>https://b.com</code> context, this label
-        reflects the fact that the object (produced by
-        <code>https://a.com</code>) was not tampered.
+          <code><a interface>Label</a>("https://a.com")</code>.  This
+          label indicates that the object has been endorsed by
+          <code>https://a.com</code>. If
+          <code>https://example.com</code> received the message from an
+          intermediary <code>https://b.com</code> context, this label
+          reflects the fact that the object (produced by
+          <code>https://a.com</code>) was not tampered.
       </div>
 
   2.  Mathematically, a label is a <em>conjunctive normal form</em>
       formula over origins [[DCLabels]].
-
-      A label is in <dfn>normal form</dfn> if reducing it according to
-      the <a>label normal form reduction</a> algorithm produces the
-      same value.
-
-      Two labels are <dfn>equivalent</dfn> if their <a>normal form</a>
-      values are mathematically equal.
-
-      A label <var>A</var> <dfn>subsumes</dfn> (or is more
-      <dfn>restricting</dfn> than) another label
-      <var>B</var> if the result of running the <a>label subsumption</a>
-      algorithm on the <a>normal form</a>s of <var>A</var> and
-      <var>B</var> returns <code>true</code>. Labels are partially
-      ordered according to this subsumes relation.
-    </li>
-    <li>
-      The <dfn>current confidentiality label</dfn> is the
-      confidentiality label associated with the current context.
-      [[#context-labels]] specifies how labels are associated with
-      contexts.
-    </li>
-    <li>
-      The <dfn>current integrity label</dfn> is the
-      integrity label associated with the current context.
-      [[#context-labels]] specifies how labels are associated with
-      contexts.
-    </li>
-    <li>
-      When reading a <a>labeled object</a>, a context gets
-      <dfn>tainted</dfn>, i.e., its <a>context labels</a> are updated by
-      invoking <a>context tainting</a> algorithm, to reflect that it
-      has read sensitive (of potentially different trustworthiness)
-      data and should be confined accordingly.
+      <ul>
+        <li>
+          A label is in <dfn>normal form</dfn> if reducing it according to
+          the <a>label normal form reduction</a> algorithm produces the
+          same value.
+    
+          Two labels are <dfn>equivalent</dfn> if their <a>normal form</a>
+          values are mathematically equal.
+    
+          A label <var>A</var> <dfn>subsumes</dfn> (or is more
+          <dfn>restricting</dfn> than) another label
+          <var>B</var> if the result of running the <a>label subsumption</a>
+          algorithm on the <a>normal form</a>s of <var>A</var> and
+          <var>B</var> returns <code>true</code>. Labels are partially
+          ordered according to this subsumes relation.
+        </li>
+        <li>
+          The <dfn>current confidentiality label</dfn> is the
+          confidentiality label associated with the current context.
+          [[#context-labels]] specifies how labels are associated with
+          contexts.
+        </li>
+        <li>
+          The <dfn>current integrity label</dfn> is the
+          integrity label associated with the current context.
+          [[#context-labels]] specifies how labels are associated with
+          contexts.
+        </li>
+        <li>
+          When reading a <a>labeled object</a>, a context gets
+          <dfn>tainted</dfn>, i.e., its <a>context labels</a> are updated by
+          invoking <a>context tainting</a> algorithm, to reflect that it
+          has read sensitive (of potentially different trustworthiness)
+          data and should be confined accordingly.
+      </ul>
        
   <h3>Privileges</h3>
   1.  A <dfn>privilege</dfn> is an unforgeable object that corresponds
@@ -726,30 +730,30 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     <dl>
       <dt>Policy specification via <a>origin labels</a></dt>
       <dd>
-      COWL provides a <a interface>Label</a> interface for specifying
-      confidentiality and integrity policies in terms of
-      <a>origins</a>. <a>Labels</a> can be associated with data and
-      content using the JavaScript <a interface>LabeledObject</a> and
-      <a interface>COWL</a> interfaces or the <code>Sec-COWL</code>
-      HTTP headers.
+        COWL provides a <a interface>Label</a> interface for specifying
+        confidentiality and integrity policies in terms of
+        <a>origins</a>. <a>Labels</a> can be associated with data and
+        content using the JavaScript <a interface>LabeledObject</a> and
+        <a interface>COWL</a> interfaces or the <code>Sec-COWL</code>
+        HTTP headers.
       </dd>
       <dt>Explicit authority via <a>privileges<a></dt>
       <dd>
-      The COWL framework provides a JavaScript <a
-      interface>Privilege</a> interface for operating on and minting
-      new <a>privileges</a>.  The <a interface>COWL</a> JavaScript
-      interface and <code>Sec-COWL</code> HTTP response header can be used
-      used to explicitly control the authority of a context by setting
-      the <a>context privilege</a>.
+        The COWL framework provides a JavaScript <a
+        interface>Privilege</a> interface for operating on and minting
+        new <a>privileges</a>.  The <a interface>COWL</a> JavaScript
+        interface and <code>Sec-COWL</code> HTTP response header can be used
+        used to explicitly control the authority of a context by setting
+        the <a>context privilege</a>.
       </dd>
       <dt>Confinement enforcement mechanism</dt>
       <dd>
-      COWL extends <a>browsing contexts</a> and <a>Workers</a> with
-      labels and privileges, which are used when enforcing
-      confinement, i.e., when restricting a context's network and
-      cross-context messaging communication.  This document defines
-      the necessary changes and extensions to existing browser
-      constructs and algorithms to enforce confinement.
+        COWL extends <a>browsing contexts</a> and <a>Workers</a> with
+        labels and privileges, which are used when enforcing
+        confinement, i.e., when restricting a context's network and
+        cross-context messaging communication.  This document defines
+        the necessary changes and extensions to existing browser
+        constructs and algorithms to enforce confinement.
       </dd>
     </dl>
 
@@ -800,14 +804,14 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         MUST use an algorithm equivalent to the following:
 
         1.  If the <a argument for="Label/Label(origin)">origin</a>
-        argument is not a <a>URL</a>, the constructor MUST throw a
-        <code>TypeError</code> exception [[!ECMA-262]] and
-        terminate this algorithm.
+            argument is not a <a>URL</a>, the constructor MUST throw a
+            <code>TypeError</code> exception [[!ECMA-262]] and
+            terminate this algorithm.
 
         2. Else, it MUST return a new <a>Label</a> that contains a
-        <a>label set</a> of a single <a>disjunction set</a>, which
-        itself MUST contain the <a>URL</a> corresponding to the
-        <a>origin</a> of the parameter.
+           <a>label set</a> of a single <a>disjunction set</a>, which
+           itself MUST contain the <a>URL</a> corresponding to the
+           <a>origin</a> of the parameter.
       </dd>
     </dl>
 
@@ -843,45 +847,45 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         The user agent MUST use an algorithm equivalent to the following:
 
         1. Let <var>O</var> be the
-        <a argument for="Label/and(other)">other</a> argument.
+           <a argument for="Label/and(other)">other</a> argument.
 
         1.  If the type of <a argument for="Label/and(other)">other</a> is
-        <a>DOMString</a>, run the following sub-steps:
+            <a>DOMString</a>, run the following sub-steps:
 
-          1. Set <var>O</var> to the result of invoking the
-          <a>Label(other)</a> constructor with <a argument
-          for="Label/and(other)">other</a> as an argument, if the
-          constructor did not raise an exception.
+            1. Set <var>O</var> to the result of invoking the
+               <a>Label(other)</a> constructor with <a argument
+               for="Label/and(other)">other</a> as an argument, if the
+               constructor did not raise an exception.
 
-          2. Else, re-throw the exception and terminate this algorithm.
+            2. Else, re-throw the exception and terminate this algorithm.
 
         2. Return a new <a interface>Label</a>, in <a>normal form</a>, which is
-        <a>equivalent</a> to adding <var>O</var>'s <a>label set</a> to
-        the <a>label set</a> of the <a interface>Label</a> on which
-        the method was invoked.
+           <a>equivalent</a> to adding <var>O</var>'s <a>label set</a> to
+           the <a>label set</a> of the <a interface>Label</a> on which
+           the method was invoked.
       </dd>
       <dt><dfn method title="_or(other)">_or((Label or DOMString) other)</dfn></dt>
       <dd>
         The user agent MUST use an algorithm equivalent to the following:
 
         1. Let <var>O</var> be the
-        <a argument for="Label/and(other)">other</a> argument.
+           <a argument for="Label/and(other)">other</a> argument.
 
         1.  If the type of <a argument for="Label/_or(other)">other</a> is
-        <a>DOMString</a>, run the following sub-steps:
+            <a>DOMString</a>, run the following sub-steps:
 
-          1. Set <var>O</var> to the result of invoking the
-          <a>Label(other)</a> constructor with <a argument
-          for="Label/_or(other)">other</a> as an argument, if the
-          constructor did not raise an exception.
+            1. Set <var>O</var> to the result of invoking the
+               <a>Label(other)</a> constructor with <a argument
+               for="Label/_or(other)">other</a> as an argument, if the
+               constructor did not raise an exception.
 
-          2. Else, re-throw the exception and terminate this algorithm.
+            2. Else, re-throw the exception and terminate this algorithm.
 
         2. Return a new <a interface>Label</a>, in <a>normal form</a>,
-        which is <a>equivalent</a> to adding each element of each
-        <a>disjunction set</a> of <var>O</var>'s <a>label set</a> to
-        each <a>disjunction set</a> of the <a>label set</a> of the
-        <a interface>Label</a> on which the method was called.
+           which is <a>equivalent</a> to adding each element of each
+           <a>disjunction set</a> of <var>O</var>'s <a>label set</a> to
+           each <a>disjunction set</a> of the <a>label set</a> of the
+           <a interface>Label</a> on which the method was called.
       </dd>
       <dt><dfn method title="toJSON()">toJSON()</dfn></dt>
       <dd>
@@ -1075,22 +1079,22 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     <dl dfn-for="Privilege">
       <dt><dfn constructor>Privilege()</dfn></dt>
       <dd>
-      When invoking the <a>Privilege()</a> constructor, the user
-      agent MUST return a new <a interface>Privilege</a> that has an
-      <a>internal privilege label</a> set to
-      <code><a>Label()</a></code>.
+        When invoking the <a>Privilege()</a> constructor, the user
+        agent MUST return a new <a interface>Privilege</a> that has an
+        <a>internal privilege label</a> set to
+        <code><a>Label()</a></code>.
       </dd>
       <dt><dfn constructor>FreshPrivilege()</dfn></dt>
       <dd>
-      When invoking the <a>FreshPrivilege()</a> constructor, the user
-      agent MUST use an algorithm equivalent to the following:
+        When invoking the <a>FreshPrivilege()</a> constructor, the user
+        agent MUST use an algorithm equivalent to the following:
 
-      1. Let <var>unique Label</var> be the label produced by invoking the
-         <a>Label(other)</a> constructor with a <a>globally unique
-         identifier</a>.
+        1. Let <var>unique Label</var> be the label produced by invoking the
+           <a>Label(other)</a> constructor with a <a>globally unique
+           identifier</a>.
 
-      2. Return a new <a interface>Privilege</a> that has an
-         <a>internal privilege label</a> set to <var>unique Label</var>.
+        2. Return a new <a interface>Privilege</a> that has an
+           <a>internal privilege label</a> set to <var>unique Label</var>.
       </dd>
     </dl>
 
@@ -1098,42 +1102,42 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     <dl dfn-for="Privilege">
       <dt><dfn method title="asLabel()">asLabel()</dfn></dt>
       <dd>
-      The user agent MUST return the <a>internal privilege label</a> of the
-      <a interface>Privilege</a> on which the method has been called.
+        The user agent MUST return the <a>internal privilege label</a> of the
+        <a interface>Privilege</a> on which the method has been called.
       </dd>
       <dt><dfn method title="combine(other)">combine(Privilege other)</dfn></dt>
       <dd>
-      The user agent MUST return a new <a interface>Privilege</a> whose <a>internal
-      privilege label</a> is <a>equivalent</a> to a <a>label</a>
-      created according to an algorithm equivalent to the following:
-      
-      1. Let <var>internalLabel</var> be the
-         <a>internal privilege label</a> of the 
-         <a interface>Privilege</a> on which the method has been called.
-
-      2. Let <var>otherLabel</var> be the <a>internal privilege label</a> of
-         the <a argument for="Privilege/combine(other)">other</a> argument.
-
-      3. Return <code><var>internalLabel</var>.<a>and(<var>otherLabel</var>)</a></code>.
-      </dd>
-      <dt><dfn method title="delegate(label)">delegate(Label label)</dfn></dt>
-      <dd>
-      The user agent MUST return a new <a interface>Privilege</a> whose <a>internal
-      privilege label</a> is <a>equivalent</a> to a <a>label</a>
-      created according to an algorithm equivalent to the following:
-      
+        The user agent MUST return a new <a interface>Privilege</a> whose <a>internal
+        privilege label</a> is <a>equivalent</a> to a <a>label</a>
+        created according to an algorithm equivalent to the following:
+        
         1. Let <var>internalLabel</var> be the
            <a>internal privilege label</a> of the 
            <a interface>Privilege</a> on which the method has been called.
-
-        2. If the <var>internalLabel</var> does not <a>subsume</a> the
-           <a argument for="Privilege/delegate(label)">label</a>
-           argument, throw a <a spec="HTML5">SecurityError</a>
-           exception and terminate this algorithm.
-
-        3. Else, return a new <a interface>Privilege</a> that has an
-           <a>internal privilege label</a> set to
-           <a argument for="Privilege/delegate(label)">label</a>.
+  
+        2. Let <var>otherLabel</var> be the <a>internal privilege label</a> of
+           the <a argument for="Privilege/combine(other)">other</a> argument.
+  
+        3. Return <code><var>internalLabel</var>.<a>and(<var>otherLabel</var>)</a></code>.
+      </dd>
+      <dt><dfn method title="delegate(label)">delegate(Label label)</dfn></dt>
+      <dd>
+        The user agent MUST return a new <a interface>Privilege</a> whose <a>internal
+        privilege label</a> is <a>equivalent</a> to a <a>label</a>
+        created according to an algorithm equivalent to the following:
+        
+          1. Let <var>internalLabel</var> be the
+             <a>internal privilege label</a> of the 
+             <a interface>Privilege</a> on which the method has been called.
+  
+          2. If the <var>internalLabel</var> does not <a>subsume</a> the
+             <a argument for="Privilege/delegate(label)">label</a>
+             argument, throw a <a spec="HTML5">SecurityError</a>
+             exception and terminate this algorithm.
+  
+          3. Else, return a new <a interface>Privilege</a> that has an
+             <a>internal privilege label</a> set to
+             <a argument for="Privilege/delegate(label)">label</a>.
       </dd>
     </dl>
 
@@ -1246,8 +1250,8 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     contexts</a> and <a>Workers</a>. The COWL state consists of:
 
     * The <dfn>confinement mode</dfn> status, which indicates whether
-    or not COWL confinement is enabled and thus <a>labels</a> should
-    be enforced in the current context.
+      or not COWL confinement is enabled and thus <a>labels</a> should
+      be enforced in the current context.
 
     * The <dfn>context <a>labels</a></dfn>, which consist consist of: 
 
@@ -1377,9 +1381,9 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     <dl dfn-for="COWL">
       <dt><dfn method title="COWL/enable(0">enable()</dfn></dt>
       <dd>
-      On invocation, the user agent MUST enable <a>confinement
-      mode</a> by setting the current context's <a>COWL state</a>
-      confinement mode status.
+        On invocation, the user agent MUST enable <a>confinement
+        mode</a> by setting the current context's <a>COWL state</a>
+        confinement mode status.
       </dd>
       <dt><dfn method title="COWL/isEnabled()">isEnabled()</dfn></dt>
       <dd>
@@ -1475,37 +1479,37 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       <dt><dfn constructor>LabeledObject(obj, labels)</dfn></dt>
       <dd>
 
-      When invoking the <a>LabeledObject()</a> constructor, the user
-      agent MUST use an algorithm equivalent to the following:
+        When invoking the <a>LabeledObject()</a> constructor, the user
+        agent MUST use an algorithm equivalent to the following:
 
-      1. Let <var>obj clone</var> be the result of obtaining a
-      <a>structured clone</a> of the <a argument
-      for="LabeledObject/LabeledObject(obj, labels)">protectedObject</a> argument.
+        1. Let <var>obj clone</var> be the result of obtaining a
+           <a>structured clone</a> of the <a argument
+           for="LabeledObject/LabeledObject(obj, labels)">protectedObject</a> argument.
 
-      2. Let <var>conf</var> be the <a dict-member
-      for="CILabel">confidentiality</a> member of the <a argument
-      for="LabeledObject/LabeledObject(obj, labels)">labels</a>
-      argument, if it is set.  Otherwise, let <var>conf</var> be
-      the <a>current confidentiality label</a>.
+        2. Let <var>conf</var> be the <a dict-member
+           for="CILabel">confidentiality</a> member of the <a argument
+           for="LabeledObject/LabeledObject(obj, labels)">labels</a>
+           argument, if it is set.  Otherwise, let <var>conf</var> be
+           the <a>current confidentiality label</a>.
 
-      3. Let <var>int</var> be the <a dict-member
-      for="CILabel">integrity</a> member of the <a argument
-      for="LabeledObject/LabeledObject(obj, labels)">labels</a>
-      parameter, if it is set.  Otherwise, let <var>int</var> be the
-      <a>current integrity label</a>.
+        3. Let <var>int</var> be the <a dict-member
+           for="CILabel">integrity</a> member of the <a argument
+           for="LabeledObject/LabeledObject(obj, labels)">labels</a>
+           parameter, if it is set.  Otherwise, let <var>int</var> be the
+           <a>current integrity label</a>.
 
-      4. Let <var>canWrite</var> be the result of invoking the <a>write
-      check</a> algorithm with the <var>conf</var> and <var>int</var> labels.
+        4. Let <var>canWrite</var> be the result of invoking the <a>write
+           check</a> algorithm with the <var>conf</var> and <var>int</var> labels.
 
-      5. If <var>canWrite</var> is <code>false</code>, the constructor
-      MUST throw a <a spec="HTML5">SecurityError</a> exception
-      and terminate this algorithm.
+        5. If <var>canWrite</var> is <code>false</code>, the constructor
+           MUST throw a <a spec="HTML5">SecurityError</a> exception
+           and terminate this algorithm.
 
-      6. Else, the user agent MUST return a new
-      <a interface>LabeledObject</a>, with the <a>protected object</a>
-      set to <var>obj clone</var>, the confidentiality label set to
-      <var>conf</var>, and the integrity
-      label set to <var>int</var>.
+        6. Else, the user agent MUST return a new
+           <a interface>LabeledObject</a>, with the <a>protected object</a>
+           set to <var>obj clone</var>, the confidentiality label set to
+           <var>conf</var>, and the integrity
+           label set to <var>int</var>.
       </dd>
       
       <!-- TODO: link JSON -->
@@ -1542,7 +1546,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         the following:
 
         1. Invoke the <a>context tainting</a> algorithm with the <a
-        interface>LabeledObject</a>'s confidentiality and integrity labels.
+           interface>LabeledObject</a>'s confidentiality and integrity labels.
         
         3. Return <a interface>LabeledObject</a>'s <a>protected object</a>.
       </dd>
@@ -1556,65 +1560,65 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       labels. This ensures two things:
 
       * The context can't violate the confidentiality of the data (as
-      specified by the confidentiality label) by communicating
-      arbitrarily once it reads data labeled as such.
+        specified by the confidentiality label) by communicating
+        arbitrarily once it reads data labeled as such.
 
       * The context can't violate the integrity of entities more
-      trustworthy than the data. (The trustworthiness of the data is
-      specified by the integrity label.) In particular, once the
-      context reads the data and gets tainted, the rest of the
-      computation is restricted to writing to entities that are at
-      most as trustworthy as the data, for the read data may have
-      influenced the computation.
+        trustworthy than the data. (The trustworthiness of the data is
+        specified by the integrity label.) In particular, once the
+        context reads the data and gets tainted, the rest of the
+        computation is restricted to writing to entities that are at
+        most as trustworthy as the data, for the read data may have
+        influenced the computation.
     </div>
 
     <h4>Methods</h4>
     <dl dfn-for="LabeledObject">
       <dt><dfn method title="clone(labels)">clone(CILabel labels)</dfn></dt>
       <dd>
-      On invocation, the user agent MUST use an algorithm equivalent
-      to the following:
+        On invocation, the user agent MUST use an algorithm equivalent
+        to the following:
 
-      0. Let <var>obj</var> be the <a>protected object</a> of the
-         object on which the method was invoked.
+        0. Let <var>obj</var> be the <a>protected object</a> of the
+           object on which the method was invoked.
 
-      1. Let <var>conf</var> be the confidentiality label of the
-         object on which the method was invoked.
+        1. Let <var>conf</var> be the confidentiality label of the
+           object on which the method was invoked.
 
-      2. Let <var>int</var> be the integrity label of the
-         object on which the method was invoked.
+        2. Let <var>int</var> be the integrity label of the
+           object on which the method was invoked.
 
-      3. Let <var>newConf</var> be the <a dict-member
-         for="CILabel">confidentiality</a> member of the <a argument
-         for="LabeledObject/clone(labels)">labels</a> argument, if it is
-         set.  Otherwise, let <var>newConf</var> be <var>conf</conf>.
+        3. Let <var>newConf</var> be the <a dict-member
+           for="CILabel">confidentiality</a> member of the <a argument
+           for="LabeledObject/clone(labels)">labels</a> argument, if it is
+           set.  Otherwise, let <var>newConf</var> be <var>conf</conf>.
 
-      4. Let <var>newInt</var> be the <a dict-member
-          for="CILabel">integrity</a> member of the <a argument
-          for="LabeledObject/clone(labels)">labels</a>
-          parameter, if it is set.  Otherwise, let <var>newInt</var> be
-          <var>int</conf>.
+        4. Let <var>newInt</var> be the <a dict-member
+            for="CILabel">integrity</a> member of the <a argument
+            for="LabeledObject/clone(labels)">labels</a>
+            parameter, if it is set.  Otherwise, let <var>newInt</var> be
+            <var>int</conf>.
 
-      5. Let <var>privs</var> be the <a>internal privilege
-         label</a> of the current <a>context privileges</a>.
+        5. Let <var>privs</var> be the <a>internal privilege
+           label</a> of the current <a>context privileges</a>.
 
-      6. If <code><var>newConf</var>.<a>subsumes(<var>conf</var>, <var>privs</var>)</a></code>
-         returns <code>false</code> or
-         if <code><var>int</var>.<a>subsumes(<var>newInt</var>, <var>privs</var>)</a></code>
-         returns <code>false</code>, the method
-         MUST throw a <a spec="HTML5">SecurityError</a> exception and
-         terminate this algorithm.
+        6. If <code><var>newConf</var>.<a>subsumes(<var>conf</var>, <var>privs</var>)</a></code>
+           returns <code>false</code> or
+           if <code><var>int</var>.<a>subsumes(<var>newInt</var>, <var>privs</var>)</a></code>
+           returns <code>false</code>, the method
+           MUST throw a <a spec="HTML5">SecurityError</a> exception and
+           terminate this algorithm.
 
-         <!-- TODO:  link SecurityError -->
-      
-         Note, these checks ensure that the new labels of the object are
-         at least as restricting as the original labels, taking into
-         consideration the privileges of the context.
-      
-      7. Else, the user agent MUST return a new
-         <a interface>LabeledObject</a>, with the <a>protected object</a>
-         set to <var>obj</var>, the confidentiality label set to
-         <var>newConf</var>, and the integrity label set to <var>newInt</var>.
+           <!-- TODO:  link SecurityError -->
+        
+           Note, these checks ensure that the new labels of the object are
+           at least as restricting as the original labels, taking into
+           consideration the privileges of the context.
+        
+        7. Else, the user agent MUST return a new
+           <a interface>LabeledObject</a>, with the <a>protected object</a>
+           set to <var>obj</var>, the confidentiality label set to
+           <var>newConf</var>, and the integrity label set to <var>newInt</var>.
       </dd>
     </dl>
 
@@ -2152,9 +2156,9 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
              "<a>main fetch</a>" algorithm:
 
              1.  If <a href="#process-response">process
-               <var>response</var> to <var>request</var> as COWL</a>
-             returns <strong>blocked</strong>, set <var>response</var>
-             to a <a>network error</a>.
+                 <var>response</var> to <var>request</var> as COWL</a>
+                 returns <strong>blocked</strong>, set <var>response</var>
+                 to a <a>network error</a>.
 
           <h4>Modifications to Web Messaging</h4>
 
@@ -2308,7 +2312,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
           that is a subset of <var>dset</var>, then:
           
           1. Remove every <a>disjunction set</a> in <var>lset</var> that
-          <var>dset</var> is a subset of.
+             <var>dset</var> is a subset of.
 
           2. Add <var>dset</var> to <var>lset</var>.
 
@@ -2368,7 +2372,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     steps:
 
     1. Let <var>privLabel</var> be the <a>internal privilege label</a>
-    of <var>priv</var>.
+       of <var>priv</var>.
 
     2. Let <var>lset</var> be the <a>label set</a> of an <a>empty label</a>.
 
@@ -2863,15 +2867,15 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 
     <dt>Published specification</dt>
     <dd>
-    Labeling a resource with the <code>application/labeled-json</code>
-    type asserts that the resource is a JSON text that consists of an
-    object with a single entry called <code>"confidentiality"</code>
-    consisting of an array of entries, each of which consists of an
-    array of strings, a single entry called <code>"integrity"</code>
-    consisting of an array of entries, each of which consists of an
-    array of strings, and a single entry called <code>"object"</code>
-    consisting of a JSON object.  The relevant specifications are the
-    JSON specification and this specification. [[JSON]]
+      Labeling a resource with the <code>application/labeled-json</code>
+      type asserts that the resource is a JSON text that consists of an
+      object with a single entry called <code>"confidentiality"</code>
+      consisting of an array of entries, each of which consists of an
+      array of strings, a single entry called <code>"integrity"</code>
+      consisting of an array of entries, each of which consists of an
+      array of strings, and a single entry called <code>"object"</code>
+      consisting of a JSON object.  The relevant specifications are the
+      JSON specification and this specification. [[JSON]]
     </dd>
 
     <dt>Author/Change controller</dt>

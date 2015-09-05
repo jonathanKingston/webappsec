@@ -292,7 +292,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
     var policy = new <a interface>Label</a>(window.location.origin);
 
     // Associate the label with the password:
-    var labeldPassword = new <a interface>LabeledObject</a>(password, {confidentiality: policy});
+    var labeledPassword = new <a interface>LabeledObject</a>(password, {confidentiality: policy});
 
     // Send the labeled password to the checker iframe:
     checker.postMessage(labeledPassword, "https://untrusted.com");
@@ -1192,7 +1192,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         COWL.privilege = COWL.privilege.combine(priv);
 
         // Associate the unique label with the password:
-        var labeldPassword = new <a interface>LabeledObject</a>(password, {confidentiality: priv.asLabel()});
+        var labeledPassword = new <a interface>LabeledObject</a>(password, {confidentiality: priv.asLabel()});
 
         // Send the labeled password to the checker iframe:
         checker.postMessage(labeledPassword, "https://untrusted.com");
@@ -1642,7 +1642,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         var locations = ... // Array of police-car coordinates
         
         // Label the locations:
-        var labeldLocations = new <a interface>LabeledObject</a>(locations, 
+        var labeledLocations = new <a interface>LabeledObject</a>(locations,
                                                 { confidentiality: new <a interface>Label</a>(window.location.origin) });
         
         // Send the labeled locations and plot them
@@ -1777,8 +1777,8 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       <a>context confidentiality label</a>, <a>context integrity
       label</a>, and <a>context privileges</a>. The user agent MAY
       also send another header with this field name whose value is
-      <a>labeld data metadata</a> (e.g., when sending <a>labled
-      objects</a> iwth <a>XMLHttpRequest</a>).
+      <a>labeled data metadata</a> (e.g., when sending <a>labeled
+      objects</a> with <a>XMLHttpRequest</a>).
 
 
       <div class="example">
@@ -1812,7 +1812,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
       </pre>
 
       The header value may contain <a>labeled context metadata</a>
-      which can be used to set th initial <a>COWL state</a> of a
+      which can be used to set the initial <a>COWL state</a> of a
       context; or it may contain <a>labeled data metadata</a> which
       specifies the sensitivity of the response (which COWL then uses
       to determine whether or not to block the response).
@@ -1926,7 +1926,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         Author of <code>https://example.com</code> sends JSON object
         endorsed by <code>https://validator.com</code>:
         <pre><code>
-        // Suppose that labeldObject is a public, high-integrity value:
+        // Suppose that labeledObject is a public, high-integrity value:
         labeledObject.confidentiality.equals(new Label());
         labeledObject.integrity.equals(new Label("https://validator.com"));
 
@@ -2066,7 +2066,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         href="#response-header">Sec-COWL</a> HTTP response header to
         ensure that the mashup integrator can only read the HTTP
         response if it is sufficiently confined. A more permissive
-        approach is to send a <a>labeld JSON response</a>.
+        approach is to send a <a>labeled JSON response</a>.
 
         The server operator of <code>https://provider.com</code> uses a
         CORS response header to send <code>https://mashup.com</code>
@@ -2097,7 +2097,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
         // Create an XHR request to get the data:
         var req = new XMLHttpRequest()
         req.open("GET", "https://provider.com/apis/...");
-        req.responseType = "labled-json";
+        req.responseType = "labeled-json";
         req.onload = function (e) {
           var labeledObject = req.response; // <a interface>LabeledObject</a>
           labeledObject.confidentiality.equals(new Label());
@@ -2551,7 +2551,7 @@ spec: WEBSTORAGE; urlPrefix: http://www.w3.org/TR/webstorage/
 
            ISSUE: We can simply disallow leaks via top-level
            navigation at the cost of potentially forcing users to
-           navigate away by closing tabs or inputing another URL via
+           navigate away by closing tabs or inputting another URL via
            the address bar.  Feedback on this would be welcome.
 
         2. Else, return <strong>blocked</strong>.

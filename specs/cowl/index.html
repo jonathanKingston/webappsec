@@ -71,7 +71,7 @@
    <h1 class="p-name no-ref" id="title">Confinement with Origin Web Labels</h1>
   
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft,
-    <time class="dt-updated" datetime="2015-09-03">3 September 2015</time></span></h2>
+    <time class="dt-updated" datetime="2015-09-05">5 September 2015</time></span></h2>
   
    <div data-fill-with="spec-metadata">
     <dl>
@@ -441,7 +441,7 @@ further.</p>
      
 
   
-     <div class="example" id="example-b5d43eec"><a class="self-link" href="#example-b5d43eec"></a>
+     <div class="example" id="example-ec8cc692"><a class="self-link" href="#example-ec8cc692"></a>
     The author of <code>https://example.com</code>
     wishes to use a third-party password strength checker provided by
     <code>https://untrusted.com</code>.  To protect the
@@ -456,7 +456,7 @@ further.</p>
 var policy = new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>(window.location.origin);
 
 // Associate the label with the password:
-var labeldPassword = new <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>(password, {confidentiality: policy});
+var labeledPassword = new <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>(password, {confidentiality: policy});
 
 // Send the labeled password to the checker iframe:
 checker.postMessage(labeledPassword, "https://untrusted.com");
@@ -1098,16 +1098,16 @@ reflects the fact that the object (produced by
      
 
     
-     <pre class="idl">[<a class="idl-code" data-link-type="constructor" href="#dom-label-label">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-label-labelorigin">Constructor</a>(DOMString <dfn class="idl-code" data-dfn-for="Label/Label(origin)" data-dfn-type="argument" data-export="" id="dom-label-labelorigin-origin">origin<a class="self-link" href="#dom-label-labelorigin-origin"></a></dfn>), Exposed=Window, Worker]
+     <pre class="idl">[<a class="idl-code" data-link-type="constructor" href="#dom-label-label">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-label-label-origin">Constructor</a>(DOMString <dfn class="idl-code" data-dfn-for="Label/Label(origin)" data-dfn-type="argument" data-export="" id="dom-label-label-origin-origin">origin<a class="self-link" href="#dom-label-label-origin-origin"></a></dfn>), Exposed=Window, Worker]
 interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="label1">Label<a class="self-link" href="#label1"></a></dfn> {
-  boolean <a class="idl-code" data-link-type="method" href="#dom-label-equalsother">equals</a>(<a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label/equals(other)" data-dfn-type="argument" data-export="" id="dom-label-equalsother-other">other<a class="self-link" href="#dom-label-equalsother-other"></a></dfn>);
-  boolean <a class="idl-code" data-link-type="method" href="#dom-label-subsumesother-priv">subsumes</a>(<a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label/subsumes(other, priv)" data-dfn-type="argument" data-export="" id="dom-label-subsumesother-priv-other">other<a class="self-link" href="#dom-label-subsumesother-priv-other"></a></dfn>, optional <a data-link-type="idl-name" href="#privilege0">Privilege</a> <dfn class="idl-code" data-dfn-for="Label/subsumes(other, priv)" data-dfn-type="argument" data-export="" id="dom-label-subsumesother-priv-priv">priv<a class="self-link" href="#dom-label-subsumesother-priv-priv"></a></dfn>);
+  boolean <a class="idl-code" data-link-type="method" href="#dom-label-equals">equals</a>(<a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label/equals(other)" data-dfn-type="argument" data-export="" id="dom-label-equals-other-other">other<a class="self-link" href="#dom-label-equals-other-other"></a></dfn>);
+  boolean <a class="idl-code" data-link-type="method" href="#dom-label-subsumes">subsumes</a>(<a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label/subsumes(other, priv), Label/subsumes(other)" data-dfn-type="argument" data-export="" id="dom-label-subsumes-other-priv-other">other<a class="self-link" href="#dom-label-subsumes-other-priv-other"></a></dfn>, optional <a data-link-type="idl-name" href="#privilege0">Privilege</a> <dfn class="idl-code" data-dfn-for="Label/subsumes(other, priv), Label/subsumes(other)" data-dfn-type="argument" data-export="" id="dom-label-subsumes-other-priv-priv">priv<a class="self-link" href="#dom-label-subsumes-other-priv-priv"></a></dfn>);
 
-  <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="and(other)" id="dom-label-andother">and<a class="self-link" href="#dom-label-andother"></a></dfn>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <dfn class="idl-code" data-dfn-for="Label/and(other)" data-dfn-type="argument" data-export="" id="dom-label-andother-other">other<a class="self-link" href="#dom-label-andother-other"></a></dfn>);
-  <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="_or(other)" id="dom-label-_orother">_or<a class="self-link" href="#dom-label-_orother"></a></dfn>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <dfn class="idl-code" data-dfn-for="Label/_or(other)" data-dfn-type="argument" data-export="" id="dom-label-_orother-other">other<a class="self-link" href="#dom-label-_orother-other"></a></dfn>);
+  <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="and(other)" id="dom-label-and">and<a class="self-link" href="#dom-label-and"></a></dfn>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <dfn class="idl-code" data-dfn-for="Label/and(other)" data-dfn-type="argument" data-export="" id="dom-label-and-other-other">other<a class="self-link" href="#dom-label-and-other-other"></a></dfn>);
+  <a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="_or(other)" id="dom-label-_or">_or<a class="self-link" href="#dom-label-_or"></a></dfn>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <dfn class="idl-code" data-dfn-for="Label/_or(other)" data-dfn-type="argument" data-export="" id="dom-label-_or-other-other">other<a class="self-link" href="#dom-label-_or-other-other"></a></dfn>);
 
   object <a class="idl-code" data-link-type="method" href="#dom-label-tojson">toJSON</a>();
-  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="method" href="#dom-label-fromjsonobj-self">fromJSON</a>(object <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj, self)" data-dfn-type="argument" data-export="" id="dom-label-fromjsonobj-self-obj">obj<a class="self-link" href="#dom-label-fromjsonobj-self-obj"></a></dfn>, optional DOMString <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj, self)" data-dfn-type="argument" data-export="" id="dom-label-fromjsonobj-self-self">self<a class="self-link" href="#dom-label-fromjsonobj-self-self"></a></dfn>);
+  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="method" href="#dom-label-fromjson">fromJSON</a>(object <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj, self), Label/fromJSON(obj)" data-dfn-type="argument" data-export="" id="dom-label-fromjson-obj-self-obj">obj<a class="self-link" href="#dom-label-fromjson-obj-self-obj"></a></dfn>, optional DOMString <dfn class="idl-code" data-dfn-for="Label/fromJSON(obj, self), Label/fromJSON(obj)" data-dfn-type="argument" data-export="" id="dom-label-fromjson-obj-self-self">self<a class="self-link" href="#dom-label-fromjson-obj-self-self"></a></dfn>);
 };
 </pre>
      
@@ -1133,7 +1133,7 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lab
       
       
       
-      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="constructor" data-export="" data-lt="Label(origin)" id="dom-label-labelorigin">Label(DOMString origin)<a class="self-link" href="#dom-label-labelorigin"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="constructor" data-export="" data-lt="Label(origin)" id="dom-label-label-origin">Label(DOMString origin)<a class="self-link" href="#dom-label-label-origin"></a></dfn>
       
       
       <dd>
@@ -1143,7 +1143,7 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lab
 
        <ol>
         <li data-md="">
-         <p>If the <a class="idl-code" data-link-type="argument" href="#dom-label-labelorigin-origin">origin</a>
+         <p>If the <a class="idl-code" data-link-type="argument" href="#dom-label-label-origin-origin">origin</a>
 argument is not a <a data-link-type="dfn" href="http://dom.spec.whatwg.org/#concept-document-url">URL</a>, the constructor MUST throw a
 <code>TypeError</code> exception <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> and
 terminate this algorithm.</p>
@@ -1169,18 +1169,18 @@ itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org
     
      <dl>
       
-      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="equals(other)" id="dom-label-equalsother" title="equals(other)">equals(Label other)<a class="self-link" href="#dom-label-equalsother"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="equals(other)" id="dom-label-equals" title="equals(other)">equals(Label other)<a class="self-link" href="#dom-label-equals"></a></dfn>
       
       
       <dd>
         The user agent MUST return <code>true</code> if the <a class="idl-code" data-link-type="interface" href="#label1">Label</a> on
         which the method has been called is <a data-link-type="dfn" href="#equivalent">equivalent</a> to the
-        <a class="idl-code" data-link-type="argument" href="#dom-label-equalsother-other">other</a>
+        <a class="idl-code" data-link-type="argument" href="#dom-label-equals-other-other">other</a>
         parameter; otherwise it MUST return <code>false</code>.
       
       
       
-      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="subsumes(other, priv)|subsumes(other)" id="dom-label-subsumesother-priv" title="subsumes(other, priv)">subsumes(Label other, optional Privilege priv)<a class="self-link" href="#dom-label-subsumesother-priv"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="subsumes(other, priv)|subsumes(other)" id="dom-label-subsumes" title="subsumes(other, priv)">subsumes(Label other, optional Privilege priv)<a class="self-link" href="#dom-label-subsumes"></a></dfn>
       
       
       <dd>
@@ -1196,7 +1196,7 @@ itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org
 
 
         <li data-md="">
-         <p>If the <a class="idl-code" data-link-type="argument" href="#dom-label-subsumesother-priv-priv">priv</a> argument is
+         <p>If the <a class="idl-code" data-link-type="argument" href="#dom-label-subsumes-other-priv-priv">priv</a> argument is
  provided, let <var>lab</var> be
  <code><var>lab</var>.<a data-link-type="dfn">and</a>(priv.<a data-link-type="functionish" href="#dom-privilege-aslabel">asLabel()</a>)</code>.</p>
          
@@ -1206,14 +1206,14 @@ itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org
 
         <li data-md="">
          <p>Return <code>true</code> if <var>lab</var> <a data-link-type="dfn" href="#subsumes">subsumes</a> the
- <a class="idl-code" data-link-type="argument" href="#dom-label-subsumesother-priv-other">other</a>
+ <a class="idl-code" data-link-type="argument" href="#dom-label-subsumes-other-priv-other">other</a>
  parameter and <code>false</code> otherwise.</p>
          
 </ol>
              
       
       
-      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" id="dom-label-andlabel-or-domstring-other" title="and(other)">and((Label or DOMString) other)<a class="self-link" href="#dom-label-andlabel-or-domstring-other"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" id="dom-label-and-label-or-domstring-other" title="and(other)">and((Label or DOMString) other)<a class="self-link" href="#dom-label-and-label-or-domstring-other"></a></dfn>
       
       
       <dd>
@@ -1223,12 +1223,12 @@ itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org
        <ol>
         <li data-md="">
          <p>Let <var>O</var> be the
-<a class="idl-code" data-link-type="argument" href="#dom-label-andother-other">other</a> argument.</p>
+<a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> argument.</p>
          
 
 
         <li data-md="">
-         <p>If the type of <a class="idl-code" data-link-type="argument" href="#dom-label-andother-other">other</a> is
+         <p>If the type of <a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> is
 <a data-link-type="dfn">DOMString</a>, run the following sub-steps:</p>
          
 
@@ -1236,7 +1236,7 @@ itself MUST contain the <a data-link-type="dfn" href="http://dom.spec.whatwg.org
          <ol>
           <li data-md="">
            <p>Set <var>O</var> to the result of invoking the
-<a data-link-type="functionish" href="#dom-label-label">Label(other)</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-andother-other">other</a> as an argument, if the
+<a data-link-type="functionish" href="#dom-label-label">Label(other)</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> as an argument, if the
 constructor did not raise an exception.</p>
            
 
@@ -1257,7 +1257,7 @@ the method was invoked.</p>
              
       
       
-      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" id="dom-label-_orlabel-or-domstring-other" title="_or(other)">_or((Label or DOMString) other)<a class="self-link" href="#dom-label-_orlabel-or-domstring-other"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" id="dom-label-_or-label-or-domstring-other" title="_or(other)">_or((Label or DOMString) other)<a class="self-link" href="#dom-label-_or-label-or-domstring-other"></a></dfn>
       
       
       <dd>
@@ -1267,12 +1267,12 @@ the method was invoked.</p>
        <ol>
         <li data-md="">
          <p>Let <var>O</var> be the
-<a class="idl-code" data-link-type="argument" href="#dom-label-andother-other">other</a> argument.</p>
+<a class="idl-code" data-link-type="argument" href="#dom-label-and-other-other">other</a> argument.</p>
          
 
 
         <li data-md="">
-         <p>If the type of <a class="idl-code" data-link-type="argument" href="#dom-label-_orother-other">other</a> is
+         <p>If the type of <a class="idl-code" data-link-type="argument" href="#dom-label-_or-other-other">other</a> is
 <a data-link-type="dfn">DOMString</a>, run the following sub-steps:</p>
          
 
@@ -1280,7 +1280,7 @@ the method was invoked.</p>
          <ol>
           <li data-md="">
            <p>Set <var>O</var> to the result of invoking the
-<a data-link-type="functionish" href="#dom-label-label">Label(other)</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-_orother-other">other</a> as an argument, if the
+<a data-link-type="functionish" href="#dom-label-label">Label(other)</a> constructor with <a class="idl-code" data-link-type="argument" href="#dom-label-_or-other-other">other</a> as an argument, if the
 constructor did not raise an exception.</p>
            
 
@@ -1341,7 +1341,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
              
       
       
-      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="fromJSON(obj, self)|fromJSON(obj)" id="dom-label-fromjsonobj-self" title="fromJSON(object obj, optional DOMString self)">fromJSON(obj, self)<a class="self-link" href="#dom-label-fromjsonobj-self"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="Label" data-dfn-type="method" data-export="" data-lt="fromJSON(obj, self)|fromJSON(obj)" id="dom-label-fromjson" title="fromJSON(object obj, optional DOMString self)">fromJSON(obj, self)<a class="self-link" href="#dom-label-fromjson"></a></dfn>
       
       
       <dd>
@@ -1350,7 +1350,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
 
        <ol>
         <li data-md="">
-         <p>If <a class="idl-code" data-link-type="argument" href="#dom-label-fromjsonobj-self-obj">obj</a> is not
+         <p>If <a class="idl-code" data-link-type="argument" href="#dom-label-fromjson-obj-self-obj">obj</a> is not
  a <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc4627#section-2.3">JSON array</a> of entries, each of which is a <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc4627#section-2.3">JSON
  array</a> of strings, throw a <code>TypeError</code>
  exception <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> and terminate this algorithm.</p>
@@ -1363,7 +1363,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
 
 
         <li data-md="">
-         <p>If the <a class="idl-code" data-link-type="argument" href="#dom-label-fromjsonobj-self-self">self</a>
+         <p>If the <a class="idl-code" data-link-type="argument" href="#dom-label-fromjson-obj-self-self">self</a>
  argument is provided:</p>
          
 
@@ -1377,7 +1377,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
 
 
           <li data-md="">
-           <p>Else, set <var>self</var> to the <a class="idl-code" data-link-type="argument" href="#dom-label-fromjsonobj-self-self">self</a> argument.</p>
+           <p>Else, set <var>self</var> to the <a class="idl-code" data-link-type="argument" href="#dom-label-fromjson-obj-self-self">self</a> argument.</p>
            
 </ol>
          
@@ -1388,7 +1388,7 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
 
 
         <li data-md="">
-         <p>For each array element <var>dset</var> of <a class="idl-code" data-link-type="argument" href="#dom-label-fromjsonobj-self-obj">obj</a>:</p>
+         <p>For each array element <var>dset</var> of <a class="idl-code" data-link-type="argument" href="#dom-label-fromjson-obj-self-obj">obj</a>:</p>
          
 
 
@@ -1429,13 +1429,13 @@ each <a data-link-type="dfn" href="#disjunction-set">disjunction set</a> of the 
 
 
             <li data-md="">
-             <p>Let <var>dset label</var> be <code><var>dset label</var>.<a data-link-type="functionish" href="#dom-label-_orlabel-or-domstring-other">_or(<var>origin</var>)</a></code></p>
+             <p>Let <var>dset label</var> be <code><var>dset label</var>.<a data-link-type="functionish" href="#dom-label-_or">_or(<var>origin</var>)</a></code></p>
              
 </ol>
            
 
           <li data-md="">
-           <p>Let <var>lab</var> be <code><var>lab</var>.<a data-link-type="functionish" href="#dom-label-andlabel-or-domstring-other">and(<var>dset label</var>)</a></code></p>
+           <p>Let <var>lab</var> be <code><var>lab</var>.<a data-link-type="functionish" href="#dom-label-and">and(<var>dset label</var>)</a></code></p>
            
 </ol></ol>
        
@@ -1572,7 +1572,7 @@ JSON.stringify(aORbANDc) === '[["https://a.com", "https://b.com"], ["https://c.c
 
      <p>The <dfn data-dfn-type="dfn" data-noexport="" id="combination">combination<a class="self-link" href="#combination"></a></dfn> of privileges <var>A</var> and
     <var>B</var> is a privilege produced by invoking the
-    <a data-link-type="functionish" href="#dom-privilege-combineother">combine()</a> method on <var>A</var> (respectively,
+    <a data-link-type="functionish" href="#dom-privilege-combine">combine()</a> method on <var>A</var> (respectively,
     <var>B</var>) with <var>B</var> (respectively, <var>A</var>) as an
     argument.</p>
      
@@ -1598,8 +1598,8 @@ JSON.stringify(aORbANDc) === '[["https://a.com", "https://b.com"], ["https://c.c
 interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="privilege0">Privilege<a class="self-link" href="#privilege0"></a></dfn> {
   <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="method" href="#dom-privilege-aslabel">asLabel</a>();
 
-  <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a class="idl-code" data-link-type="method" href="#dom-privilege-combineother">combine</a>(<a data-link-type="idl-name" href="#privilege0">Privilege</a> <dfn class="idl-code" data-dfn-for="Privilege/combine(other)" data-dfn-type="argument" data-export="" id="dom-privilege-combineother-other">other<a class="self-link" href="#dom-privilege-combineother-other"></a></dfn>);
-  [Throws] <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a class="idl-code" data-link-type="method" href="#dom-privilege-delegatelabel">delegate</a>(<a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Privilege/delegate(label)" data-dfn-type="argument" data-export="" id="dom-privilege-delegatelabel-label">label<a class="self-link" href="#dom-privilege-delegatelabel-label"></a></dfn>);
+  <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a class="idl-code" data-link-type="method" href="#dom-privilege-combine">combine</a>(<a data-link-type="idl-name" href="#privilege0">Privilege</a> <dfn class="idl-code" data-dfn-for="Privilege/combine(other)" data-dfn-type="argument" data-export="" id="dom-privilege-combine-other-other">other<a class="self-link" href="#dom-privilege-combine-other-other"></a></dfn>);
+  [Throws] <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a class="idl-code" data-link-type="method" href="#dom-privilege-delegate">delegate</a>(<a data-link-type="idl-name" href="#label1">Label</a> <dfn class="idl-code" data-dfn-for="Privilege/delegate(label)" data-dfn-type="argument" data-export="" id="dom-privilege-delegate-label-label">label<a class="self-link" href="#dom-privilege-delegate-label-label"></a></dfn>);
 };
 </pre>
      
@@ -1661,7 +1661,7 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="pri
       
       
       
-      <dt><dfn class="idl-code" data-dfn-for="Privilege" data-dfn-type="method" data-export="" data-lt="combine(other)" id="dom-privilege-combineother" title="combine(other)">combine(Privilege other)<a class="self-link" href="#dom-privilege-combineother"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="Privilege" data-dfn-type="method" data-export="" data-lt="combine(other)" id="dom-privilege-combine" title="combine(other)">combine(Privilege other)<a class="self-link" href="#dom-privilege-combine"></a></dfn>
       
       
       <dd>
@@ -1680,17 +1680,17 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="pri
 
         <li data-md="">
          <p>Let <var>otherLabel</var> be the <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> of
- the <a class="idl-code" data-link-type="argument" href="#dom-privilege-combineother-other">other</a> argument.</p>
+ the <a class="idl-code" data-link-type="argument" href="#dom-privilege-combine-other-other">other</a> argument.</p>
          
 
 
         <li data-md="">
-         <p>Return <code><var>internalLabel</var>.<a data-link-type="functionish" href="#dom-label-andlabel-or-domstring-other">and(<var>otherLabel</var>)</a></code>.</p>
+         <p>Return <code><var>internalLabel</var>.<a data-link-type="functionish" href="#dom-label-and">and(<var>otherLabel</var>)</a></code>.</p>
          
 </ol>
       
 
-      <dt><dfn class="idl-code" data-dfn-for="Privilege" data-dfn-type="method" data-export="" data-lt="delegate(label)" id="dom-privilege-delegatelabel" title="delegate(label)">delegate(Label label)<a class="self-link" href="#dom-privilege-delegatelabel"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="Privilege" data-dfn-type="method" data-export="" data-lt="delegate(label)" id="dom-privilege-delegate" title="delegate(label)">delegate(Label label)<a class="self-link" href="#dom-privilege-delegate"></a></dfn>
       
 
       <dd>
@@ -1709,7 +1709,7 @@ created according to an algorithm equivalent to the following:
 
         <li data-md="">
          <p>If the <var>internalLabel</var> does not <a data-link-type="dfn" href="#subsumes">subsume</a> the
- <a class="idl-code" data-link-type="argument" href="#dom-privilege-delegatelabel-label">label</a>
+ <a class="idl-code" data-link-type="argument" href="#dom-privilege-delegate-label-label">label</a>
  argument, throw a <a data-link-type="dfn">SecurityError</a>
  exception and terminate this algorithm.</p>
          
@@ -1718,7 +1718,7 @@ created according to an algorithm equivalent to the following:
         <li data-md="">
          <p>Else, return a new <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> that has an
  <a data-link-type="dfn" href="#internal-privilege-label">internal privilege label</a> set to
- <a class="idl-code" data-link-type="argument" href="#dom-privilege-delegatelabel-label">label</a>.</p>
+ <a class="idl-code" data-link-type="argument" href="#dom-privilege-delegate-label-label">label</a>.</p>
          
 </ol>
       
@@ -1729,7 +1729,7 @@ created according to an algorithm equivalent to the following:
     
      <div class="note" role="note">
       Note, the <a class="idl-code" data-link-type="interface" href="#privilege0">Privilege</a> constructors and the
-      <a data-link-type="functionish" href="#dom-privilege-combineother">combine()</a> and <a data-link-type="functionish" href="#dom-privilege-delegatelabel">delegate()</a> methods only provide ways
+      <a data-link-type="functionish" href="#dom-privilege-combine">combine()</a> and <a data-link-type="functionish" href="#dom-privilege-delegate">delegate()</a> methods only provide ways
       for creating privileges.  Context code must still take
       <a data-link-type="dfn" href="#ownership">ownership</a> of or set the <a data-link-type="dfn" href="#current-privilege">current privilege</a> to the
       privilege for it to be used (to bypass label restrictions).
@@ -1781,7 +1781,7 @@ COWL.privilege = new <a data-link-type="dfn" href="#privilege">Privilege</a>();
      
 
     
-     <div class="example" id="example-28becd84"><a class="self-link" href="#example-28becd84"></a>
+     <div class="example" id="example-8ca11b17"><a class="self-link" href="#example-8ca11b17"></a>
       Consider an extension to the password strength checker example of
       <a href="#examples-checker">§1.2.1 Confining untrusted third-party services</a> that uses <a data-link-type="functionish" href="#dom-privilege-freshprivilege">FreshPrivilege()</a>s to
       ensure that the untrusted checker cannot communicate with any
@@ -1794,7 +1794,7 @@ var priv = new <a data-link-type="functionish" href="#dom-privilege-freshprivile
 COWL.privilege = COWL.privilege.combine(priv);
 
 // Associate the unique label with the password:
-var labeldPassword = new <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>(password, {confidentiality: priv.asLabel()});
+var labeledPassword = new <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>(password, {confidentiality: priv.asLabel()});
 
 // Send the labeled password to the checker iframe:
 checker.postMessage(labeledPassword, "https://untrusted.com");
@@ -2242,14 +2242,14 @@ and set the <a data-link-type="dfn" href="#current-privilege">current privilege<
   <a data-link-type="idl-name" href="#label1">Label</a>? <dfn class="idl-code" data-dfn-for="CILabel" data-dfn-type="dict-member" data-export="" data-type="Label? " id="dom-cilabel-integrity">integrity<a class="self-link" href="#dom-cilabel-integrity"></a></dfn>;
 };
 
-[<a class="idl-code" data-link-type="constructor" href="#dom-labeledobject-labeledobjectobj-labels">Constructor</a>(object <dfn class="idl-code" data-dfn-for="LabeledObject/LabeledObject(obj, labels)" data-dfn-type="argument" data-export="" id="dom-labeledobject-labeledobjectobj-labels-obj">obj<a class="self-link" href="#dom-labeledobject-labeledobjectobj-labels-obj"></a></dfn>, <a data-link-type="idl-name" href="#dictdef-cilabel">CILabel</a> <dfn class="idl-code" data-dfn-for="LabeledObject/LabeledObject(obj, labels)" data-dfn-type="argument" data-export="" id="dom-labeledobject-labeledobjectobj-labels-labels">labels<a class="self-link" href="#dom-labeledobject-labeledobjectobj-labels-labels"></a></dfn>), Exposed=Window, Worker]
+[<a class="idl-code" data-link-type="constructor" href="#dom-labeledobject-labeledobject">Constructor</a>(object <dfn class="idl-code" data-dfn-for="LabeledObject/LabeledObject(obj, labels)" data-dfn-type="argument" data-export="" id="dom-labeledobject-labeledobject-obj-labels-obj">obj<a class="self-link" href="#dom-labeledobject-labeledobject-obj-labels-obj"></a></dfn>, <a data-link-type="idl-name" href="#dictdef-cilabel">CILabel</a> <dfn class="idl-code" data-dfn-for="LabeledObject/LabeledObject(obj, labels)" data-dfn-type="argument" data-export="" id="dom-labeledobject-labeledobject-obj-labels-labels">labels<a class="self-link" href="#dom-labeledobject-labeledobject-obj-labels-labels"></a></dfn>), Exposed=Window, Worker]
 interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="labeledobject">LabeledObject<a class="self-link" href="#labeledobject"></a></dfn> {
   readonly attribute <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="attribute" data-readonly="" data-type="Label " href="#dom-labeledobject-confidentiality">confidentiality</a>;
   readonly attribute <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="attribute" data-readonly="" data-type="Label " href="#dom-labeledobject-integrity">integrity</a>;
 
   [GetterThrows] readonly attribute object <a class="idl-code" data-link-type="attribute" data-readonly="" data-type="object " href="#dom-labeledobject-protectedobject">protectedObject</a>;
 
-  [Throws] <a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a class="idl-code" data-link-type="method" href="#dom-labeledobject-clonelabels">clone</a>(<a data-link-type="idl-name" href="#dictdef-cilabel">CILabel</a> <dfn class="idl-code" data-dfn-for="LabeledObject/clone(labels)" data-dfn-type="argument" data-export="" id="dom-labeledobject-clonelabels-labels">labels<a class="self-link" href="#dom-labeledobject-clonelabels-labels"></a></dfn>);
+  [Throws] <a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a class="idl-code" data-link-type="method" href="#dom-labeledobject-clone">clone</a>(<a data-link-type="idl-name" href="#dictdef-cilabel">CILabel</a> <dfn class="idl-code" data-dfn-for="LabeledObject/clone(labels)" data-dfn-type="argument" data-export="" id="dom-labeledobject-clone-labels-labels">labels<a class="self-link" href="#dom-labeledobject-clone-labels-labels"></a></dfn>);
 };
 </pre>
      
@@ -2259,13 +2259,13 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lab
     
      <dl>
       
-      <dt><dfn class="idl-code" data-dfn-for="LabeledObject" data-dfn-type="constructor" data-export="" id="dom-labeledobject-labeledobjectobj-labels">LabeledObject(obj, labels)<a class="self-link" href="#dom-labeledobject-labeledobjectobj-labels"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="LabeledObject" data-dfn-type="constructor" data-export="" id="dom-labeledobject-labeledobject">LabeledObject(obj, labels)<a class="self-link" href="#dom-labeledobject-labeledobject"></a></dfn>
       
       
       <dd>
 
 
-       <p>When invoking the <a data-link-type="functionish" href="#dom-labeledobject-labeledobjectobj-labels">LabeledObject()</a> constructor, the user
+       <p>When invoking the <a data-link-type="functionish" href="#dom-labeledobject-labeledobject">LabeledObject()</a> constructor, the user
       agent MUST use an algorithm equivalent to the following:</p>
        
 
@@ -2278,14 +2278,14 @@ interface <dfn class="idl-code" data-dfn-type="interface" data-export="" id="lab
 
 
         <li data-md="">
-         <p>Let <var>conf</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-confidentiality">confidentiality</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-labeledobjectobj-labels-labels">labels</a>
+         <p>Let <var>conf</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-confidentiality">confidentiality</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-labeledobject-obj-labels-labels">labels</a>
 argument, if it is set.  Otherwise, let <var>conf</var> be
 the <a data-link-type="dfn" href="#current-confidentiality-label">current confidentiality label</a>.</p>
          
 
 
         <li data-md="">
-         <p>Let <var>int</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-integrity">integrity</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-labeledobjectobj-labels-labels">labels</a>
+         <p>Let <var>int</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-integrity">integrity</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-labeledobject-obj-labels-labels">labels</a>
 parameter, if it is set.  Otherwise, let <var>int</var> be the
 <a data-link-type="dfn" href="#current-integrity-label">current integrity label</a>.</p>
          
@@ -2329,7 +2329,7 @@ label set to <var>int</var>.</p>
       context, e.g., via cross-document messaging, as a way to ensure
       that the data’s confidentiality and integrity (as specified by
       the labels) are respected by the untrusted context. Hence, the
-      <a data-link-type="functionish" href="#dom-labeledobject-labeledobjectobj-labels">LabeledObject()</a> constructor only accepts objects that can
+      <a data-link-type="functionish" href="#dom-labeledobject-labeledobject">LabeledObject()</a> constructor only accepts objects that can
       be <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#structured-clone">structurally cloned</a>.
     </div>
      
@@ -2417,7 +2417,7 @@ influenced the computation.</p>
     
      <dl>
       
-      <dt><dfn class="idl-code" data-dfn-for="LabeledObject" data-dfn-type="method" data-export="" data-lt="clone(labels)" id="dom-labeledobject-clonelabels" title="clone(labels)">clone(CILabel labels)<a class="self-link" href="#dom-labeledobject-clonelabels"></a></dfn>
+      <dt><dfn class="idl-code" data-dfn-for="LabeledObject" data-dfn-type="method" data-export="" data-lt="clone(labels)" id="dom-labeledobject-clone" title="clone(labels)">clone(CILabel labels)<a class="self-link" href="#dom-labeledobject-clone"></a></dfn>
       
       
       <dd>
@@ -2445,13 +2445,13 @@ influenced the computation.</p>
 
 
         <li data-md="">
-         <p>Let <var>newConf</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-confidentiality">confidentiality</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-clonelabels-labels">labels</a> argument, if it is
+         <p>Let <var>newConf</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-confidentiality">confidentiality</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-clone-labels-labels">labels</a> argument, if it is
  set.  Otherwise, let <var>newConf</var> be <var>conf.</var></p>
          
 
 
         <li data-md="">
-         <p>Let <var>newInt</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-integrity">integrity</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-clonelabels-labels">labels</a>
+         <p>Let <var>newInt</var> be the <a class="idl-code" data-link-type="dict-member" href="#dom-cilabel-integrity">integrity</a> member of the <a class="idl-code" data-link-type="argument" href="#dom-labeledobject-clone-labels-labels">labels</a>
   parameter, if it is set.  Otherwise, let <var>newInt</var> be
   <var>int.</var></p>
          
@@ -2464,9 +2464,9 @@ influenced the computation.</p>
 
 
         <li data-md="">
-         <p>If <code><var>newConf</var>.<a data-link-type="functionish" href="#dom-label-subsumesother-priv">subsumes(<var>conf</var>, <var>privs</var>)</a></code>
+         <p>If <code><var>newConf</var>.<a data-link-type="functionish" href="#dom-label-subsumes">subsumes(<var>conf</var>, <var>privs</var>)</a></code>
  returns <code>false</code> or
- if <code><var>int</var>.<a data-link-type="functionish" href="#dom-label-subsumesother-priv">subsumes(<var>newInt</var>, <var>privs</var>)</a></code>
+ if <code><var>int</var>.<a data-link-type="functionish" href="#dom-label-subsumes">subsumes(<var>newInt</var>, <var>privs</var>)</a></code>
  returns <code>false</code>, the method
  MUST throw a <a data-link-type="dfn">SecurityError</a> exception and
  terminate this algorithm.</p>
@@ -2502,7 +2502,7 @@ influenced the computation.</p>
     checker). <a href="#xhr-examples"></a> shows how <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>s are used with the <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> constructor.
 
     
-     <div class="example" id="example-276aaca3"><a class="self-link" href="#example-276aaca3"></a>
+     <div class="example" id="example-07606b59"><a class="self-link" href="#example-07606b59"></a>
       Author of <code>https://police.gov</code> wishes to plot
       the location of police cars on a map, provided by
       <code>https://maps.biz</code>. After revealing the general area
@@ -2518,7 +2518,7 @@ mapsIframe.postMessage({ cmd: 'draw', location: ... }, mapsOrigin);
 var locations = ... // Array of police-car coordinates
         
 // Label the locations:
-var labeldLocations = new <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>(locations, 
+var labeledLocations = new <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>(locations,
                                         { confidentiality: new <a class="idl-code" data-link-type="interface" href="#label1">Label</a>(window.location.origin) });
         
 // Send the labeled locations and plot them
@@ -2682,11 +2682,7 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
 
 
      <p>The parsing algorithms for <a data-link-type="dfn" href="#label-metadata">label metadata</a> are given in
-    <a href="#parse-labeled-metadata-data">§4.10 
-      Parse labeled data metadata
-    </a> and <a href="#parse-labeled-metadata-ctx">§4.11 
-      Parse labeled context metadata
-    </a>.</p>
+    <a href="#parse-labeled-metadata-data">§4.10 Parse labeled data metadata</a> and <a href="#parse-labeled-metadata-ctx">§4.11 Parse labeled context metadata</a>.</p>
      
 
     
@@ -2713,8 +2709,8 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
       <a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a>, <a data-link-type="dfn" href="#context-integrity-label">context integrity
       label</a>, and <a data-link-type="dfn" href="#context-privilege">context privileges</a>. The user agent MAY
       also send another header with this field name whose value is
-      <a data-link-type="dfn">labeld data metadata</a> (e.g., when sending <a data-link-type="dfn">labled
-      objects</a> iwth <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>).</p>
+      <a data-link-type="dfn" href="#labeled-data-metadata">labeled data metadata</a> (e.g., when sending <a data-link-type="dfn" href="#labeled-objects">labeled
+      objects</a> with <a data-link-type="dfn" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a>).</p>
       
 
 
@@ -2766,7 +2762,7 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
 
 
       <p>The header value may contain <a data-link-type="dfn" href="#labeled-context-metadata">labeled context metadata</a>
-      which can be used to set th initial <a data-link-type="dfn" href="#cowl-state">COWL state</a> of a
+      which can be used to set the initial <a data-link-type="dfn" href="#cowl-state">COWL state</a> of a
       context; or it may contain <a data-link-type="dfn" href="#labeled-data-metadata">labeled data metadata</a> which
       specifies the sensitivity of the response (which COWL then uses
       to determine whether or not to block the response).</p>
@@ -2839,12 +2835,12 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
 
       
      <pre class="idl">partial interface <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> {
-  void <a class="idl-code" data-link-type="method" href="#dom-xmlhttprequest-sendlobj">send</a>(<a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <dfn class="idl-code" data-dfn-for="XMLHttpRequest/send(lobj)" data-dfn-type="argument" data-export="" id="dom-xmlhttprequest-sendlobj-lobj">lobj<a class="self-link" href="#dom-xmlhttprequest-sendlobj-lobj"></a></dfn>);
+  void <a class="idl-code" data-link-type="method" href="#dom-xmlhttprequest-send">send</a>(<a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <dfn class="idl-code" data-dfn-for="XMLHttpRequest/send(lobj)" data-dfn-type="argument" data-export="" id="dom-xmlhttprequest-send-lobj-lobj">lobj<a class="self-link" href="#dom-xmlhttprequest-send-lobj-lobj"></a></dfn>);
 };
 </pre>
      
 
-     <p>The <dfn class="idl-code" data-dfn-for="XMLHttpRequest" data-dfn-type="method" data-export="" id="dom-xmlhttprequest-sendlobj" title="XMLHttpRequest/send(lobj)">send(lobj)<a class="self-link" href="#dom-xmlhttprequest-sendlobj"></a></dfn>  method MUST use an
+     <p>The <dfn class="idl-code" data-dfn-for="XMLHttpRequest" data-dfn-type="method" data-export="" id="dom-xmlhttprequest-send" title="XMLHttpRequest/send(lobj)">send(lobj)<a class="self-link" href="#dom-xmlhttprequest-send"></a></dfn>  method MUST use an
       algorithm that is equivalent to the following:</p>
      
 
@@ -2852,17 +2848,17 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
      <ol>
       <li data-md="">
        <p>Let <var>obj</var> be the <a data-link-type="dfn" href="#protected-object">protected object</a> of the
- <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
+ <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-send-lobj-lobj">lobj</a> argument.</p>
        
 
 
       <li data-md="">
-       <p>Let <var>conf</var> be the confidentiality label of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
+       <p>Let <var>conf</var> be the confidentiality label of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-send-lobj-lobj">lobj</a> argument.</p>
        
 
 
       <li data-md="">
-       <p>Let <var>int</var> be the integrity label of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
+       <p>Let <var>int</var> be the integrity label of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-send-lobj-lobj">lobj</a> argument.</p>
        
 
 
@@ -2926,7 +2922,7 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
  methods was called on.  The value of the
  <code>Sec-COWL</code> header MUST be <a data-link-type="dfn" href="#labeled-data-metadata">labeled data
  metadata</a> containing the confidentiality and integrity
- labels of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a> argument.</p>
+ labels of the <a class="idl-code" data-link-type="argument" href="#dom-xmlhttprequest-send-lobj-lobj">lobj</a> argument.</p>
        
 
 
@@ -2946,11 +2942,11 @@ mapsIframe.postMessage({ cmd: 'plot', locations: labeledLocations }, mapsOrigin)
       
       <h5 class="heading settled" data-level="3.6.1.1" id="labeledobject-xhr-send-example"><span class="secno">3.6.1.1. </span><span class="content">Examples</span><a class="self-link" href="#labeledobject-xhr-send-example"></a></h5>
       </a>
-     <div class="example" id="example-28604e8b"><a class="self-link" href="#example-28604e8b"></a><a data-link-type="dfn">
+     <div class="example" id="example-f20a962f"><a class="self-link" href="#example-f20a962f"></a><a data-link-type="dfn">
         Author of <code>https://example.com</code> sends JSON object
         endorsed by <code>https://validator.com</code>:
         
-       <pre><code>// Suppose that labeldObject is a public, high-integrity value:
+       <pre><code>// Suppose that labeledObject is a public, high-integrity value:
 labeledObject.confidentiality.equals(new Label());
 labeledObject.integrity.equals(new Label("https://validator.com"));
 
@@ -3092,7 +3088,7 @@ body</a> section of the specification is modified to add:</p>
           <li data-md="">
            <p>Let <var>conf</var> be the <a data-link-type="dfn" href="#label">label</a>
  returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
- <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the
+ <a data-link-type="functionish" href="#dom-label-fromjson">fromJSON()</a> function with the
  <code>"confidentiality"</code> entry of the
  <var>JSON object</var> and <var>self</var>.
  If the function threw an exception, return null.</p>
@@ -3102,7 +3098,7 @@ body</a> section of the specification is modified to add:</p>
           <li data-md="">
            <p>Let <var>int</var> be the <a data-link-type="dfn" href="#label">label</a>
   returned by calling the <a class="idl-code" data-link-type="interface" href="#label1">Label</a>
-  <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the
+  <a data-link-type="functionish" href="#dom-label-fromjson">fromJSON()</a> function with the
   <code>"integrity"</code> entry of the
   <var>JSON object</var> and <var>self</var>.
   If the function threw an exception, return null.</p>
@@ -3178,7 +3174,7 @@ body</a> section of the specification is modified to add:</p>
         wherein the data provider uses the <a href="#response-header">Sec-COWL</a> HTTP response header to
         ensure that the mashup integrator can only read the HTTP
         response if it is sufficiently confined. A more permissive
-        approach is to send a <a data-link-type="dfn">labeld JSON response</a>.
+        approach is to send a <a data-link-type="dfn" href="#labeled-json-response">labeled JSON response</a>.
 
 
       <p>The server operator of <code>https://provider.com</code> uses a
@@ -3216,7 +3212,7 @@ Content-Type: application/labeled-json;
 // Create an XHR request to get the data:
 var req = new XMLHttpRequest()
 req.open("GET", "https://provider.com/apis/...");
-req.responseType = "labled-json";
+req.responseType = "labeled-json";
 req.onload = function (e) {
   var labeledObject = req.response; // <a class="idl-code" data-link-type="interface" href="#labeledobject">LabeledObject</a>
   labeledObject.confidentiality.equals(new Label());
@@ -3596,19 +3592,19 @@ blocks access to <code>localStorage</code>. <a data-link-type="biblio" href="#bi
       following labels:
       
       <pre><code>var a    = <a data-link-type="functionish" href="#dom-label-label">Label("https://a.com")</a>;  // https://a.com
-var aORb = <a data-link-type="functionish" href="#dom-label-label">Label("https://a.com")</a>.<a data-link-type="functionish" href="#dom-label-_orlabel-or-domstring-other">_or("https://b.com")</a>; // https://a.com OR https://b.com
-var a2   = a.<a data-link-type="functionish" href="#dom-label-andlabel-or-domstring-other">and(aORb)</a>; // https://a.com AND (https://a.com OR https://b.com) ≡ https://a.com
+var aORb = <a data-link-type="functionish" href="#dom-label-label">Label("https://a.com")</a>.<a data-link-type="functionish" href="#dom-label-_or">_or("https://b.com")</a>; // https://a.com OR https://b.com
+var a2   = a.<a data-link-type="functionish" href="#dom-label-and">and(aORb)</a>; // https://a.com AND (https://a.com OR https://b.com) ≡ https://a.com
 </code></pre>
       
 
 
       <p>The label <code>a2</code> is equivalent to <code>a</code> (since
-      <code>a.<a data-link-type="functionish" href="#dom-label-subsumesother-priv">subsumes(aORb)</a></code>):</p>
+      <code>a.<a data-link-type="functionish" href="#dom-label-subsumes">subsumes(aORb)</a></code>):</p>
       
 
       
       <pre><code>JSON.stringify(a2) === '[["https://a.com"]]';
-a2.<a data-link-type="functionish" href="#dom-label-equalsother">equals(a)</a>;
+a2.<a data-link-type="functionish" href="#dom-label-equals">equals(a)</a>;
 </code></pre>
       
     
@@ -3730,7 +3726,7 @@ of <var>priv</var>.</p>
 
 
       <li data-md="">
-       <p>Return <code><var>label</var>.<a data-link-type="functionish" href="#dom-label-andlabel-or-domstring-other">and(<var>privLabel</var>)</a></code>.</p>
+       <p>Return <code><var>label</var>.<a data-link-type="functionish" href="#dom-label-and">and(<var>privLabel</var>)</a></code>.</p>
        
 </ol>
      
@@ -3771,7 +3767,7 @@ of <var>priv</var>.</p>
        <p>Set the <a data-link-type="dfn" href="#context-confidentiality-label">context confidentiality label</a> to the
  <a data-link-type="dfn" href="#label">Label</a> returned by the by the <a data-link-type="dfn" href="#label-downgrade0">label downgrade</a>
  algorithm when invoked with
- <var>currentConf</var>.<a data-link-type="functionish" href="#dom-label-andlabel-or-domstring-other">and(<var>confidentiality</var>)</a>
+ <var>currentConf</var>.<a data-link-type="functionish" href="#dom-label-and">and(<var>confidentiality</var>)</a>
  and <a data-link-type="dfn" href="#current-privilege">current privilege</a>.</p>
        
 
@@ -3780,7 +3776,7 @@ of <var>priv</var>.</p>
        <p>Set the <a data-link-type="dfn" href="#context-integrity-label">context integrity label</a> to the
  <a data-link-type="dfn" href="#label">Label</a> returned by the by the <a data-link-type="dfn" href="#label-downgrade0">label downgrade</a>
  algorithm when invoked with
- <var>currentInt</var>.<a data-link-type="functionish" href="#dom-label-_orlabel-or-domstring-other">_or(<var>integrity</var>)</a>
+ <var>currentInt</var>.<a data-link-type="functionish" href="#dom-label-_or">_or(<var>integrity</var>)</a>
  and <a data-link-type="dfn" href="#current-privilege">current privilege</a>.</p>
        
 </ol>
@@ -3986,9 +3982,9 @@ of <var>priv</var>.</p>
          
 
 
-         <p class="issue" id="issue-70e3bdc0"><a class="self-link" href="#issue-70e3bdc0"></a> We can simply disallow leaks via top-level
+         <p class="issue" id="issue-a5e7c388"><a class="self-link" href="#issue-a5e7c388"></a> We can simply disallow leaks via top-level
  navigation at the cost of potentially forcing users to
- navigate away by closing tabs or inputing another URL via
+ navigate away by closing tabs or inputting another URL via
  the address bar.  Feedback on this would be welcome.</p>
          
 
@@ -4294,7 +4290,7 @@ of <var>priv</var>.</p>
 
         <li data-md="">
          <p>Let <var>label value</var> be the <a data-link-type="dfn" href="#label">label</a> returned by
-   calling the <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the
+   calling the <a data-link-type="functionish" href="#dom-label-fromjson">fromJSON()</a> function with the
    <var>directive value</var> and <var>self</var>.  If the
    function threw an exception, ignore this instance of the
    directive and continue to the next token.</p>
@@ -4402,7 +4398,7 @@ of <var>priv</var>.</p>
 
         <li data-md="">
          <p>Let <var>label value</var> be the <a data-link-type="dfn" href="#label">label</a>
-   returned by calling the <a data-link-type="functionish" href="#dom-label-fromjsonobj-self">fromJSON()</a> function with the
+   returned by calling the <a data-link-type="functionish" href="#dom-label-fromjson">fromJSON()</a> function with the
    <var>directive value</var> and <var>self</var>.  If the
    function threw an exception, ignore this instance of the
    directive and continue to the next token.</p>
@@ -4676,150 +4672,150 @@ of <var>priv</var>.</p>
   <h2 class="no-num heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="indexlist">
-   <li>and((Label or DOMString) other), <a href="#dom-label-andlabel-or-domstring-other">3.1.2</a>
-   <li>and(other), <a href="#dom-label-andother">3.1</a>
-   <li>asLabel(), <a href="#dom-privilege-aslabel">3.2.2</a>
-   <li>CILabel, <a href="#dictdef-cilabel">3.4</a>
-   <li>clone(labels), <a href="#dom-labeledobject-clonelabels">3.4.3</a>
-   <li>combination, <a href="#combination">3.2</a>
-   <li>combine(other), <a href="#dom-privilege-combineother">3.2.2</a>
+   <li><a href="#dom-label-and-label-or-domstring-other">and((Label or DOMString) other)</a><span>, in §3.1.2</span>
+   <li><a href="#dom-label-and">and(other)</a><span>, in §3.1</span>
+   <li><a href="#dom-privilege-aslabel">asLabel()</a><span>, in §3.2.2</span>
+   <li><a href="#dictdef-cilabel">CILabel</a><span>, in §3.4</span>
+   <li><a href="#dom-labeledobject-clone">clone(labels)</a><span>, in §3.4.3</span>
+   <li><a href="#combination">combination</a><span>, in §3.2</span>
+   <li><a href="#dom-privilege-combine">combine(other)</a><span>, in §3.2.2</span>
    <li>confidentiality
     <ul>
-     <li>attribute for COWL, <a href="#dom-cowl-confidentiality">3.3.1</a>
-     <li>dict-member for CILabel, <a href="#dom-cilabel-confidentiality">3.4</a>
-     <li>attribute for LabeledObject, <a href="#dom-labeledobject-confidentiality">3.4.2</a>
+     <li><a href="#dom-cowl-confidentiality">attribute for COWL</a><span>, in §3.3.1</span>
+     <li><a href="#dom-cilabel-confidentiality">dict-member for CILabel</a><span>, in §3.4</span>
+     <li><a href="#dom-labeledobject-confidentiality">attribute for LabeledObject</a><span>, in §3.4.2</span>
     </ul>
-   <li>confinement mode, <a href="#confinement-mode">3.3</a>
-   <li>conformant server, <a href="#conformant-server">Unnumbered section</a>
-   <li>conformant user agent, <a href="#conformant-user-agent">Unnumbered section</a>
-   <li>context, <a href="#context">3.3</a>
-   <li>context confidentiality label, <a href="#context-confidentiality-label">3.3</a>
-   <li>context integrity label, <a href="#context-integrity-label">3.3</a>
-   <li>context labels, <a href="#context-labels0">3.3</a>
-   <li>context privilege, <a href="#context-privilege">3.3</a>
-   <li>context tainting, <a href="#context-tainting">4.5</a>
-   <li>COWL, <a href="#cowl">3.3</a>
+   <li><a href="#confinement-mode">confinement mode</a><span>, in §3.3</span>
+   <li><a href="#conformant-server">conformant server</a><span>, in §Unnumbered section</span>
+   <li><a href="#conformant-user-agent">conformant user agent</a><span>, in §Unnumbered section</span>
+   <li><a href="#context">context</a><span>, in §3.3</span>
+   <li><a href="#context-confidentiality-label">context confidentiality label</a><span>, in §3.3</span>
+   <li><a href="#context-integrity-label">context integrity label</a><span>, in §3.3</span>
+   <li><a href="#context-labels0">context labels</a><span>, in §3.3</span>
+   <li><a href="#context-privilege">context privilege</a><span>, in §3.3</span>
+   <li><a href="#context-tainting">context tainting</a><span>, in §4.5</span>
+   <li><a href="#cowl">COWL</a><span>, in §3.3</span>
    <li>COWL state
     <ul>
-     <li>definition of, <a href="#cowl-state">3.3</a>
-     <li>definition of, <a href="#cowl-state0">3.3</a>
+     <li><a href="#cowl-state">definition of</a><span>, in §3.3</span>
+     <li><a href="#cowl-state0">definition of</a><span>, in §3.3</span>
     </ul>
-   <li>ctx-confidentiality, <a href="#ctx_confidentiality">3.5</a>
-   <li>ctx-directive, <a href="#ctx_directive">3.5</a>
-   <li>ctx-directive-name, <a href="#ctx_directive_name">3.5</a>
-   <li>ctx-integrity, <a href="#ctx_integrity">3.5</a>
-   <li>ctx-metadata, <a href="#ctx_metadata">3.5</a>
-   <li>ctx-privilege, <a href="#ctx_privilege">3.5</a>
-   <li>current confidentiality label, <a href="#current-confidentiality-label">2.1</a>
-   <li>current integrity label, <a href="#current-integrity-label">2.1</a>
-   <li>current privilege, <a href="#current-privilege">2.2</a>
-   <li>data-confidentiality, <a href="#data_confidentiality">3.5</a>
-   <li>data-directive, <a href="#data_directive">3.5</a>
-   <li>data-directive-name, <a href="#data_directive_name">3.5</a>
-   <li>data-integrity, <a href="#data_integrity">3.5</a>
-   <li>data-metadata, <a href="#data_metadata">3.5</a>
-   <li>default confidentiality label, <a href="#default-confidentiality-label">3.3</a>
-   <li>default COWL state, <a href="#default-cowl-state">3.3</a>
-   <li>default integrity label, <a href="#default-integrity-label">3.3</a>
-   <li>default privilege, <a href="#default-privilege">3.3</a>
-   <li>delegated
-    privilege, <a href="#delegated-privilege">3.2</a>
-   <li>delegate(label), <a href="#dom-privilege-delegatelabel">3.2.2</a>
-   <li>disjunction-set, <a href="#disjunction_set">3.5</a>
-   <li>disjunction set, <a href="#disjunction-set">3.1</a>
-   <li>dropping privileges, <a href="#dropping-privileges">3.2</a>
-   <li>effective confidentiality label, <a href="#effective-confidentiality-label">2.2</a>
-   <li>effective integrity label, <a href="#effective-integrity-label">2.2</a>
-   <li>empty label, <a href="#empty-label">3.1</a>
-   <li>empty privilege, <a href="#empty-privilege">3.2</a>
-   <li>enable(), <a href="#dom-cowl-enable">3.3.2</a>
-   <li>equals(other), <a href="#dom-label-equalsother">3.1.2</a>
-   <li>equivalent, <a href="#equivalent">2.1</a>
-   <li>FreshPrivilege(), <a href="#dom-privilege-freshprivilege">3.2.1</a>
-   <li>fromJSON(obj), <a href="#dom-label-fromjsonobj-self">3.1.2</a>
-   <li>fromJSON(obj, self), <a href="#dom-label-fromjsonobj-self">3.1.2</a>
+   <li><a href="#ctx_confidentiality">ctx-confidentiality</a><span>, in §3.5</span>
+   <li><a href="#ctx_directive">ctx-directive</a><span>, in §3.5</span>
+   <li><a href="#ctx_directive_name">ctx-directive-name</a><span>, in §3.5</span>
+   <li><a href="#ctx_integrity">ctx-integrity</a><span>, in §3.5</span>
+   <li><a href="#ctx_metadata">ctx-metadata</a><span>, in §3.5</span>
+   <li><a href="#ctx_privilege">ctx-privilege</a><span>, in §3.5</span>
+   <li><a href="#current-confidentiality-label">current confidentiality label</a><span>, in §2.1</span>
+   <li><a href="#current-integrity-label">current integrity label</a><span>, in §2.1</span>
+   <li><a href="#current-privilege">current privilege</a><span>, in §2.2</span>
+   <li><a href="#data_confidentiality">data-confidentiality</a><span>, in §3.5</span>
+   <li><a href="#data_directive">data-directive</a><span>, in §3.5</span>
+   <li><a href="#data_directive_name">data-directive-name</a><span>, in §3.5</span>
+   <li><a href="#data_integrity">data-integrity</a><span>, in §3.5</span>
+   <li><a href="#data_metadata">data-metadata</a><span>, in §3.5</span>
+   <li><a href="#default-confidentiality-label">default confidentiality label</a><span>, in §3.3</span>
+   <li><a href="#default-cowl-state">default COWL state</a><span>, in §3.3</span>
+   <li><a href="#default-integrity-label">default integrity label</a><span>, in §3.3</span>
+   <li><a href="#default-privilege">default privilege</a><span>, in §3.3</span>
+   <li><a href="#delegated-privilege">delegated
+    privilege</a><span>, in §3.2</span>
+   <li><a href="#dom-privilege-delegate">delegate(label)</a><span>, in §3.2.2</span>
+   <li><a href="#disjunction_set">disjunction-set</a><span>, in §3.5</span>
+   <li><a href="#disjunction-set">disjunction set</a><span>, in §3.1</span>
+   <li><a href="#dropping-privileges">dropping privileges</a><span>, in §3.2</span>
+   <li><a href="#effective-confidentiality-label">effective confidentiality label</a><span>, in §2.2</span>
+   <li><a href="#effective-integrity-label">effective integrity label</a><span>, in §2.2</span>
+   <li><a href="#empty-label">empty label</a><span>, in §3.1</span>
+   <li><a href="#empty-privilege">empty privilege</a><span>, in §3.2</span>
+   <li><a href="#dom-cowl-enable">enable()</a><span>, in §3.3.2</span>
+   <li><a href="#dom-label-equals">equals(other)</a><span>, in §3.1.2</span>
+   <li><a href="#equivalent">equivalent</a><span>, in §2.1</span>
+   <li><a href="#dom-privilege-freshprivilege">FreshPrivilege()</a><span>, in §3.2.1</span>
+   <li><a href="#dom-label-fromjson">fromJSON(obj)</a><span>, in §3.1.2</span>
+   <li><a href="#dom-label-fromjson">fromJSON(obj, self)</a><span>, in §3.1.2</span>
    <li>integrity
     <ul>
-     <li>attribute for COWL, <a href="#dom-cowl-integrity">3.3.1</a>
-     <li>dict-member for CILabel, <a href="#dom-cilabel-integrity">3.4</a>
-     <li>attribute for LabeledObject, <a href="#dom-labeledobject-integrity">3.4.2</a>
+     <li><a href="#dom-cowl-integrity">attribute for COWL</a><span>, in §3.3.1</span>
+     <li><a href="#dom-cilabel-integrity">dict-member for CILabel</a><span>, in §3.4</span>
+     <li><a href="#dom-labeledobject-integrity">attribute for LabeledObject</a><span>, in §3.4.2</span>
     </ul>
-   <li>internal privilege
-    label, <a href="#internal-privilege-label">3.2</a>
-   <li>isEnabled(), <a href="#dom-cowl-isenabled">3.3.2</a>
-   <li>Label(), <a href="#dom-label-label">3.1.1</a>
+   <li><a href="#internal-privilege-label">internal privilege
+    label</a><span>, in §3.2</span>
+   <li><a href="#dom-cowl-isenabled">isEnabled()</a><span>, in §3.3.2</span>
+   <li><a href="#dom-label-label">Label()</a><span>, in §3.1.1</span>
    <li>label
     <ul>
-     <li>definition of, <a href="#label">2.1</a>
-     <li>argument for Privilege/delegate(label), <a href="#dom-privilege-delegatelabel-label">3.2</a>
+     <li><a href="#label">definition of</a><span>, in §2.1</span>
+     <li><a href="#dom-privilege-delegate-label-label">argument for Privilege/delegate(label)</a><span>, in §3.2</span>
     </ul>
-   <li>Label, <a href="#label1">3.1</a>
-   <li>label downgrade, <a href="#label-downgrade0">4.3</a>
-   <li>Labeled context metadata, <a href="#labeled-context-metadata">3.5</a>
-   <li>Labeled data metadata, <a href="#labeled-data-metadata">3.5</a>
-   <li>labeled JSON response, <a href="#labeled-json-response">3.6.2</a>
-   <li>LabeledObject, <a href="#labeledobject">3.4</a>
-   <li>LabeledObject(obj, labels), <a href="#dom-labeledobject-labeledobjectobj-labels">3.4.1</a>
-   <li>labeled objects, <a href="#labeled-objects">2.1</a>
-   <li>Label metadata, <a href="#label-metadata">3.5</a>
-   <li>label normal form reduction, <a href="#label-normal-form-reduction">4.1</a>
-   <li>Label(origin), <a href="#dom-label-labelorigin">3.1.1</a>
+   <li><a href="#label1">Label</a><span>, in §3.1</span>
+   <li><a href="#label-downgrade0">label downgrade</a><span>, in §4.3</span>
+   <li><a href="#labeled-context-metadata">Labeled context metadata</a><span>, in §3.5</span>
+   <li><a href="#labeled-data-metadata">Labeled data metadata</a><span>, in §3.5</span>
+   <li><a href="#labeled-json-response">labeled JSON response</a><span>, in §3.6.2</span>
+   <li><a href="#labeledobject">LabeledObject</a><span>, in §3.4</span>
+   <li><a href="#dom-labeledobject-labeledobject">LabeledObject(obj, labels)</a><span>, in §3.4.1</span>
+   <li><a href="#labeled-objects">labeled objects</a><span>, in §2.1</span>
+   <li><a href="#label-metadata">Label metadata</a><span>, in §3.5</span>
+   <li><a href="#label-normal-form-reduction">label normal form reduction</a><span>, in §4.1</span>
+   <li><a href="#dom-label-label-origin">Label(origin)</a><span>, in §3.1.1</span>
    <li>labels
     <ul>
-     <li>argument for LabeledObject/LabeledObject(obj, labels), <a href="#dom-labeledobject-labeledobjectobj-labels-labels">3.4</a>
-     <li>argument for LabeledObject/clone(labels), <a href="#dom-labeledobject-clonelabels-labels">3.4</a>
+     <li><a href="#dom-labeledobject-labeledobject-obj-labels-labels">argument for LabeledObject/LabeledObject(obj, labels)</a><span>, in §3.4</span>
+     <li><a href="#dom-labeledobject-clone-labels-labels">argument for LabeledObject/clone(labels)</a><span>, in §3.4</span>
     </ul>
-   <li>label set, <a href="#label-set">3.1</a>
-   <li>label-set, <a href="#label_set">3.5</a>
-   <li>label subsumption, <a href="#label-subsumption">4.2</a>
-   <li>label upgrade, <a href="#label-upgrade0">4.4</a>
-   <li>lobj, <a href="#dom-xmlhttprequest-sendlobj-lobj">3.6.1</a>
-   <li>normal form, <a href="#normal-form">2.1</a>
+   <li><a href="#label-set">label set</a><span>, in §3.1</span>
+   <li><a href="#label_set">label-set</a><span>, in §3.5</span>
+   <li><a href="#label-subsumption">label subsumption</a><span>, in §4.2</span>
+   <li><a href="#label-upgrade0">label upgrade</a><span>, in §4.4</span>
+   <li><a href="#dom-xmlhttprequest-send-lobj-lobj">lobj</a><span>, in §3.6.1</span>
+   <li><a href="#normal-form">normal form</a><span>, in §2.1</span>
    <li>obj
     <ul>
-     <li>argument for Label/fromJSON(obj, self), <a href="#dom-label-fromjsonobj-self-obj">3.1</a>
-     <li>argument for LabeledObject/LabeledObject(obj, labels), <a href="#dom-labeledobject-labeledobjectobj-labels-obj">3.4</a>
+     <li><a href="#dom-label-fromjson-obj-self-obj">argument for Label/fromJSON(obj, self), Label/fromJSON(obj)</a><span>, in §3.1</span>
+     <li><a href="#dom-labeledobject-labeledobject-obj-labels-obj">argument for LabeledObject/LabeledObject(obj, labels)</a><span>, in §3.4</span>
     </ul>
-   <li>origin, <a href="#dom-label-labelorigin-origin">3.1</a>
-   <li>origin label, <a href="#origin-label">2.1</a>
-   <li>_or((Label or DOMString) other), <a href="#dom-label-_orlabel-or-domstring-other">3.1.2</a>
-   <li>_or(other), <a href="#dom-label-_orother">3.1</a>
+   <li><a href="#dom-label-label-origin-origin">origin</a><span>, in §3.1</span>
+   <li><a href="#origin-label">origin label</a><span>, in §2.1</span>
+   <li><a href="#dom-label-_or-label-or-domstring-other">_or((Label or DOMString) other)</a><span>, in §3.1.2</span>
+   <li><a href="#dom-label-_or">_or(other)</a><span>, in §3.1</span>
    <li>other
     <ul>
-     <li>argument for Label/equals(other), <a href="#dom-label-equalsother-other">3.1</a>
-     <li>argument for Label/subsumes(other, priv), <a href="#dom-label-subsumesother-priv-other">3.1</a>
-     <li>argument for Label/and(other), <a href="#dom-label-andother-other">3.1</a>
-     <li>argument for Label/_or(other), <a href="#dom-label-_orother-other">3.1</a>
-     <li>argument for Privilege/combine(other), <a href="#dom-privilege-combineother-other">3.2</a>
+     <li><a href="#dom-label-equals-other-other">argument for Label/equals(other)</a><span>, in §3.1</span>
+     <li><a href="#dom-label-subsumes-other-priv-other">argument for Label/subsumes(other, priv), Label/subsumes(other)</a><span>, in §3.1</span>
+     <li><a href="#dom-label-and-other-other">argument for Label/and(other)</a><span>, in §3.1</span>
+     <li><a href="#dom-label-_or-other-other">argument for Label/_or(other)</a><span>, in §3.1</span>
+     <li><a href="#dom-privilege-combine-other-other">argument for Privilege/combine(other)</a><span>, in §3.2</span>
     </ul>
-   <li>ownership, <a href="#ownership">2.2</a>
-   <li>owns, <a href="#owns">2.2</a>
-   <li>parse labeled context metadata, <a href="#parse-labeled-context-metadata">4.11</a>
-   <li>parse labeled data metadata, <a href="#parse-labeled-data-metadata">4.10</a>
-   <li>priv, <a href="#dom-label-subsumesother-priv-priv">3.1</a>
-   <li>Privilege, <a href="#privilege0">3.2</a>
-   <li>Privilege(), <a href="#dom-privilege-privilege">3.2.1</a>
+   <li><a href="#ownership">ownership</a><span>, in §2.2</span>
+   <li><a href="#owns">owns</a><span>, in §2.2</span>
+   <li><a href="#parse-labeled-context-metadata">parse labeled context metadata</a><span>, in §4.11</span>
+   <li><a href="#parse-labeled-data-metadata">parse labeled data metadata</a><span>, in §4.10</span>
+   <li><a href="#dom-label-subsumes-other-priv-priv">priv</a><span>, in §3.1</span>
+   <li><a href="#privilege0">Privilege</a><span>, in §3.2</span>
+   <li><a href="#dom-privilege-privilege">Privilege()</a><span>, in §3.2.1</span>
    <li>privilege
     <ul>
-     <li>definition of, <a href="#privilege">2.2</a>
-     <li>attribute for COWL, <a href="#dom-cowl-privilege">3.3.1</a>
+     <li><a href="#privilege">definition of</a><span>, in §2.2</span>
+     <li><a href="#dom-cowl-privilege">attribute for COWL</a><span>, in §3.3.1</span>
     </ul>
-   <li>protectedObject, <a href="#dom-labeledobject-protectedobject">3.4.2</a>
-   <li>protected
-      object, <a href="#protected-object">3.4</a>
-   <li>response LabeledObject object, <a href="#response-labeledobject-object">3.6.2</a>
-   <li>restricting, <a href="#restricting">2.1</a>
-   <li>self, <a href="#dom-label-fromjsonobj-self-self">3.1</a>
-   <li>send(lobj), <a href="#dom-xmlhttprequest-sendlobj">3.6.1</a>
-   <li>serialized labels, <a href="#serialized-labels">3.5</a>
-   <li>source-expression, <a href="#source_expression">3.5</a>
-   <li>subsumes, <a href="#subsumes">2.1</a>
-   <li>subsumes(other), <a href="#dom-label-subsumesother-priv">3.1.2</a>
-   <li>subsumes(other, priv), <a href="#dom-label-subsumesother-priv">3.1.2</a>
-   <li>tainted, <a href="#tainted">2.1</a>
-   <li>toJSON(), <a href="#dom-label-tojson">3.1.2</a>
-   <li>unprivileged, <a href="#unprivileged">3.2</a>
-   <li>write check, <a href="#write-check0">4.6</a></ul>
+   <li><a href="#dom-labeledobject-protectedobject">protectedObject</a><span>, in §3.4.2</span>
+   <li><a href="#protected-object">protected
+      object</a><span>, in §3.4</span>
+   <li><a href="#response-labeledobject-object">response LabeledObject object</a><span>, in §3.6.2</span>
+   <li><a href="#restricting">restricting</a><span>, in §2.1</span>
+   <li><a href="#dom-label-fromjson-obj-self-self">self</a><span>, in §3.1</span>
+   <li><a href="#dom-xmlhttprequest-send">send(lobj)</a><span>, in §3.6.1</span>
+   <li><a href="#serialized-labels">serialized labels</a><span>, in §3.5</span>
+   <li><a href="#source_expression">source-expression</a><span>, in §3.5</span>
+   <li><a href="#subsumes">subsumes</a><span>, in §2.1</span>
+   <li><a href="#dom-label-subsumes">subsumes(other)</a><span>, in §3.1.2</span>
+   <li><a href="#dom-label-subsumes">subsumes(other, priv)</a><span>, in §3.1.2</span>
+   <li><a href="#tainted">tainted</a><span>, in §2.1</span>
+   <li><a href="#dom-label-tojson">toJSON()</a><span>, in §3.1.2</span>
+   <li><a href="#unprivileged">unprivileged</a><span>, in §3.2</span>
+   <li><a href="#write-check0">write check</a><span>, in §4.6</span></ul>
   <h3 class="no-num heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="indexlist">
    <li><a data-link-type="biblio" href="#biblio-cors">[cors]</a> defines the following terms:
@@ -4962,24 +4958,24 @@ of <var>priv</var>.</p>
    <dt id="biblio-webstorage"><a class="self-link" href="#biblio-webstorage"></a>[WEBSTORAGE]
    <dd>Ian Hickson. <a href="http://www.w3.org/TR/webstorage/">Web Storage (Second Edition)</a>. 9 June 2015. CR. URL: <a href="http://www.w3.org/TR/webstorage/">http://www.w3.org/TR/webstorage/</a></dl>
   <h2 class="no-num heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-  <pre class="idl">[<a class="idl-code" data-link-type="constructor" href="#dom-label-label">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-label-labelorigin">Constructor</a>(DOMString <a href="#dom-label-labelorigin-origin">origin</a>), Exposed=Window, Worker]
+  <pre class="idl">[<a class="idl-code" data-link-type="constructor" href="#dom-label-label">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-label-label-origin">Constructor</a>(DOMString <a href="#dom-label-label-origin-origin">origin</a>), Exposed=Window, Worker]
 interface <a href="#label1">Label</a> {
-  boolean <a class="idl-code" data-link-type="method" href="#dom-label-equalsother">equals</a>(<a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-equalsother-other">other</a>);
-  boolean <a class="idl-code" data-link-type="method" href="#dom-label-subsumesother-priv">subsumes</a>(<a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-subsumesother-priv-other">other</a>, optional <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a href="#dom-label-subsumesother-priv-priv">priv</a>);
+  boolean <a class="idl-code" data-link-type="method" href="#dom-label-equals">equals</a>(<a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-equals-other-other">other</a>);
+  boolean <a class="idl-code" data-link-type="method" href="#dom-label-subsumes">subsumes</a>(<a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-subsumes-other-priv-other">other</a>, optional <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a href="#dom-label-subsumes-other-priv-priv">priv</a>);
 
-  <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-andother">and</a>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <a href="#dom-label-andother-other">other</a>);
-  <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-_orother">_or</a>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <a href="#dom-label-_orother-other">other</a>);
+  <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-and">and</a>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <a href="#dom-label-and-other-other">other</a>);
+  <a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-label-_or">_or</a>((<a data-link-type="idl-name" href="#label1">Label</a> or DOMString) <a href="#dom-label-_or-other-other">other</a>);
 
   object <a class="idl-code" data-link-type="method" href="#dom-label-tojson">toJSON</a>();
-  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="method" href="#dom-label-fromjsonobj-self">fromJSON</a>(object <a href="#dom-label-fromjsonobj-self-obj">obj</a>, optional DOMString <a href="#dom-label-fromjsonobj-self-self">self</a>);
+  [Throws] static <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="method" href="#dom-label-fromjson">fromJSON</a>(object <a href="#dom-label-fromjson-obj-self-obj">obj</a>, optional DOMString <a href="#dom-label-fromjson-obj-self-self">self</a>);
 };
 
 [<a class="idl-code" data-link-type="constructor" href="#dom-privilege-privilege">Constructor</a>, <a class="idl-code" data-link-type="constructor" href="#dom-privilege-freshprivilege">NamedConstructor</a>=<a data-link-type="idl-name">FreshPrivilege</a>, Exposed=Window, Worker]
 interface <a href="#privilege0">Privilege</a> {
   <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="method" href="#dom-privilege-aslabel">asLabel</a>();
 
-  <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a class="idl-code" data-link-type="method" href="#dom-privilege-combineother">combine</a>(<a data-link-type="idl-name" href="#privilege0">Privilege</a> <a href="#dom-privilege-combineother-other">other</a>);
-  [Throws] <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a class="idl-code" data-link-type="method" href="#dom-privilege-delegatelabel">delegate</a>(<a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-privilege-delegatelabel-label">label</a>);
+  <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a class="idl-code" data-link-type="method" href="#dom-privilege-combine">combine</a>(<a data-link-type="idl-name" href="#privilege0">Privilege</a> <a href="#dom-privilege-combine-other-other">other</a>);
+  [Throws] <a data-link-type="idl-name" href="#privilege0">Privilege</a> <a class="idl-code" data-link-type="method" href="#dom-privilege-delegate">delegate</a>(<a data-link-type="idl-name" href="#label1">Label</a> <a href="#dom-privilege-delegate-label-label">label</a>);
 };
 
 [Exposed=Window, Worker]
@@ -4998,18 +4994,18 @@ dictionary <a href="#dictdef-cilabel">CILabel</a> {
   <a data-link-type="idl-name" href="#label1">Label</a>? <a data-type="Label? " href="#dom-cilabel-integrity">integrity</a>;
 };
 
-[<a class="idl-code" data-link-type="constructor" href="#dom-labeledobject-labeledobjectobj-labels">Constructor</a>(object <a href="#dom-labeledobject-labeledobjectobj-labels-obj">obj</a>, <a data-link-type="idl-name" href="#dictdef-cilabel">CILabel</a> <a href="#dom-labeledobject-labeledobjectobj-labels-labels">labels</a>), Exposed=Window, Worker]
+[<a class="idl-code" data-link-type="constructor" href="#dom-labeledobject-labeledobject">Constructor</a>(object <a href="#dom-labeledobject-labeledobject-obj-labels-obj">obj</a>, <a data-link-type="idl-name" href="#dictdef-cilabel">CILabel</a> <a href="#dom-labeledobject-labeledobject-obj-labels-labels">labels</a>), Exposed=Window, Worker]
 interface <a href="#labeledobject">LabeledObject</a> {
   readonly attribute <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="attribute" data-readonly="" data-type="Label " href="#dom-labeledobject-confidentiality">confidentiality</a>;
   readonly attribute <a data-link-type="idl-name" href="#label1">Label</a> <a class="idl-code" data-link-type="attribute" data-readonly="" data-type="Label " href="#dom-labeledobject-integrity">integrity</a>;
 
   [GetterThrows] readonly attribute object <a class="idl-code" data-link-type="attribute" data-readonly="" data-type="object " href="#dom-labeledobject-protectedobject">protectedObject</a>;
 
-  [Throws] <a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a class="idl-code" data-link-type="method" href="#dom-labeledobject-clonelabels">clone</a>(<a data-link-type="idl-name" href="#dictdef-cilabel">CILabel</a> <a href="#dom-labeledobject-clonelabels-labels">labels</a>);
+  [Throws] <a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a class="idl-code" data-link-type="method" href="#dom-labeledobject-clone">clone</a>(<a data-link-type="idl-name" href="#dictdef-cilabel">CILabel</a> <a href="#dom-labeledobject-clone-labels-labels">labels</a>);
 };
 
 partial interface <a class="idl-code" data-link-type="interface" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a> {
-  void <a class="idl-code" data-link-type="method" href="#dom-xmlhttprequest-sendlobj">send</a>(<a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a href="#dom-xmlhttprequest-sendlobj-lobj">lobj</a>);
+  void <a class="idl-code" data-link-type="method" href="#dom-xmlhttprequest-send">send</a>(<a data-link-type="idl-name" href="#labeledobject">LabeledObject</a> <a href="#dom-xmlhttprequest-send-lobj-lobj">lobj</a>);
 };
 
 enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org/#xmlhttprequestresponsetype">XMLHttpRequestResponseType</a> {
@@ -5039,8 +5035,8 @@ enum <a class="idl-code" data-link-type="enum" href="https://xhr.spec.whatwg.org
  <a data-link-type="dfn" href="#default-privilege">default privileges</a>. Feedback on this would be welcome.<a href="#issue-eb38f690"> ↵ </a></div>
    <div class="issue"> We can simply disallow leaks via top-level
  navigation at the cost of potentially forcing users to
- navigate away by closing tabs or inputing another URL via
- the address bar.  Feedback on this would be welcome.<a href="#issue-70e3bdc0"> ↵ </a></div>
+ navigate away by closing tabs or inputting another URL via
+ the address bar.  Feedback on this would be welcome.<a href="#issue-a5e7c388"> ↵ </a></div>
    <div class="issue"> Should the user agent warn the user if the
  server provided an integrity label that it is not
  allowed to provide?<a href="#issue-41cd6952"> ↵ </a></div>
